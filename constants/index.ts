@@ -8,47 +8,24 @@ export const themes = [
 
 export const navbarLinks: NavbarLink[] = [
   {
-    icon: "fluent:home-20-regular",
+    // icon: "fluent:home-20-regular",
     route: "/",
-    label: "Home",
+    label: "HOME",
   },
   {
-    icon: "iconoir:search",
-    route: "/search",
-    label: "Search",
+    // icon: "iconoir:search",
+    route: "/product",
+    label: "PRODUCT",
   },
   {
-    icon: "pepicons-pencil:bell",
-    route: "/notifications",
-    label: "Notifications",
+    // icon: "pepicons-pencil:bell",
+    route: "/about-us",
+    label: "ABOUT US",
   },
   {
-    icon: "ant-design:message-outlined",
-    route: "/message",
-    label: "Messages",
-  },
-];
-
-export const sidebarLinks: SidebarLink[] = [
-  {
-    icon: "majesticons:home-line",
-    route: "/dashboard",
-    label: "Dashboard",
-  },
-  {
-    icon: "hugeicons:contact-book",
-    route: "/user",
-    label: "User",
-  },
-  {
-    icon: "hugeicons:note-edit",
-    route: "/post",
-    label: "Post",
-  },
-  {
-    icon: "carbon:course",
-    route: "/report",
-    label: "Report",
+    // icon: "ant-design:message-outlined",
+    route: "/contact",
+    label: "CONTACT",
   },
 ];
 

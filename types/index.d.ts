@@ -1,7 +1,6 @@
 import { BADGE_CRITERIA } from "@/constants";
 
 export interface NavbarLink {
-  icon: string;
   route: string;
   label: string;
 }
