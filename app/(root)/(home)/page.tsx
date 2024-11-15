@@ -14,7 +14,7 @@ export default function Page() {
       <div>
         <MyButton title="button" />
       </div>
-      {/* <div>
+      <div>
         <MyInput
           onChange={handleChange}
           value={inputValue}
@@ -27,7 +27,7 @@ export default function Page() {
           color="text-white"
           height="h-8"
         />
-      </div> */}
+      </div>
     </div>
   );
 }
