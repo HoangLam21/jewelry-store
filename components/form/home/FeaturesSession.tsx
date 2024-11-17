@@ -33,7 +33,7 @@ const featuresData = [
 
 const swiper = () => {
   return (
-    <div className="flex justify-around mt-[120px]">
+    <div className="flex justify-around mt-[150px]">
       {featuresData.map((feature) => (
         <div key={feature.id} className="flex">
           <div className="mt-1 mr-2">

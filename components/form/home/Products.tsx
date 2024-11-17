@@ -133,7 +133,7 @@ const Products = () => {
   };
 
   return (
-    <div className="mt-[120px] w-[95%] mx-auto">
+    <div className="mt-[150px] w-[95%] mx-auto">
       <div className="flex">
         <p className="jost text-[30px] font-normal text-dark100_light500">
           PRODUCTS
