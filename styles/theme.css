@@ -8,7 +8,7 @@
   }
 
   .background-light700_dark400 {
-    @apply bg-light-700 dark:bg-dark-400;
+    @apply bg-light-800 dark:bg-dark-400;
   }
 
   .background-light800_dark300 {
@@ -16,7 +16,7 @@
   }
 
   .background-light700_dark200 {
-    @apply bg-light-700 dark:bg-dark-200;
+    @apply bg-light-800 dark:bg-dark-200;
   }
 
   .background-light600_dark200 {
@@ -24,7 +24,7 @@
   }
 
   .background-light700_dark300 {
-    @apply bg-light-700 dark:bg-dark-300;
+    @apply bg-light-800 dark:bg-dark-300;
   }
 
   .background-light800_darkgradient {
@@ -41,6 +41,10 @@
 
   .text-dark500_light100 {
     @apply text-dark-100 dark:text-light-500 !important;
+  }
+
+  .text-dark450_light850 {
+    @apply dark:text-dark-450 text-light-850 !important;
   }
 
   .text-dark100_primary100 {
