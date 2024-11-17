@@ -15,6 +15,10 @@ body {
     font-family: "Jost", sans-serif;
   }
 
+  .jost {
+    font-family: "Jost", sans-serif;
+  }
+
   .flex-center {
     @apply flex justify-center items-center;
   }
