@@ -31,7 +31,7 @@ module.exports = {
           500: "#272727",
           600: "#E4DEE4",
           700: "#FFFFFF",
-          800: "#F4F3F3",
+          800: "#FFFFFF",
         },
         "accent-blue": "#1DA1F2",
         "border-color": "#D9D9D9",
