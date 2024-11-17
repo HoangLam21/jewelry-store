@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import Swiper from "@/components/form/home/swiper";
+import Swiper from "@/components/form/home/Swiper";
 import FeaturesSession from "@/components/form/home/FeaturesSession";
 import Categories from "@/components/form/home/Categories";
 import Products from "@/components/form/home/Products";
