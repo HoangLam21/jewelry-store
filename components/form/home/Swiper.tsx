@@ -44,7 +44,9 @@ const swiper = () => {
             <div className="w-[90%] flex justify-between items-center">
               <div className="flex justify-center w-[50%]">
                 <div>
-                  <p className="jost text-[83px] font-light">{item.title}</p>
+                  <p className="jost text-[83px] text-dark500_light100 font-light">
+                    {item.title}
+                  </p>
                   <p className="jost text-[20px] font-normal text-primary-100 w-[70%] mt-2">
                     {item.description}
                   </p>
