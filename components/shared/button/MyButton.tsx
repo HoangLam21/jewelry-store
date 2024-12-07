@@ -1,90 +1,67 @@
+"use client";
 import React from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
-interface MyButtonProps {
-  title: string;
-  onClick?: () => void;
-  padding?: string;
-  paddingTop?: string;
-  paddingBottom?: string;
-  color?: string;
-  paddingLeft?: string;
-  paddingRight?: string;
-  rounded?: string;
-  borderWidth?: string;
-  border?: "border";
-  borderColor?: string;
-  backgroundColor?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  width?: string;
+type MyButtonProps = {
+  event: () => void; // onClick event handler
+  title?: string; // Button title text
+  icon?: string; // Icon to display with the button
+  text_color?: string; // Text color
+  border_color?: string; // Border color
+  border_radius?: string; // Border radius for rounded corners
+  background?: string; // Button background color
+  width: string;
   height?: string;
-  textAlign?: string;
-  fontFamily?: string;
-  isShadow?: boolean;
-  isActive?: boolean;
-  icon?: IconDefinition; // New prop for FontAwesome icon
-  iconPosition?: "left" | "right"; // Option for icon position
-}
+  px?: string;
+  py?: string;
+  text?: string;
+};
 
 const MyButton: React.FC<MyButtonProps> = ({
+  event,
   title,
-  onClick,
-  padding = "py-2 px-4",
-  paddingTop = "py-2",
-  backgroundColor = "bg-white",
-  paddingBottom = "pb-2",
-  color = "text-black",
-  paddingLeft = "pl-4",
-  paddingRight = "pr-4",
-  rounded = "rounded-lg",
-  borderWidth = "border-0",
-  borderColor = "border-transparent",
-  fontSize = "text-base",
-  fontWeight = "font-normal",
-  width = "w-full",
-  height = "h-12",
-  textAlign = "text-center",
-  fontFamily = "font-sans",
-  isShadow = false,
-  isActive = false,
   icon,
-  iconPosition = "left", // Default position for icon
+  text_color = "text-primary-100",
+  border_color = "border-primary-100",
+  border_radius = "rounded-xl",
+  background = "bg-white",
+  width,
+  height = "h-35px",
+  px = "px-4",
+  py = "py-[8px]",
+  text = "text-[14px]",
 }) => {
-  const activeBackgroundColor = isActive ? "bg-red-500" : backgroundColor;
-  const activeTextColor = isActive ? "text-white" : color;
-
   return (
-    <button
-      onClick={onClick}
+    <div
       className={classNames(
-        `${padding} ${paddingTop} ${paddingBottom} ${paddingLeft} ${paddingRight}`,
-        activeBackgroundColor,
-        activeTextColor,
-        rounded,
-        borderWidth,
-        borderColor,
-        fontSize,
-        fontWeight,
-        textAlign,
-        backgroundColor,
-        fontFamily,
+        "flex justify-center items-center border shadow-md",
+        border_color, // Border color
+        background, // Background color
+        border_radius,
         width,
         height,
-        "flex items-center justify-center", // Center the text and icon
-        { "shadow-lg": isShadow } // Conditional shadow
+        px,
+        py // Padding
       )}
+      style={{
+        borderWidth: "0.5px", // Set border width if necessary
+      }}
     >
-      {icon && iconPosition === "left" && (
-        <FontAwesomeIcon icon={icon} className="mr-2" /> // Icon on the left
-      )}
-      <span className={`${color} ${fontWeight} ${fontSize}`}>{title}</span>
-      {icon && iconPosition === "right" && (
-        <FontAwesomeIcon icon={icon} className="ml-2" /> // Icon on the right
-      )}
-    </button>
+      <button
+        className={classNames(
+          "flex items-center gap-[4px] rounded-lg",
+          text,
+          text_color // Apply dynamic text color class
+        )}
+        onClick={event}
+        fdprocessedid="8jupze"
+      >
+        {/* Conditionally render icon if it's provided */}
+        {icon && <Icon icon={icon} className="text-[18px]" />}
+        {title}
+      </button>
+    </div>
   );
 };
 
