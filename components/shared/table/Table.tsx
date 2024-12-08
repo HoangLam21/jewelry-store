@@ -40,7 +40,13 @@ const Table = ({
           ))}
         </tr>
       </thead>
-      <tbody>{data.map((item) => renderRow(item))}</tbody>
+      <tbody>
+        {data.map((item) => (
+          <React.Fragment key={item.id || JSON.stringify(item)}>
+            {renderRow(item)}
+          </React.Fragment>
+        ))}
+      </tbody>
     </table>
   );
 };

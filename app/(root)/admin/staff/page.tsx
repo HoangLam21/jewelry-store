@@ -1,15 +1,18 @@
 "use client";
 import StaffList from "@/components/admin/staff/StaffList";
 import Headers from "@/components/shared/Headers";
+import { useRouter } from "next/navigation";
+import router from "next/router";
 import React from "react";
 
 const Page = () => {
+  const router = useRouter();
   const handleExport = () => {
     console.log("Export clicked");
   };
 
   const handleAddStaff = () => {
-    console.log("Add Staff clicked");
+    router.push(`/admin/staff/add`);
   };
   return (
     <div className="w-full h-full p-4 flex flex-col gap-4">

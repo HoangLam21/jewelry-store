@@ -1,13 +1,13 @@
 "use client";
-import StaffInformation from "@/components/admin/staff/StaffInformation";
+import AddStaffInformation from "@/components/admin/staff/AddStaffInformation";
 import Headers from "@/components/shared/Headers";
-import { useRouter } from "next/navigation"; // Đúng cách sử dụng trong App Router
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Page = () => {
   const router = useRouter();
-  const handleExport = () => {
-    console.log("Export clicked");
+  const handleCancel = () => {
+    router.back();
   };
 
   const handleAddStaff = () => {
@@ -16,15 +16,15 @@ const Page = () => {
   return (
     <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
-        title="Staff Detail"
+        title="Add Staff"
         firstIcon="iconoir:cancel"
         titleFirstButton="Cancel"
         secondIcon="mingcute:add-line"
         titleSecondButton="Add Staff"
-        onClickFirstButton={handleExport}
+        onClickFirstButton={handleCancel}
         onClickSecondButton={handleAddStaff}
       ></Headers>
-      <StaffInformation />
+      <AddStaffInformation />
     </div>
   );
 };

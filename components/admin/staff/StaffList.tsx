@@ -68,6 +68,7 @@ const StaffList = () => {
         return "";
     }
   };
+
   const sorted = [...StaffData].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
@@ -80,6 +81,7 @@ const StaffList = () => {
     }
     return 0;
   });
+
   const requestSort = (key: SortableKeys) => {
     let direction: "ascending" | "descending" = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -106,12 +108,6 @@ const StaffList = () => {
   const endIndex = startIndex + rowsPerPage;
   const currentData = filterData.slice(startIndex, endIndex);
 
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   const dataLength = filterData.length;
   const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -125,9 +121,6 @@ const StaffList = () => {
     dataLength,
   };
 
-  const handleSearch = () => {
-    console.log("this is search");
-  };
   const handleSort = () => {
     console.log("this is sort");
   };
@@ -164,15 +157,16 @@ const StaffList = () => {
               />
             </div>
           </Link>
-
-          <div className="w-7 h-7 flex items-center justify-center rounded-full">
-            <Icon
-              icon="tabler:edit"
-              width={24}
-              height={24}
-              className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1"
-            />
-          </div>
+          <Link href={`/admin/staff/edit/${item.id}`}>
+            <div className="w-7 h-7 flex items-center justify-center rounded-full">
+              <Icon
+                icon="tabler:edit"
+                width={24}
+                height={24}
+                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1"
+              />
+            </div>
+          </Link>
           <div className="w-7 h-7 flex items-center justify-center rounded-full">
             <Icon
               icon="tabler:trash"

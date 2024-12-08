@@ -19,6 +19,7 @@ interface Staff {
   address: string;
   city: string;
   country: string;
+  district: string;
   experience: string;
   kindOfJob: string;
   description: string;
@@ -39,6 +40,7 @@ export const StaffData: Staff[] = [
     address: "1/111A Cau Xeo, Tan Son Nhi, Tan Phu",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "Teaching English 2 years in high school in Britain",
     kindOfJob: "Fulltime job",
     description:
@@ -83,6 +85,7 @@ export const StaffData: Staff[] = [
     address: "2/222B Le Duan, Ben Thanh, District 1",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "5 years as a software engineer in Korea",
     kindOfJob: "Fulltime job",
     description: "Responsible for developing and maintaining web applications",
@@ -118,6 +121,7 @@ export const StaffData: Staff[] = [
     address: "3/333C Nguyen Hue, District 1",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "3 years as a project manager in a multinational company",
     kindOfJob: "Fulltime job",
     description: "Oversees and manages projects from inception to completion",
@@ -153,6 +157,7 @@ export const StaffData: Staff[] = [
     address: "4/444D Pham Hong Thai, Tan Binh",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "8 years in sales management",
     kindOfJob: "Part-time job",
     description:
@@ -181,6 +186,7 @@ export const StaffData: Staff[] = [
     address: "5/555E Le Lai, Tan Phu",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "2 years as a data analyst in Vietnam",
     kindOfJob: "Fulltime job",
     description:
@@ -217,6 +223,7 @@ export const StaffData: Staff[] = [
     address: "6/666F Cong Hoa, Tan Binh",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "1 year as a content writer",
     kindOfJob: "Fulltime job",
     description:
@@ -245,6 +252,7 @@ export const StaffData: Staff[] = [
     address: "7/777G Hai Ba Trung, District 3",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "10 years in IT consulting",
     kindOfJob: "Fulltime job",
     description:
@@ -273,6 +281,7 @@ export const StaffData: Staff[] = [
     address: "8/888H Tran Hung Dao, District 5",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "4 years as a marketing coordinator",
     kindOfJob: "Part-time job",
     description: "Coordinates marketing campaigns and strategies",
@@ -300,6 +309,7 @@ export const StaffData: Staff[] = [
     address: "9/999I Duong Quang Ham, Tan Binh",
     city: "Ho Chi Minh",
     country: "Viet Nam",
+    district: "Q9",
     experience: "6 years as an accountant",
     kindOfJob: "Fulltime job",
     description:
