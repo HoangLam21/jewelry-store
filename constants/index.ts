@@ -29,6 +29,54 @@ export const navbarLinks: NavbarLink[] = [
   },
 ];
 
+export const sidebarLinks: SidebarLink[] = [
+  {
+    icon: "mynaui:home",
+    route: "/admin",
+    label: "Dashboard",
+  },
+  {
+    icon: "hugeicons:note-edit",
+    route: "/admin/staff",
+    label: "Staff",
+  },
+  {
+    icon: "carbon:workspace",
+    route: "/admin/customer",
+    label: "Customer",
+  },
+  {
+    icon: "material-symbols:timer-outline",
+    route: "/admin/product",
+    label: "Product",
+  },
+  {
+    icon: "ph:video",
+    route: "/admin/order",
+    label: "Order",
+  },
+  {
+    icon: "hugeicons:contact-book",
+    route: "/admin/import",
+    label: "Import",
+  },
+  {
+    icon: "healthicons:group-discussion-meetingx3-outline",
+    route: "/admin/finance",
+    label: "Finance",
+  },
+  {
+    icon: "carbon:course",
+    route: "/admin/work-schedule",
+    label: "Work schedule",
+  },
+  {
+    icon: "ph:chalkboard-teacher-light",
+    route: "/admin/chat",
+    label: "Chat",
+  },
+];
+
 export const BADGE_CRITERIA = {
   QUESTION_COUNT: {
     BRONZE: 10,
