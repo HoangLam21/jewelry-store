@@ -7,8 +7,8 @@ import React from "react";
 const Page = () => {
   const router = useRouter();
 
-  const handleExport = () => {
-    console.log("Export clicked");
+  const handleBack = () => {
+    router.back();
   };
 
   const handleAddImport = () => {
@@ -19,14 +19,13 @@ const Page = () => {
     <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
         title="Import"
-        firstIcon="clarity:export-line"
-        titleFirstButton="Export"
+        firstIcon="iconoir:cancel"
+        titleFirstButton="Cancel"
         secondIcon="mingcute:add-line"
         titleSecondButton="Add Import"
-        onClickFirstButton={handleExport}
+        onClickFirstButton={handleBack}
         onClickSecondButton={handleAddImport}
       ></Headers>
-      <ImportList />
     </div>
   );
 };

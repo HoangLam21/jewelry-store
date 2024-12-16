@@ -27,6 +27,27 @@ interface Staff {
   numberSaleInvoice: SaleInvoice[];
 }
 
+interface Import {
+  id: string;
+
+  suplier: {
+    id: string;
+    phoneNumber: string;
+    fullname: string;
+    address: string;
+  };
+  invoice: {
+    id: string;
+    productName: string;
+    unitPrice: number;
+    quantity: number;
+    discount: number;
+  }[];
+  status: boolean;
+  createAt: Date;
+  createBy: string;
+}
+
 export const StaffData: Staff[] = [
   {
     id: "1",
@@ -333,5 +354,337 @@ export const StaffData: Staff[] = [
         status: 2,
       },
     ],
+  },
+];
+
+export const ImportData: Import[] = [
+  {
+    id: "1",
+    suplier: {
+      id: "SUP001",
+      phoneNumber: "  +84 348775966",
+      fullname: "Kim Hyuk-kyu",
+      address: "123 Main Street, New York, USA",
+    },
+    invoice: [
+      {
+        id: "INV001",
+        productName: "Laptop",
+        unitPrice: 1000,
+        quantity: 5,
+        discount: 10,
+      },
+      {
+        id: "INV002",
+        productName: "Laptop",
+        unitPrice: 1000,
+        quantity: 5,
+        discount: 10,
+      },
+      {
+        id: "INV003",
+        productName: "Laptop",
+        unitPrice: 1000,
+        quantity: 5,
+        discount: 10,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-01"),
+    createBy: "Admin001",
+  },
+  {
+    id: "2",
+    suplier: {
+      id: "SUP002",
+      phoneNumber: "  +84 348775966",
+      fullname: "DEFT VIPPRO",
+      address: "456 Oak Avenue, London, UK",
+    },
+    invoice: [
+      {
+        id: "INV002",
+        productName: "Smartphone",
+        unitPrice: 500,
+        quantity: 10,
+        discount: 5,
+      },
+    ],
+    status: false,
+    createAt: new Date("2024-12-02"),
+    createBy: "Admin002",
+  },
+  {
+    id: "3",
+    suplier: {
+      id: "SUP003",
+      phoneNumber: "  +84 348775966",
+      fullname: "8386 MÃI ĐỈNH MÃI ĐỈNH ĐỈNH",
+      address: "789 Pine Street, Sydney, Australia",
+    },
+    invoice: [
+      {
+        id: "INV003",
+        productName: "Keyboard",
+        unitPrice: 50,
+        quantity: 20,
+        discount: 0,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-03"),
+    createBy: "Admin003",
+  },
+  {
+    id: "4",
+    suplier: {
+      id: "SUP004",
+      phoneNumber: "  +84 348775966",
+      fullname: "TONY TONY CHOPPER",
+      address: "234 Elm Road, Berlin, Germany",
+    },
+    invoice: [
+      {
+        id: "INV004",
+        productName: "Monitor",
+        unitPrice: 150,
+        quantity: 8,
+        discount: 15,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-04"),
+    createBy: "Admin004",
+  },
+  {
+    id: "5",
+    suplier: {
+      id: "SUP005",
+      phoneNumber: "  +84 348775966",
+      fullname: "Global Gadgets",
+      address: "567 Maple Boulevard, Toronto, Canada",
+    },
+    invoice: [
+      {
+        id: "INV005",
+        productName: "Mouse",
+        unitPrice: 25,
+        quantity: 50,
+        discount: 5,
+      },
+    ],
+    status: false,
+    createAt: new Date("2024-12-05"),
+    createBy: "Admin005",
+  },
+  {
+    id: "6",
+    suplier: {
+      id: "SUP006",
+      phoneNumber: "  +84 348775966",
+      fullname: "Gadget Store",
+      address: "901 Birch Lane, Paris, France",
+    },
+    invoice: [
+      {
+        id: "INV006",
+        productName: "Tablet",
+        unitPrice: 300,
+        quantity: 12,
+        discount: 8,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-06"),
+    createBy: "Admin006",
+  },
+  {
+    id: "7",
+    suplier: {
+      id: "SUP007",
+      phoneNumber: "  +84 348775966",
+      fullname: "Mega Distributors",
+      address: "321 Aspen Road, Dubai, UAE",
+    },
+    invoice: [
+      {
+        id: "INV007",
+        productName: "Headphones",
+        unitPrice: 75,
+        quantity: 30,
+        discount: 10,
+      },
+    ],
+    status: false,
+    createAt: new Date("2024-12-07"),
+    createBy: "Admin007",
+  },
+  {
+    id: "8",
+    suplier: {
+      id: "SUP008",
+      phoneNumber: "  +84 348775966",
+      fullname: "Tech World",
+      address: "876 Spruce Avenue, Tokyo, Japan",
+    },
+    invoice: [
+      {
+        id: "INV008",
+        productName: "Webcam",
+        unitPrice: 40,
+        quantity: 25,
+        discount: 0,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-08"),
+    createBy: "Admin008",
+  },
+  {
+    id: "9",
+    suplier: {
+      id: "SUP009",
+      phoneNumber: "  +84 348775966",
+      fullname: "Electronic Mart",
+      address: "654 Cedar Street, Mexico City, Mexico",
+    },
+    invoice: [
+      {
+        id: "INV009",
+        productName: "Speaker",
+        unitPrice: 60,
+        quantity: 15,
+        discount: 5,
+      },
+    ],
+    status: false,
+    createAt: new Date("2024-12-09"),
+    createBy: "Admin009",
+  },
+  {
+    id: "10",
+    suplier: {
+      id: "SUP010",
+      phoneNumber: "  +84 348775966",
+      fullname: "Alpha Electronics",
+      address: "345 Willow Drive, Moscow, Russia",
+    },
+    invoice: [
+      {
+        id: "INV010",
+        productName: "Power Bank",
+        unitPrice: 30,
+        quantity: 40,
+        discount: 7,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-10"),
+    createBy: "Admin010",
+  },
+  {
+    id: "11",
+    suplier: {
+      id: "SUP011",
+      phoneNumber: "  +84 348775966",
+      fullname: "Techie Supplies",
+      address: "678 Poplar Lane, Singapore",
+    },
+    invoice: [
+      {
+        id: "INV011",
+        productName: "USB Drive",
+        unitPrice: 15,
+        quantity: 100,
+        discount: 0,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-11"),
+    createBy: "Admin011",
+  },
+  {
+    id: "12",
+    suplier: {
+      id: "SUP012",
+      phoneNumber: "  +84 348775966",
+      fullname: "Smart Solutions",
+      address: "987 Chestnut Road, Seoul, South Korea",
+    },
+    invoice: [
+      {
+        id: "INV012",
+        productName: "Charger",
+        unitPrice: 20,
+        quantity: 60,
+        discount: 5,
+      },
+    ],
+    status: false,
+    createAt: new Date("2024-12-12"),
+    createBy: "Admin012",
+  },
+  {
+    id: "13",
+    suplier: {
+      id: "SUP013",
+      phoneNumber: "  +84 348775966",
+      fullname: "NextGen Supplies",
+      address: "432 Pineapple Street, Cape Town, South Africa",
+    },
+    invoice: [
+      {
+        id: "INV013",
+        productName: "Hard Drive",
+        unitPrice: 120,
+        quantity: 10,
+        discount: 12,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-13"),
+    createBy: "Admin013",
+  },
+  {
+    id: "14",
+    suplier: {
+      id: "SUP014",
+      phoneNumber: "  +84 348775966",
+      fullname: "Global Tech",
+      address: "210 Banana Avenue, Rio de Janeiro, Brazil",
+    },
+    invoice: [
+      {
+        id: "INV014",
+        productName: "Memory Card",
+        unitPrice: 10,
+        quantity: 200,
+        discount: 2,
+      },
+    ],
+    status: true,
+    createAt: new Date("2024-12-14"),
+    createBy: "Admin014",
+  },
+  {
+    id: "15",
+    suplier: {
+      id: "SUP015",
+      phoneNumber: "  +84 348775966",
+      fullname: "Prime Tech",
+      address: "765 Orange Blvd, Rome, Italy",
+    },
+    invoice: [
+      {
+        id: "INV015",
+        productName: "Projector",
+        unitPrice: 500,
+        quantity: 2,
+        discount: 20,
+      },
+    ],
+    status: false,
+    createAt: new Date("2024-12-15"),
+    createBy: "Admin015",
   },
 ];

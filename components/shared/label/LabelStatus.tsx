@@ -6,19 +6,22 @@ type LabelStatusProps = {
   title: string; // Text to display
   text_color: string; // Text color
   background: string; // Background color
+  width?: string;
 };
 
 const LabelStatus: React.FC<LabelStatusProps> = ({
   title,
   text_color,
   background,
+  width = "w-20",
 }) => {
   return (
     <div
       className={classNames(
         "inline-flex items-center justify-center px-[8px] py-[4px] rounded-md",
         text_color,
-        background
+        background,
+        width
       )}
     >
       <span className="text-sm">{title}</span>
