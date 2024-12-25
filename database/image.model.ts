@@ -9,7 +9,6 @@ export interface IImage extends Document, IAudit {
   width: string;
   height: string;
   format: string;
-  type: string;
 }
 
 const ImageSchema = new Schema<IImage>({
@@ -19,8 +18,7 @@ const ImageSchema = new Schema<IImage>({
   bytes: { type: String, required: true },
   width: { type: String, required: false },
   height: { type: String, required: false },
-  format: { type: String, required: false },
-  type: { type: String, required: true },
+  format: { type: String, required: false }
 });
 
 ImageSchema.add(AuditSchema);
