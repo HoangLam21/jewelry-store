@@ -32,6 +32,7 @@ const Page = () => {
         titleSecondButton="Add Import"
         onClickFirstButton={handleBack}
         onClickSecondButton={handleAddImport}
+        type={2}
       ></Headers>
       <ImportDetail />
       <MyButton

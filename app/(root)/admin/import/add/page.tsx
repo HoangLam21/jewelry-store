@@ -1,4 +1,5 @@
 "use client";
+import AddImport from "@/components/admin/import/AddImport";
 import ImportList from "@/components/admin/import/ImportList";
 import Headers from "@/components/shared/Headers";
 import { useRouter } from "next/navigation";
@@ -25,7 +26,9 @@ const Page = () => {
         titleSecondButton="Add Import"
         onClickFirstButton={handleBack}
         onClickSecondButton={handleAddImport}
+        type={1}
       ></Headers>
+      <AddImport />
     </div>
   );
 };

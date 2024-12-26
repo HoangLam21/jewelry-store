@@ -25,6 +25,7 @@ const Page = () => {
         titleSecondButton="Add Import"
         onClickFirstButton={handleExport}
         onClickSecondButton={handleAddImport}
+        type={2}
       ></Headers>
       <ImportList />
     </div>

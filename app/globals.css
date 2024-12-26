@@ -76,6 +76,22 @@ body {
     animation: spin 1s linear infinite;
   }
 
+  .container {
+    height: 900px; /* Giới hạn chiều cao */
+    overflow-y: auto; /* Cho phép cuộn */
+    scrollbar-width: none; /* Ẩn thanh cuộn trên Firefox */
+  }
+
+  .container::-webkit-scrollbar {
+    display: none; /* Ẩn thanh cuộn trên Chrome, Safari */
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #ccc; /* Đường kẻ mỏng */
+    margin: 20px 0; /* Khoảng cách trên và dưới */
+  }
+
   @keyframes spin {
     0% {
       transform: rotate(0deg);

@@ -1,6 +1,4 @@
 import React from "react";
-import Image from "next/image";
-import { Icon } from "@iconify/react";
 import MyButton from "./button/MyButton";
 
 interface Header {
@@ -9,6 +7,7 @@ interface Header {
   firstIcon: string;
   titleSecondButton: string;
   secondIcon: string;
+  type: number;
 }
 
 const Headers = ({
@@ -19,15 +18,18 @@ const Headers = ({
   secondIcon,
   onClickFirstButton,
   onClickSecondButton,
+  type,
 }: {
   title: string;
   titleFirstButton: string;
   firstIcon: string;
-  titleSecondButton: string;
-  secondIcon: string;
+  titleSecondButton?: string;
+  secondIcon?: string;
   onClickFirstButton: () => void;
-  onClickSecondButton: () => void;
+  onClickSecondButton?: () => void;
+  type: number;
 }) => {
+  const noop = () => {}; // Hàm rỗng để tránh lỗi
   return (
     <div className="flex w-full  flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div className="flex flex-col ">
@@ -39,25 +41,40 @@ const Headers = ({
         </p>
       </div>
       <div className="flex gap-6">
-        <MyButton
-          title={titleFirstButton}
-          icon={firstIcon}
-          event={onClickFirstButton}
-          width="w-fit"
-          py="py-2"
-          background="bg-border-color"
-          text_color="text-black"
-          border_color="bg-border-color"
-        />
-        <MyButton
-          title={titleSecondButton}
-          icon={secondIcon}
-          event={onClickSecondButton}
-          width="w-fit"
-          py="py-2"
-          background="bg-primary-100"
-          text="text-white"
-        />
+        {type === 1 ? (
+          <MyButton
+            title={titleFirstButton}
+            icon={firstIcon}
+            event={onClickFirstButton}
+            width="w-fit"
+            py="py-2"
+            background="bg-border-color"
+            text_color="text-black"
+            border_color="bg-border-color"
+          />
+        ) : (
+          <>
+            <MyButton
+              title={titleFirstButton}
+              icon={firstIcon}
+              event={onClickFirstButton}
+              width="w-fit"
+              py="py-2"
+              background="bg-border-color"
+              text_color="text-black"
+              border_color="bg-border-color"
+            />
+            <MyButton
+              title={titleSecondButton}
+              icon={secondIcon}
+              event={onClickSecondButton || noop}
+              width="w-fit"
+              py="py-2"
+              background="bg-primary-100"
+              text="text-white"
+            />
+          </>
+        )}
       </div>
     </div>
   );

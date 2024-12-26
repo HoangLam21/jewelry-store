@@ -43,6 +43,7 @@ module.exports = {
         "light-blue": "#BCF0F6",
         "light-yellow": "#FFFEDE",
         "inactive-background": "#C4C4C4",
+        "import-bg-blue": "#EAF9FF",
         background: "hsl(var(--background))", // Định nghĩa màu nền tùy chỉnh
         foreground: "hsl(var(--foreground))", // Định nghĩa màu chữ tùy chỉnh
         border: "hsl(var(--border))",
