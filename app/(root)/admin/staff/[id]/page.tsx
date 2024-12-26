@@ -23,6 +23,7 @@ const Page = () => {
         titleSecondButton="Add Staff"
         onClickFirstButton={handleExport}
         onClickSecondButton={handleAddStaff}
+        type={2}
       ></Headers>
       <StaffInformation />
     </div>

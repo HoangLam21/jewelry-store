@@ -1,32 +1,34 @@
 "use client";
-import EditStaffInformation from "@/components/admin/staff/EditStaffInformation";
-import StaffInformation from "@/components/admin/staff/StaffInformation";
+import AddImport from "@/components/admin/import/AddImport";
+import ImportList from "@/components/admin/import/ImportList";
 import Headers from "@/components/shared/Headers";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const Page = () => {
   const router = useRouter();
-  const handleCancel = () => {
+
+  const handleBack = () => {
     router.back();
   };
 
-  const handleAddStaff = () => {
-    router.push(`/admin/staff/add`);
+  const handleAddImport = () => {
+    router.push(`/admin/import/add`);
   };
+
   return (
     <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
-        title="Edit Staff"
+        title="Import"
         firstIcon="iconoir:cancel"
         titleFirstButton="Cancel"
         secondIcon="mingcute:add-line"
-        titleSecondButton="Add Staff"
-        onClickFirstButton={handleCancel}
-        onClickSecondButton={handleAddStaff}
-        type={2}
+        titleSecondButton="Add Import"
+        onClickFirstButton={handleBack}
+        onClickSecondButton={handleAddImport}
+        type={1}
       ></Headers>
-      <EditStaffInformation />
+      <AddImport />
     </div>
   );
 };
