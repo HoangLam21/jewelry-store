@@ -4,27 +4,27 @@ const c = initContract();
 export const contract = c.router({
   user: c.router({}),
   customer: c.router({
-    createCustomer:{
-        method: "POST",
-        path: "/api/customer/create",
-        body: z.object({
+    createCustomer: {
+      method: "POST",
+      path: "/api/customer/create",
+      body: z.object({
+        fullName: z.string(),
+        phoneNumber: z.string(),
+        email: z.string().email(),
+        address: z.string(),
+      }),
+      responses: {
+        201: z.object({
           fullName: z.string(),
           phoneNumber: z.string(),
           email: z.string().email(),
           address: z.string(),
+          createdAt: z.date(),
         }),
-        responses: {
-          201: z.object({
-            fullName: z.string(),
-            phoneNumber: z.string(),
-            email: z.string().email(),
-            address: z.string(),
-            createdAt: z.date(),
-          }),
-          400: z.object({ error: z.string() }),
-          500: z.object({ error: z.string() }),
-        },
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
       },
+    },
     getCustomers: {
       method: "GET",
       path: "/api/customer/all",
@@ -130,9 +130,9 @@ export const contract = c.router({
         404: z.object({ error: z.string() }),
         500: z.object({ error: z.string() }),
       },
-      query:z.object({
-        id:z.string()
-      })
+      query: z.object({
+        id: z.string(),
+      }),
     },
     updateStaff: {
       method: "PUT",
@@ -159,14 +159,14 @@ export const contract = c.router({
           position: z.string(),
           createdAt: z.date(),
         }),
-        
+
         400: z.object({ error: z.string() }),
         404: z.object({ error: z.string() }),
         500: z.object({ error: z.string() }),
       },
-      query:z.object({
-        id:z.string()
-      })
+      query: z.object({
+        id: z.string(),
+      }),
     },
     deleteStaff: {
       method: "DELETE",
@@ -177,14 +177,150 @@ export const contract = c.router({
         404: z.object({ error: z.string() }),
         500: z.object({ error: z.string() }),
       },
-      query:z.object({
-        id:z.string()
-      })
+      query: z.object({
+        id: z.string(),
+      }),
     },
   }),
-  product: c.router({}),
+  product: c.router({
+    getProducts: {
+      method: "GET",
+      path: "/api/product/all",
+      responses: {
+        200: z.array(
+          z.object({
+            _id: z.string(),
+            name: z.string(),
+            cost: z.number(),
+            description: z.string(),
+            images: z.array(z.string()), 
+            provider: z.string(),
+            category: z.string().optional(),
+          })
+        ),
+        500: z.object({ error: z.string() }),
+      },
+    },
+    getProductById: {
+      method: "GET",
+      path: "/api/product/id",
+      responses: {
+        200: z.object({
+          _id: z.string(),
+          name: z.string(),
+          cost: z.number(),
+          description: z.string(),
+          images: z.array(z.string()), 
+          provider: z.string(),
+          category: z.string().optional(),
+          vouchers: z.array(z.string()).optional(), 
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+    deleteProduct: {
+      method: "DELETE",
+      path: "/api/product/delete",
+      responses: {
+        200: z.object({
+          message: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+  }),
   import: c.router({}),
-  provider: c.router({}),
+  provider: c.router({
+    createProvider: {
+      method: "POST",
+      path: "/api/provider/create",
+      body: z.object({
+        name: z.string(),
+        address: z.string(),
+        contact: z.string(),
+      }),
+      responses: {
+        201: z.object({
+          name: z.string(),
+          address: z.string(),
+          contact: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+    },
+    getProviders: {
+      method: "GET",
+      path: "/api/provider/all",
+      responses: {
+        200: z.array(
+          z.object({
+            name: z.string(),
+            address: z.string(),
+            contact: z.string(),
+          })
+        ),
+        500: z.object({ error: z.string() }),
+      },
+    },
+    getProviderById: {
+      method: "GET",
+      path: "/api/provider/id",
+      responses: {
+        200: z.object({
+          name: z.string(),
+          address: z.string(),
+          contact: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+    updateProvider: {
+      method: "PUT",
+      path: "/api/provider/update",
+      body: z.object({
+        name: z.string().optional(),
+        address: z.string().optional(),
+        contact: z.string().optional(),
+      }),
+      responses: {
+        200: z.object({
+          name: z.string(),
+          address: z.string(),
+          contact: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+    deleteProvider: {
+      method: "DELETE",
+      path: "/api/provider/delete",
+      responses: {
+        200: z.object({ message: z.string() }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+  }),
   order: c.router({}),
   finance: c.router({}),
   cart: c.router({}),
