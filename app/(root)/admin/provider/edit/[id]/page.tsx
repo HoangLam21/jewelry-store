@@ -1,6 +1,6 @@
 "use client";
 import EditProviderInformation from "@/components/admin/provider/EditProviderInformation";
-import Headers from "@/components/shared/Headers";
+import Headers from "@/components/shared/header/Headers";
 import { useRouter } from "next/navigation";
 import React from "react";
 

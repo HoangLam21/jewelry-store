@@ -48,7 +48,7 @@ interface Product {
 
 const stockInfTitle = "font-medium text-[16px] ";
 
-const AddImport = () => {
+const AddOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [item, setItem] = useState<Import>({
@@ -228,7 +228,7 @@ const AddImport = () => {
             value={item.suplier.fullname}
             onChange={(e) => changeSuplierField("fullname", e.target.value)}
             width="w-full"
-            placeholder="Enter suplier name..."
+            placeholder="Enter customer name..."
           />
           <PhoneNumberInput item={item} setItem={setItem} />
           <InputEdit
@@ -236,12 +236,12 @@ const AddImport = () => {
             value={item.suplier.address}
             onChange={(e) => changeSuplierField("address", e.target.value)}
             width="w-full"
-            placeholder="Enter suplier address..."
+            placeholder="Enter customer address..."
           />
         </div>
 
         {/* Invoice Detail */}
-        <TitleSession title="Import Product" />
+        <TitleSession title="Order Product" />
         <div className="w-full md:w-2/3 lg:w-[250px]">
           <TableSearchNoFilter onSearch={setSearchQuery} />
         </div>
@@ -318,4 +318,4 @@ const AddImport = () => {
   );
 };
 
-export default AddImport;
+export default AddOrder;

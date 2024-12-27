@@ -1,6 +1,6 @@
 "use client";
 import StaffList from "@/components/admin/staff/StaffList";
-import Headers from "@/components/shared/Headers";
+import Headers from "@/components/shared/header/Headers";
 import { useRouter } from "next/navigation";
 import router from "next/router";
 import React from "react";

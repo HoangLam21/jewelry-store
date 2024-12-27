@@ -8,7 +8,6 @@ import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import { format } from "date-fns";
-import MyButton from "@/components/shared/button/MyButton";
 import LabelStatus from "@/components/shared/label/LabelStatus";
 
 interface Staff {
@@ -53,12 +52,10 @@ const columns = [
   { header: "Action", accessor: "action" },
 ];
 
-const ImportList = () => {
+const OrderList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-  const totalResult = ImportData.length;
-  const [filterOption, setFilterOption] = useState("");
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -149,7 +146,7 @@ const ImportList = () => {
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
-          <p>Import Id</p>
+          <p>Order Id</p>
           <p>#00{item.id}</p>
         </div>
       </td>
@@ -179,7 +176,7 @@ const ImportList = () => {
       </td>
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <Link href={`/admin/import/${item.id}`}>
+          <Link href={`/admin/order/${item.id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:eye"
@@ -189,7 +186,7 @@ const ImportList = () => {
               />
             </div>
           </Link>
-          <Link href={`/admin/import/edit/${item.id}`}>
+          <Link href={`/admin/order/edit/${item.id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:edit"
@@ -227,4 +224,4 @@ const ImportList = () => {
   );
 };
 
-export default ImportList;
+export default OrderList;

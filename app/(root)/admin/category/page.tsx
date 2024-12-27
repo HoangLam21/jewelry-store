@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Headers from "@/components/shared/Headers";
+import Headers from "@/components/shared/header/Headers";
 import TableSearch from "@/components/shared/table/TableSearch";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -137,6 +137,7 @@ const Page = () => {
 
     return matchesSearch && matchesFilter;
   });
+
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
   // const totalPages = Math.ceil(userData.length / rowsPerPage);
@@ -212,6 +213,7 @@ const Page = () => {
         onClickSecondButton={function (): void {
           throw new Error("Function not implemented.");
         }}
+        type={2}
       />
       <div className=" mt-4 w-full rounded-md shadow-md">
         <div className=" mt-0 flex w-full flex-col items-center justify-between gap-4 rounded-md md:flex-row">

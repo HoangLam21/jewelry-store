@@ -1,18 +1,16 @@
 import TitleSession from "@/components/shared/label/TitleSession";
-import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { ImportData, ProductsData } from "@/constants/data";
 import { format } from "date-fns";
 import InputEdit from "@/components/shared/input/InputEdit";
-import InputSelection from "@/components/shared/input/InputSelection";
 import LabelInformation from "@/components/shared/label/LabelInformation";
 import ImportCard from "@/components/shared/card/ImportCard";
 import { formatPrice } from "@/lib/utils";
 import ImportOrderCard from "@/components/shared/card/ImportOrderCard";
-import TableSearch from "@/components/shared/table/TableSearch";
 import TableSearchNoFilter from "@/components/shared/table/TableSearchNoFilter";
 import PhoneNumberInput from "@/components/shared/input/PhoneInput";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { ImportData, ProductsData } from "@/constants/data";
 
 interface Invoice {
   id: string;
@@ -32,7 +30,7 @@ interface Import {
     address: string;
   };
   invoice: Invoice[];
-  status: "Pending";
+  status: boolean;
   createAt: Date;
   createBy: string;
 }
@@ -48,30 +46,24 @@ interface Product {
 
 const stockInfTitle = "font-medium text-[16px] ";
 
-const AddImport = () => {
+const EditImport = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { id } = useParams<{ id: string }>(); // Ensure id is a string
 
-  const [item, setItem] = useState<Import>({
-    id: "",
-    suplier: {
-      id: "",
-      phoneNumber: "",
-      fullname: "",
-      address: "",
-    },
-    invoice: [], // Khởi tạo mảng rỗng
-    status: "Pending",
-    createAt: new Date(), // Ngày hiện tại
-    createBy: "",
-  });
+  const cleanId = typeof id === "string" ? id.replace("edit-", "") : "";
 
-  if (!item || !item.invoice) {
-    return (
-      <div className="flex w-full h-full items-center justify-center bg-white">
-        <div className="loader"></div>
-      </div>
-    );
-  }
+  const [item, setItem] = useState<Import | null>(null);
+  const [updatedItem, setUpdatedItem] = useState<Import | null>(null); // Store the edited item
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isValid, setIsValid] = useState(true);
+
+  useEffect(() => {
+    if (id) {
+      const foundStaff = ImportData.find((item) => item.id === id);
+      setUpdatedItem(foundStaff || null);
+      setItem(foundStaff || null);
+    }
+  }, [id]);
 
   // Handle saving the import
   const handleSave = () => {
@@ -85,7 +77,7 @@ const AddImport = () => {
     field: keyof Import["suplier"],
     value: string
   ) => {
-    setItem((prev) => ({
+    setItem((prev: any) => ({
       ...prev,
       suplier: {
         ...prev.suplier,
@@ -93,9 +85,6 @@ const AddImport = () => {
       },
     }));
   };
-
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [isValid, setIsValid] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -119,39 +108,13 @@ const AddImport = () => {
     return phoneRegex.test(phoneNumber);
   };
 
-  const changeSuplierNumberPhoneField = (field: string, value: string) => {
-    if (field === "phoneNumber") {
-      if (isValidPhoneNumber(value)) {
-        // Cập nhật giá trị nếu hợp lệ
-        setItem((prevSuplier) => ({
-          ...prevSuplier,
-          [field]: value,
-        }));
-      } else {
-        // Hiển thị thông báo lỗi nếu không hợp lệ
-        alert("Số điện thoại phải là số và có đúng 10 chữ số.");
-      }
-    } else {
-      // Xử lý cho các trường khác
-      setItem((prevSuplier) => ({
-        ...prevSuplier,
-        [field]: value,
-      }));
-    }
-  };
-
   const filterData = ProductsData.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
-
-    // Lọc theo searchQuery: fullname, email, và phone
     const matchesSearch =
       item.productName.toLowerCase().includes(lowerCaseQuery) ||
       item.price.toLowerCase().includes(lowerCaseQuery) ||
       item.id.toLowerCase().includes(lowerCaseQuery) ||
       item.quantity.toString().toLowerCase().includes(lowerCaseQuery);
-
-    // Lọc theo bộ lọc trạng thái (online/offline)
-
     return matchesSearch;
   });
 
@@ -159,7 +122,6 @@ const AddImport = () => {
   const [cartItems, setCartItems] = useState<Product[]>([]); // State to store products in the cart
 
   // Function to add product to cart
-
   const addToCart = (product: Product) => {
     setCartItems((prev) => {
       const exists = prev.find((item) => item.id === product.id);
@@ -202,6 +164,16 @@ const AddImport = () => {
     0
   );
 
+  if (!item) {
+    return (
+      <div className="flex w-full h-full items-center justify-center bg-white">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
+  console.log(item, "this is iten");
+
   return (
     <div className="w-full h-full rounded-md shadow-md">
       <div className="p-4 flex flex-col gap-4">
@@ -215,7 +187,10 @@ const AddImport = () => {
               title="Create At"
               content={`${format(item.createAt, "PPP")}`}
             />
-            <LabelInformation title="Status" content={item.status} />
+            <LabelInformation
+              title="Status"
+              content={item.status ? "Done" : "Pending"}
+            />
             <LabelInformation title="Staff id" content={item.createBy} />
           </div>
         </div>
@@ -241,7 +216,7 @@ const AddImport = () => {
         </div>
 
         {/* Invoice Detail */}
-        <TitleSession title="Import Product" />
+        <TitleSession title="Detail Product" />
         <div className="w-full md:w-2/3 lg:w-[250px]">
           <TableSearchNoFilter onSearch={setSearchQuery} />
         </div>
@@ -318,4 +293,4 @@ const AddImport = () => {
   );
 };
 
-export default AddImport;
+export default EditImport;
