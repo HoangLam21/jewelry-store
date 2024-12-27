@@ -49,11 +49,10 @@ export const createProduct = async (data: {
   }
 };
 
-// Lấy danh sách tất cả sản phẩm
 export const getProducts = async () => {
   try {
     connectToDatabase();
-    const products = await Product.find().populate("files provider");
+    const products = await Product.find().populate("files provider vouchers");
     return products;
   } catch (error) {
     console.log("Error fetching Products: ", error);
@@ -61,11 +60,10 @@ export const getProducts = async () => {
   }
 };
 
-// Lấy thông tin sản phẩm theo ID
 export const getProductById = async (id: string) => {
   try {
     connectToDatabase();
-    const product = await Product.findById(id).populate("files provider");
+    const product = await Product.findById(id).populate("files provider vouchers");
     if (!product) {
       throw new Error("Product not found");
     }
@@ -115,7 +113,7 @@ export const updateProduct = async (
         images: updateImageIds,
       },
       { new: true }
-    ).populate("files provider");
+    ).populate("files provider vouchers");
     if (!updatedProduct) {
       throw new Error("Product not found");
     }
