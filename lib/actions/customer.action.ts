@@ -34,7 +34,7 @@ export const getCustomers = async () => {
 export const getCustomerById = async (id: string) => {
   try {
     connectToDatabase();
-    const customer = await Customer.findById(id).populate("orders");
+    const customer = await Customer.findById(id);
     if (!customer) {
       throw new Error("Customer not found");
     }
@@ -45,7 +45,7 @@ export const getCustomerById = async (id: string) => {
   }
 };
 
-export const updateCustomer = async (id: string, data: Partial<ICustomer>) => {
+export const updateCustomer = async (id: string, data: Partial<{fullName:string, phoneNumber:string, email:string, address:string}>) => {
   try {
     connectToDatabase();
     const updatedCustomer = await Customer.findByIdAndUpdate(
@@ -55,7 +55,7 @@ export const updateCustomer = async (id: string, data: Partial<ICustomer>) => {
         updatedAt: new Date(),
       },
       { new: true }
-    ).populate("orders");
+    );
     if (!updatedCustomer) {
       throw new Error("Customer not found");
     }
