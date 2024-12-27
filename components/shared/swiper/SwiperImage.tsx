@@ -6,12 +6,12 @@ import Image from "next/image";
 import { Icon } from "@iconify/react";
 
 interface SwiperProductProps {
-  subImage: string[]; // Danh sách hình ảnh
+  urlImage: string[]; // Danh sách hình ảnh
   width?: string; // Chiều rộng hình ảnh
   height?: string; // Chiều cao hình ảnh
 }
 
-const SwiperProduct = ({ subImage, width, height }: SwiperProductProps) => {
+const SwiperProduct = ({ urlImage, width, height }: SwiperProductProps) => {
   const [isPrevDisabled, setIsPrevDisabled] = useState(true); // prevDisabled
   const [isNextDisabled, setIsNextDisabled] = useState(false); // nextDisabled
 
@@ -43,11 +43,11 @@ const SwiperProduct = ({ subImage, width, height }: SwiperProductProps) => {
         spaceBetween={32}
         onSlideChange={handleSlideChange}
       >
-        {subImage.map((item, index) => (
+        {urlImage.map((item, index) => (
           <SwiperSlide key={index} className="flex justify-center items-center">
             <Image
               src={item}
-              alt={`subImage-${index}`}
+              alt={`urlImage-${index}`}
               width={Number(width) || 80}
               height={Number(height) || 80}
               className="rounded-lg object-cover"

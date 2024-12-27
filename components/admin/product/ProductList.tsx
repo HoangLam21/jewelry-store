@@ -7,10 +7,14 @@ import PaginationUI from "@/types/pagination/Pagination";
 import React, { useState } from "react";
 import ProductDetail from "./ProductDetail";
 import ProductEdit from "./ProductEdit";
+interface ImageInfo {
+  url: string;
+  fileName: string;
+}
 interface Product {
   id: string;
   image: string;
-  subImage: string[];
+  imageInfo: ImageInfo[];
   productName: string;
   price: string;
   material: string;
@@ -25,7 +29,12 @@ interface Product {
 const defaultDetail: Product = {
   id: "",
   image: "",
-  subImage: [],
+  imageInfo: [
+    {
+      url: "",
+      fileName: ""
+    }
+  ],
   productName: "Unknown Product",
   price: "0",
   material: "Unknown",

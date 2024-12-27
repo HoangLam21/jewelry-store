@@ -49,10 +49,14 @@ interface Import {
   createBy: string;
 }
 
+interface ImageInfo {
+  url: string;
+  fileName: string;
+}
 interface Product {
   id: string;
   image: string;
-  subImage: string[];
+  imageInfo: ImageInfo[];
   productName: string;
   price: string;
   material: string;
@@ -762,402 +766,580 @@ export const ProductsData: Product[] = [
     id: "1",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_wallet_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_wallet_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_wallet_2.jpg"
+      }
     ],
     productName: "Leather Wallet",
     price: "$25.99",
     material: "Leather",
-    description: "Elegant Georgous",
+    description: "Elegant and Gorgeous design",
     vouchers: "1",
     provider: "1",
     category: "1",
     size: "12",
-    color: "white",
+    color: "White",
     quantity: 2
   },
   {
     id: "2",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_tshirt_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_tshirt_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_tshirt_2.jpg"
+      }
     ],
     productName: "Cotton T-Shirt",
     price: "$15.99",
     material: "Cotton",
-    description: "Elegant Georgous",
+    description: "Comfortable and stylish",
     vouchers: "1",
     provider: "1",
     category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    size: "M",
+    color: "White",
+    quantity: 5
   },
   {
     id: "3",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_steel_watch_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_steel_watch_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_steel_watch_2.jpg"
+      }
     ],
     productName: "Stainless Steel Watch",
     price: "$199.99",
     material: "Stainless Steel",
-    description: "Elegant Georgous",
+    description: "Elegant design with precision",
     vouchers: "1",
     provider: "1",
     category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    size: "One Size",
+    color: "Silver",
+    quantity: 4
   },
   {
     id: "4",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "sports_shoes_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "sports_shoes_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "sports_shoes_2.jpg"
+      }
     ],
     productName: "Sports Shoes",
     price: "$49.99",
     material: "Mesh & Rubber",
-    description: "Elegant Georgous",
+    description: "Perfect for running and sports activities",
     vouchers: "1",
     provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    category: "2",
+    size: "8",
+    color: "Black",
+    quantity: 3
   },
   {
     id: "5",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "wooden_chair_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "wooden_chair_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "wooden_chair_2.jpg"
+      }
     ],
     productName: "Wooden Chair",
     price: "$89.99",
     material: "Wood",
-    description: "Elegant Georgous",
+    description: "Sturdy and comfortable",
     vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    provider: "2",
+    category: "3",
+    size: "One Size",
+    color: "Brown",
+    quantity: 5
   },
   {
     id: "6",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "silk_scarf_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "silk_scarf_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "silk_scarf_2.jpg"
+      }
     ],
     productName: "Silk Scarf",
     price: "$35.00",
     material: "Silk",
-    description: "Elegant Georgous",
+    description: "Luxury and comfort",
     vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    provider: "2",
+    category: "4",
+    size: "One Size",
+    color: "Red",
+    quantity: 6
   },
   {
     id: "7",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_case_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_case_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_case_2.jpg"
+      }
     ],
     productName: "Smartphone Case",
     price: "$9.99",
     material: "Polyurethane",
-    description: "Elegant Georgous",
+    description: "Protect your phone with style",
     vouchers: "1",
     provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    category: "5",
+    size: "One Size",
+    color: "Black",
+    quantity: 10
   },
   {
     id: "8",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_bag_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_bag_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_bag_2.jpg"
+      }
     ],
-    productName: "Ceramic Mug",
-    price: "$12.50",
-    material: "Ceramic",
-    description: "Elegant Georgous",
+    productName: "Leather Bag",
+    price: "$79.99",
+    material: "Leather",
+    description: "Stylish and durable",
     vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    provider: "2",
+    category: "2",
+    size: "One Size",
+    color: "Brown",
+    quantity: 4
   },
   {
     id: "9",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "kitchen_knife_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "kitchen_knife_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "kitchen_knife_2.jpg"
+      }
     ],
-    productName: "Guitar",
-    price: "$299.99",
-    material: "Wood",
-    description: "Elegant Georgous",
+    productName: "Kitchen Knife",
+    price: "$35.00",
+    material: "Stainless Steel",
+    description: "Sharp and precise for kitchen use",
     vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    provider: "3",
+    category: "6",
+    size: "One Size",
+    color: "Silver",
+    quantity: 3
   },
   {
     id: "10",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_pot_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_pot_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_pot_2.jpg"
+      }
     ],
-    productName: "Bluetooth Speaker",
-    price: "$89.99",
-    material: "Plastic & Metal",
-    description: "Elegant Georgous",
+    productName: "Stainless Steel Pot",
+    price: "$59.99",
+    material: "Stainless Steel",
+    description: "Perfect for cooking",
     vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    provider: "3",
+    category: "6",
+    size: "Medium",
+    color: "Silver",
+    quantity: 7
   },
   {
     id: "11",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_shirt_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_shirt_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_shirt_2.jpg"
+      }
     ],
-    productName: "Canvas Backpack",
-    price: "$45.00",
-    material: "Canvas",
-    description: "Elegant Georgous",
+    productName: "Cotton Shirt",
+    price: "$24.99",
+    material: "Cotton",
+    description: "Comfortable and soft",
     vouchers: "1",
-    provider: "1",
+    provider: "4",
     category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    size: "L",
+    color: "Blue",
+    quantity: 15
   },
   {
     id: "12",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smart_watch_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smart_watch_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smart_watch_2.jpg"
+      }
     ],
-    productName: "LED Lamp",
-    price: "$18.99",
-    material: "Plastic & LED",
-    description: "Elegant Georgous",
-    vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    productName: "Smart Watch",
+    price: "$199.99",
+    material: "Plastic, Stainless Steel",
+    description: "Track your health and fitness",
+    vouchers: "2",
+    provider: "5",
+    category: "3",
+    size: "One Size",
+    color: "Black",
+    quantity: 10
   },
   {
     id: "13",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "headphones_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "headphones_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "headphones_2.jpg"
+      }
     ],
-    productName: "Electric Kettle",
-    price: "$25.50",
-    material: "Stainless Steel",
-    description: "Elegant Georgous",
+    productName: "Wireless Headphones",
+    price: "$79.99",
+    material: "Plastic, Metal",
+    description: "Noise-cancelling, wireless convenience",
     vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    provider: "5",
+    category: "3",
+    size: "One Size",
+    color: "Black",
+    quantity: 8
   },
   {
     id: "14",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "pillow_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "pillow_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "pillow_2.jpg"
+      }
     ],
-    productName: "Yoga Mat",
-    price: "$20.00",
-    material: "PVC",
-    description: "Elegant Georgous",
-    vouchers: "1",
-    provider: "1",
-    size: "12",
-    color: "white",
-    category: "1",
-    quantity: 2
+    productName: "Memory Foam Pillow",
+    price: "$29.99",
+    material: "Memory Foam",
+    description: "Comfortable and supportive for a good night's sleep",
+    vouchers: "2",
+    provider: "6",
+    category: "5",
+    size: "Standard",
+    color: "White",
+    quantity: 25
   },
   {
     id: "15",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "air_conditioner_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "air_conditioner_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "air_conditioner_2.jpg"
+      }
     ],
-    productName: "Frying Pan",
-    price: "$22.00",
-    material: "Cast Iron",
-    description: "Elegant Georgous",
-    vouchers: "1",
-    provider: "1",
-    size: "12",
-    color: "white",
-    category: "1",
-    quantity: 2
+    productName: "Air Conditioner",
+    price: "$499.99",
+    material: "Plastic, Metal",
+    description: "Cooling your home efficiently",
+    vouchers: "3",
+    provider: "7",
+    category: "4",
+    size: "Medium",
+    color: "White",
+    quantity: 12
   },
   {
     id: "16",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "coffee_machine_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "coffee_machine_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "coffee_machine_2.jpg"
+      }
     ],
-    productName: "Water Bottle",
-    price: "$10.99",
-    material: "BPA-Free Plastic",
-    description: "Elegant Georgous",
+    productName: "Coffee Machine",
+    price: "$120.00",
+    material: "Plastic, Stainless Steel",
+    description: "Brew your favorite coffee in minutes",
     vouchers: "1",
-    provider: "1",
-    size: "12",
-    color: "white",
-    category: "1",
-    quantity: 2
+    provider: "8",
+    category: "6",
+    size: "One Size",
+    color: "Black",
+    quantity: 5
   },
   {
     id: "17",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_2.jpg"
+      }
     ],
-    productName: "Handmade Necklace",
-    price: "$30.00",
-    material: "Silver & Gemstones",
-    description: "Elegant Georgous",
-    vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    productName: "Smartphone",
+    price: "$799.99",
+    material: "Glass, Aluminum",
+    description: "Latest model with advanced features",
+    vouchers: "3",
+    provider: "9",
+    category: "3",
+    size: "One Size",
+    color: "Silver",
+    quantity: 20
   },
   {
     id: "18",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "vacuum_cleaner_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "vacuum_cleaner_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "vacuum_cleaner_2.jpg"
+      }
     ],
-    productName: "Wool Blanket",
-    price: "$40.00",
-    material: "Wool",
-    description: "Elegant Georgous",
+    productName: "Vacuum Cleaner",
+    price: "$89.99",
+    material: "Plastic, Metal",
+    description: "Powerful suction for your home",
     vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    provider: "10",
+    category: "6",
+    size: "One Size",
+    color: "Red",
+    quantity: 10
   },
   {
     id: "19",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "speaker_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "speaker_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "speaker_2.jpg"
+      }
     ],
-    productName: "Bluetooth Earbuds",
+    productName: "Bluetooth Speaker",
     price: "$49.99",
-    material: "Plastic & Silicone",
-    description: "Elegant Georgous",
-    vouchers: "1",
-    provider: "1",
-    category: "1",
-    size: "12",
-    color: "white",
-    quantity: 2
+    material: "Plastic",
+    description: "Portable with great sound",
+    vouchers: "2",
+    provider: "11",
+    category: "3",
+    size: "One Size",
+    color: "Black",
+    quantity: 30
   },
   {
     id: "20",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    subImage: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "desk_lamp_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "desk_lamp_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "desk_lamp_2.jpg"
+      }
     ],
-    productName: "Winter Jacket",
-    price: "$99.99",
-    material: "Polyester & Nylon",
-    description: "Elegant Georgous",
+    productName: "Desk Lamp",
+    price: "$29.99",
+    material: "Plastic",
+    description: "Adjustable and energy-efficient",
     vouchers: "1",
-    provider: "1",
-    size: "12",
-    color: "white",
-    category: "1",
-    quantity: 2
+    provider: "12",
+    category: "5",
+    size: "One Size",
+    color: "White",
+    quantity: 12
   }
 ];

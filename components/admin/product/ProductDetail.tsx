@@ -6,19 +6,23 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
+interface ImageInfo {
+  url: string;
+  fileName: string;
+}
 interface Product {
   id: string;
   image: string;
-  subImage: string[];
+  imageInfo: ImageInfo[];
   productName: string;
   price: string;
   material: string;
   description: string;
   vouchers: string;
   provider: string;
-  category: string;
   size: string;
   color: string;
+  category: string;
   quantity: number;
 }
 
@@ -50,7 +54,7 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
           </div>
           <div className="w-full h-[80px] flex ">
             <SwiperProduct
-              subImage={detailProduct.subImage}
+              urlImage={detailProduct.imageInfo.map((item) => item.url)}
               width="80"
               height="80"
             />

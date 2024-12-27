@@ -11,6 +11,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 
+const generateRandomID = (length: number) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+};
+
 interface ImageInfo {
   url: string;
   fileName: string;
@@ -32,16 +42,56 @@ interface Product {
 }
 
 interface Props {
-  detailProduct: Product;
   onBack: (value: boolean) => void;
 }
 
-const ProductEdit = ({ detailProduct, onBack }: Props) => {
+const AddProduct = ({ onBack }: Props) => {
+  const [randomValue, setRandomValue] = useState<string>(generateRandomID(8));
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [imageList, setImageList] = useState<ImageInfo[]>(
-    detailProduct.imageInfo
-  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const columns = [
+    { header: "Image", accessor: "image" },
+    {
+      header: "Name",
+      accessor: "name"
+    }
+  ];
+  const handleRemoveFile = (fileName: string) => {
+    const newFiles = selectedFiles.filter((file) => file.name !== fileName);
+    setSelectedFiles(newFiles);
+  };
+
+  const renderRow = (img: File) => {
+    const imageUrl = URL.createObjectURL(img);
+    return (
+      <tr
+        key={img.name}
+        className="border-t border-gray-300 text-sm dark:text-dark-360"
+      >
+        <td className="px-4 py-2">
+          <Image
+            src={imageUrl}
+            alt="editImg"
+            width={40}
+            height={40}
+            className="rounded-lg object-cover w-10 h-10"
+          />
+        </td>
+        <td className="px-4 py-2">
+          <p className="text-sm dark:text-dark-360">{img.name}</p>
+        </td>
+        <td className="px-4 py-2">
+          <Icon
+            icon="gg:trash"
+            width={18}
+            height={18}
+            className="text-red-700 cursor-pointer"
+            onClick={() => handleRemoveFile(img.name)}
+          />
+        </td>
+      </tr>
+    );
+  };
 
   const [item, setItem] = useState<Product>({
     id: "1",
@@ -71,17 +121,9 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      const newFiles = Array.from(files).map((file) => ({
-        url: URL.createObjectURL(file), // Tạo URL để hiển thị ảnh
-        fileName: file.name
-      }));
-      setImageList((prevList) => [...prevList, ...newFiles]); // Kết hợp ảnh mới với ảnh cũ
+      const fileArray = Array.from(files);
+      setSelectedFiles((prevFiles) => [...prevFiles, ...fileArray]);
     }
-  };
-  const handleRemoveImage = (fileName: string) => {
-    setImageList((prevList) =>
-      prevList.filter((img) => img.fileName !== fileName)
-    );
   };
 
   const handleChangeProductInputFields = (
@@ -107,41 +149,6 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
     console.log("save");
   };
 
-  const columns = [
-    { header: "Image", accessor: "image" },
-    {
-      header: "Name",
-      accessor: "name"
-    }
-  ];
-  const renderRow = (img: ImageInfo) => (
-    <tr
-      key={img.fileName}
-      className="border-t border-gray-300 text-sm dark:text-dark-360"
-    >
-      <td className="px-4 py-2">
-        <Image
-          src={img.url}
-          alt="editImg"
-          width={40}
-          height={40}
-          className="rounded-lg object-cover w-10 h-10"
-        />
-      </td>
-      <td className="px-4 py-2">
-        <p className="text-sm dark:text-dark-360">{img.fileName}</p>
-      </td>
-      <td className="px-4 py-2">
-        <Icon
-          icon="gg:trash"
-          width={18}
-          height={18}
-          className="text-red-700 cursor-pointer"
-          onClick={() => handleRemoveImage(img.fileName)} // Xoá ảnh khi click
-        />
-      </td>
-    </tr>
-  );
   return (
     <div className="modal-overlay">
       <div className="w-[880px] h-[600px] rounded-lg background-light800_dark300 items-center justify-start flex flex-col shadow-sm drop-shadow-sm shadow-zinc-700 p-2 gap-4">
@@ -152,7 +159,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
               handleChangeProductInputFields("productName", e.target.value)
             }
             width="w-[70%]"
-            placeholder={detailProduct.productName}
+            placeholder="Enter the name of product"
           />
           <Icon
             icon="iconoir:cancel"
@@ -169,7 +176,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
             <div className="flex border border-border-color rounded-lg w-full h-fit">
               <TableImport
                 columns={columns}
-                data={imageList}
+                data={selectedFiles}
                 renderRow={renderRow}
               />
             </div>
@@ -194,7 +201,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                 <div className="w-1/2 h-fit gap-4 flex flex-col">
                   <InputUnEdit
                     titleInput="ID"
-                    value={detailProduct.id}
+                    value={randomValue}
                     width="w-full"
                   />
                   <InputSelection
@@ -217,7 +224,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                       handleChangeProductInputFields("material", e.target.value)
                     }
                     width="w-full"
-                    placeholder={detailProduct.material}
+                    placeholder="Enter material of product"
                   />
                   <InputEdit
                     titleInput="Price"
@@ -225,7 +232,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                       handleChangeProductInputFields("price", e.target.value)
                     }
                     width="w-full"
-                    placeholder={detailProduct.price}
+                    placeholder="Enter price of product"
                   />
                 </div>
               </div>
@@ -240,7 +247,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                     )
                   }
                   width="w-full"
-                  placeholder={detailProduct.description}
+                  placeholder="Enter some description of product"
                 />
               </div>
               <div className="flex flex-row gap-4 w-full h-fit">
@@ -258,7 +265,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                 />
                 <InputUnEdit
                   titleInput="Quantity"
-                  value={detailProduct.quantity ? detailProduct.quantity : 0}
+                  value={item.quantity ? item.quantity : 0}
                   width="w-full"
                 />
               </div>
@@ -269,7 +276,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                     handleChangeProductInputFields("size", e.target.value)
                   }
                   width="w-full"
-                  placeholder={detailProduct.size}
+                  placeholder="Enter size of product"
                 />
                 <InputEdit
                   titleInput="Color"
@@ -277,7 +284,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                     handleChangeProductInputFields("color", e.target.value)
                   }
                   width="w-full"
-                  placeholder={detailProduct.color}
+                  placeholder="Enter color of product"
                 />
               </div>
             </div>
@@ -304,4 +311,4 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
   );
 };
 
-export default ProductEdit;
+export default AddProduct;
