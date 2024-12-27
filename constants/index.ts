@@ -41,6 +41,11 @@ export const sidebarLinks: SidebarLink[] = [
     label: "Staff",
   },
   {
+    icon: "hugeicons:note-edit",
+    route: "/admin/provider",
+    label: "Provider",
+  },
+  {
     icon: "carbon:workspace",
     route: "/admin/customer",
     label: "Customer",

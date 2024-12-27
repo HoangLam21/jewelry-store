@@ -1,4 +1,5 @@
 "use client";
+import ProviderList from "@/components/admin/provider/ProviderList";
 import StaffList from "@/components/admin/staff/StaffList";
 import Headers from "@/components/shared/Headers";
 import { useRouter } from "next/navigation";
@@ -11,22 +12,22 @@ const Page = () => {
     console.log("Export clicked");
   };
 
-  const handleAddStaff = () => {
-    router.push(`/admin/staff/add`);
+  const handleAddProvider = () => {
+    router.push(`/admin/provider/add`);
   };
   return (
     <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
-        title="Staff"
+        title="Provider"
         firstIcon="clarity:export-line"
         titleFirstButton="Export"
         secondIcon="mingcute:add-line"
-        titleSecondButton="Add Staff"
+        titleSecondButton="Add Provider"
         onClickFirstButton={handleExport}
-        onClickSecondButton={handleAddStaff}
+        onClickSecondButton={handleAddProvider}
         type={2}
       ></Headers>
-      <StaffList />
+      <ProviderList />
     </div>
   );
 };

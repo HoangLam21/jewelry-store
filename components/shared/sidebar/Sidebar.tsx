@@ -13,17 +13,20 @@ const Sidebar = () => {
 
   return (
     <nav className=" h-screen z-50 w-64 p-6 fixed">
-      <div className="flex flex-col items-center ">
-        <Image
-          src="/assets/images/deb6c03ecc5ba8992e707f6ea543dc5e.jpg"
-          alt="Avatar"
-          width={60}
-          height={60}
-          priority
-          className="rounded-full mb-3"
-        />
+      <div className="flex flex-col items-center gap-4 ">
+        <div className="w-[70px] h-[70px]">
+          <Image
+            src="https://i.pinimg.com/736x/62/67/33/626733cb670aff420e52442cade42e5e.jpg"
+            alt="Avatar"
+            width={80}
+            height={80}
+            priority
+            className="rounded-full object-cover w-full h-full"
+          />
+        </div>
+
         <Link href="/" className="text-dark400_primary100">
-          <p className="hidden md:block text-center">Huỳnh Nguyễn</p>
+          <p className="hidden md:block text-center">ALPACA</p>
         </Link>
       </div>
 
@@ -38,11 +41,9 @@ const Sidebar = () => {
             className="text-2xl mt-2 text-dark400_light600"
           />
         </Link>
-
-        <Theme />
       </div>
 
-      <div className="mt-10">
+      <div className="mt-4">
         <span className="text-primary-100 font-bold text-sm">Main menu</span>
       </div>
 
@@ -76,11 +77,6 @@ const Sidebar = () => {
             </Link>
           );
         })}
-      </div>
-      <div className="mt-2">
-        <span className="text-dark400_primary100 text-sm font-medium">
-          Others
-        </span>
       </div>
     </nav>
   );
