@@ -414,9 +414,6 @@ export const contract = c.router({
     deleteVoucher: {
       method: "DELETE",
       path: "/api/voucher/delete",
-      query: z.object({
-        id: z.string(),
-      }),
       responses: {
         200: z.object({
           name: z.string(),
@@ -428,7 +425,7 @@ export const contract = c.router({
         500: z.object({ error: z.string() }),
       },
       query: z.object({
-        id: z.string(),
+        id: z.string()
       }),
     },
   }),
