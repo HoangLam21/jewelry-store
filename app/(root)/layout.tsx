@@ -28,7 +28,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <>
           <Navbar />
           <div className="flex flex-col h-full">
-            <section className="flex flex-1 mt-[100px] pb-16">
+            <section className="flex flex-1 mt-[80px] pb-16">
               <div className="mx-auto w-full">{children}</div>
             </section>
             <Footer />
