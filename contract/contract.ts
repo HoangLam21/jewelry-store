@@ -193,7 +193,7 @@ export const contract = c.router({
             name: z.string(),
             cost: z.number(),
             description: z.string(),
-            images: z.array(z.string()), 
+            images: z.array(z.string()),
             provider: z.string(),
             category: z.string().optional(),
           })
@@ -210,10 +210,10 @@ export const contract = c.router({
           name: z.string(),
           cost: z.number(),
           description: z.string(),
-          images: z.array(z.string()), 
+          images: z.array(z.string()),
           provider: z.string(),
           category: z.string().optional(),
-          vouchers: z.array(z.string()).optional(), 
+          vouchers: z.array(z.string()).optional(),
         }),
         400: z.object({ error: z.string() }),
         500: z.object({ error: z.string() }),
@@ -325,7 +325,113 @@ export const contract = c.router({
   finance: c.router({}),
   cart: c.router({}),
   rating: c.router({}),
-  voucher: c.router({}),
+  voucher: c.router({
+    createVoucher: {
+      method: "POST",
+      path: "/api/voucher/create",
+      body: z.object({
+        name: z.string(),
+        discount: z.number(),
+        expDate: z.string(), // ISO date string format
+      }),
+      responses: {
+        201: z.object({
+          name: z.string(),
+          discount: z.number(),
+          expDate: z.string(),
+          createdAt: z.string(),
+          updatedAt: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+    },
+
+    // Contract cho getVouchers
+    getVouchers: {
+      method: "GET",
+      path: "/api/voucher/all",
+      responses: {
+        200: z.array(
+          z.object({
+            name: z.string(),
+            discount: z.number(),
+            expDate: z.string(),
+            createdAt: z.string(),
+            updatedAt: z.string(),
+          })
+        ),
+        500: z.object({ error: z.string() }),
+      },
+    },
+
+    // Contract cho getVoucherById
+    getVoucherById: {
+      method: "GET",
+      path: "/api/voucher/id",
+      query: z.object({
+        id: z.string(),
+      }),
+      responses: {
+        200: z.object({
+          name: z.string(),
+          discount: z.number(),
+          expDate: z.string(),
+          createdAt: z.string(),
+          updatedAt: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+    },
+
+    // Contract cho updateVoucher
+    updateVoucher: {
+      method: "PUT",
+      path: "/api/voucher/update",
+      body: z.object({
+          name: z.string().optional(),
+          discount: z.number().optional(),
+          expDate: z.string().optional(), 
+      }),
+      responses: {
+        200: z.object({
+          name: z.string(),
+          discount: z.number(),
+          expDate: z.string(),
+          createdAt: z.string(),
+          updatedAt: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+
+    // Contract cho deleteVoucher
+    deleteVoucher: {
+      method: "DELETE",
+      path: "/api/voucher/delete",
+      query: z.object({
+        id: z.string(),
+      }),
+      responses: {
+        200: z.object({
+          name: z.string(),
+          discount: z.number(),
+          expDate: z.string(),
+          createdAt: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+  }),
   category: c.router({}),
   report: c.router({}),
 });
