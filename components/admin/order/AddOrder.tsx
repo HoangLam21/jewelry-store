@@ -48,7 +48,7 @@ interface Product {
 
 const stockInfTitle = "font-medium text-[16px] ";
 
-const AddImport = () => {
+const AddOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [item, setItem] = useState<Import>({
@@ -241,7 +241,7 @@ const AddImport = () => {
         </div>
 
         {/* Invoice Detail */}
-        <TitleSession title="Import Product" />
+        <TitleSession title="Order Product" />
         <div className="w-full md:w-2/3 lg:w-[250px]">
           <TableSearchNoFilter onSearch={setSearchQuery} />
         </div>
@@ -318,4 +318,4 @@ const AddImport = () => {
   );
 };
 
-export default AddImport;
+export default AddOrder;

@@ -1,7 +1,7 @@
 "use client";
 import ProviderInformation from "@/components/admin/provider/ProviderInformation";
 import StaffInformation from "@/components/admin/staff/StaffInformation";
-import Headers from "@/components/shared/Headers";
+import Headers from "@/components/shared/header/Headers";
 import { useRouter } from "next/navigation"; // Đúng cách sử dụng trong App Router
 import React from "react";
 

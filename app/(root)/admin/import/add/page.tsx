@@ -1,7 +1,7 @@
 "use client";
 import AddImport from "@/components/admin/import/AddImport";
 import ImportList from "@/components/admin/import/ImportList";
-import Headers from "@/components/shared/Headers";
+import Headers from "@/components/shared/header/Headers";
 import { useRouter } from "next/navigation";
 import React from "react";
 

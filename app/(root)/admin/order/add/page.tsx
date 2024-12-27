@@ -1,31 +1,27 @@
 "use client";
-import AddStaffInformation from "@/components/admin/staff/AddStaffInformation";
-import Headers from "@/components/shared/Headers";
+import ImportList from "@/components/admin/import/ImportList";
+import AddOrder from "@/components/admin/order/AddOrder";
+import Headers from "@/components/shared/header/Headers";
 import { useRouter } from "next/navigation";
 import React from "react";
 
 const Page = () => {
   const router = useRouter();
-  const handleCancel = () => {
+
+  const handleBack = () => {
     router.back();
   };
 
-  const handleAddStaff = () => {
-    router.push(`/admin/staff/add`);
-  };
   return (
     <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
-        title="Add Order"
+        title="Order"
         firstIcon="iconoir:cancel"
         titleFirstButton="Cancel"
-        secondIcon="mingcute:add-line"
-        titleSecondButton="Add Order"
-        onClickFirstButton={handleCancel}
-        onClickSecondButton={handleAddStaff}
-        type={2}
+        onClickFirstButton={handleBack}
+        type={1}
       ></Headers>
-      <AddStaffInformation />
+      <AddOrder />
     </div>
   );
 };

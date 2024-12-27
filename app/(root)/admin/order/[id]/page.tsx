@@ -1,43 +1,51 @@
-"use client"; // Đảm bảo dòng này là dòng đầu tiên
+"use client";
+import ImportDetail from "@/components/admin/import/ImportDetail";
+import ImportList from "@/components/admin/import/ImportList";
+import OrderDetail from "@/components/admin/order/OrderDetail";
+import MyButton from "@/components/shared/button/MyButton";
+import Headers from "@/components/shared/header/Headers";
+import { useParams, useRouter } from "next/navigation";
+import React from "react";
 
-import { faAddressCard } from "@fortawesome/free-solid-svg-icons";
-import React, { useEffect, useState } from "react";
-import Headers from "@/components/shared/Headers";
-import { useRouter } from "next/navigation";
-import OrderInfomation from "@/components/admin/order/OrderInfomation";
-import CustomerInfomation from "@/components/admin/order/CustomerInfomation";
-
-interface Params {
-  id: string;
-}
-const Page = ({ params }: { params: Params }) => {
-  const { id } = params;
+const Page = () => {
   const router = useRouter();
+  const { id } = useParams();
+
+  const handleBack = () => {
+    router.back();
+  };
+
+  const handleAddOrder = () => {
+    router.push(`/admin/order/add`);
+  };
 
   const handleExport = () => {
     console.log("Export clicked");
   };
 
-  const handleAddStaff = () => {
-    router.push(`/admin/staff/add`);
-  };
-
   return (
-    <div className="text-dark100_light500 background-light700_dark400 flex size-full flex-col p-4">
+    <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
-        title="Staff Detail"
+        title={`Order / ${id}`}
         firstIcon="iconoir:cancel"
         titleFirstButton="Cancel"
         secondIcon="mingcute:add-line"
-        titleSecondButton="Add Staff"
-        onClickFirstButton={handleExport}
-        onClickSecondButton={handleAddStaff}
+        titleSecondButton="Add Order"
+        onClickFirstButton={handleBack}
+        onClickSecondButton={handleAddOrder}
         type={2}
       ></Headers>
-      <div className="w-full rounded-[10px] p-4 shadow-sm">
-        <OrderInfomation />
-        <CustomerInfomation />
-      </div>
+      <OrderDetail />
+      <MyButton
+        title="Export"
+        icon="clarity:export-line"
+        event={handleExport}
+        width="w-fit"
+        py="py-2"
+        background="bg-border-color"
+        text_color="text-black"
+        border_color="bg-border-color"
+      />
     </div>
   );
 };
