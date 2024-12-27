@@ -52,9 +52,16 @@ interface Import {
 interface Product {
   id: string;
   image: string;
+  subImage: string[];
   productName: string;
   price: string;
   material: string;
+  description: string;
+  vouchers: string;
+  provider: string;
+  size: string;
+  color: string;
+  category: string;
   quantity: number;
 }
 
@@ -84,7 +91,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 1000000,
-        status: 0,
+        status: 0
       },
       {
         id: "2",
@@ -92,7 +99,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 2000000,
-        status: 1,
+        status: 1
       },
       {
         id: "3",
@@ -100,9 +107,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 2500000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "2",
@@ -128,7 +135,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-20"),
         note: "good service",
         total: 1500000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -136,9 +143,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-20"),
         note: "excellent product",
         total: 3000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "3",
@@ -164,7 +171,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-15"),
         note: "Fast delivery",
         total: 1200000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -172,9 +179,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-16"),
         note: "Great quality",
         total: 1800000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "4",
@@ -201,9 +208,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-30"),
         note: "Happy with the service",
         total: 4000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "5",
@@ -230,7 +237,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-05"),
         note: "Very satisfied",
         total: 2200000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -238,9 +245,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-06"),
         note: "Good experience",
         total: 2000000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "6",
@@ -267,9 +274,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-25"),
         note: "Good product",
         total: 1000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "7",
@@ -296,9 +303,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-01"),
         note: "Excellent service",
         total: 6000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "8",
@@ -324,9 +331,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-10"),
         note: "Very helpful",
         total: 1100000,
-        status: 1,
-      },
-    ],
+        status: 1
+      }
+    ]
   },
   {
     id: "9",
@@ -353,7 +360,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-15"),
         note: "Good product quality",
         total: 3500000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -361,10 +368,10 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-16"),
         note: "Great support",
         total: 4000000,
-        status: 2,
-      },
-    ],
-  },
+        status: 2
+      }
+    ]
+  }
 ];
 
 export const ImportData: Import[] = [
@@ -374,7 +381,7 @@ export const ImportData: Import[] = [
       id: "SUP001",
       phoneNumber: "  +84 348775966",
       fullname: "Kim Hyuk-kyu",
-      address: "123 Main Street, New York, USA",
+      address: "123 Main Street, New York, USA"
     },
     invoice: [
       {
@@ -385,7 +392,7 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
+        discount: 10
       },
       {
         id: "INV002",
@@ -395,7 +402,7 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
+        discount: 10
       },
       {
         id: "INV003",
@@ -405,12 +412,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
-      },
+        discount: 10
+      }
     ],
     status: true,
     createAt: new Date("2024-12-01"),
-    createBy: "Admin001",
+    createBy: "Admin001"
   },
   {
     id: "2",
@@ -418,7 +425,7 @@ export const ImportData: Import[] = [
       id: "SUP002",
       phoneNumber: "  +84 348775966",
       fullname: "DEFT VIPPRO",
-      address: "456 Oak Avenue, London, UK",
+      address: "456 Oak Avenue, London, UK"
     },
     invoice: [
       {
@@ -429,12 +436,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 500,
         quantity: 10,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-02"),
-    createBy: "Admin002",
+    createBy: "Admin002"
   },
   {
     id: "3",
@@ -442,7 +449,7 @@ export const ImportData: Import[] = [
       id: "SUP003",
       phoneNumber: "  +84 348775966",
       fullname: "8386 MÃI ĐỈNH MÃI ĐỈNH ĐỈNH",
-      address: "789 Pine Street, Sydney, Australia",
+      address: "789 Pine Street, Sydney, Australia"
     },
     invoice: [
       {
@@ -453,12 +460,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 50,
         quantity: 20,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-03"),
-    createBy: "Admin003",
+    createBy: "Admin003"
   },
   {
     id: "4",
@@ -466,7 +473,7 @@ export const ImportData: Import[] = [
       id: "SUP004",
       phoneNumber: "  +84 348775966",
       fullname: "TONY TONY CHOPPER",
-      address: "234 Elm Road, Berlin, Germany",
+      address: "234 Elm Road, Berlin, Germany"
     },
     invoice: [
       {
@@ -477,12 +484,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 150,
         quantity: 8,
-        discount: 15,
-      },
+        discount: 15
+      }
     ],
     status: true,
     createAt: new Date("2024-12-04"),
-    createBy: "Admin004",
+    createBy: "Admin004"
   },
   {
     id: "5",
@@ -490,7 +497,7 @@ export const ImportData: Import[] = [
       id: "SUP005",
       phoneNumber: "  +84 348775966",
       fullname: "Global Gadgets",
-      address: "567 Maple Boulevard, Toronto, Canada",
+      address: "567 Maple Boulevard, Toronto, Canada"
     },
     invoice: [
       {
@@ -501,12 +508,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 25,
         quantity: 50,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-05"),
-    createBy: "Admin005",
+    createBy: "Admin005"
   },
   {
     id: "6",
@@ -514,7 +521,7 @@ export const ImportData: Import[] = [
       id: "SUP006",
       phoneNumber: "  +84 348775966",
       fullname: "Gadget Store",
-      address: "901 Birch Lane, Paris, France",
+      address: "901 Birch Lane, Paris, France"
     },
     invoice: [
       {
@@ -525,12 +532,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 300,
         quantity: 12,
-        discount: 8,
-      },
+        discount: 8
+      }
     ],
     status: true,
     createAt: new Date("2024-12-06"),
-    createBy: "Admin006",
+    createBy: "Admin006"
   },
   {
     id: "7",
@@ -538,7 +545,7 @@ export const ImportData: Import[] = [
       id: "SUP007",
       phoneNumber: "  +84 348775966",
       fullname: "Mega Distributors",
-      address: "321 Aspen Road, Dubai, UAE",
+      address: "321 Aspen Road, Dubai, UAE"
     },
     invoice: [
       {
@@ -549,12 +556,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 75,
         quantity: 30,
-        discount: 10,
-      },
+        discount: 10
+      }
     ],
     status: false,
     createAt: new Date("2024-12-07"),
-    createBy: "Admin007",
+    createBy: "Admin007"
   },
   {
     id: "8",
@@ -562,7 +569,7 @@ export const ImportData: Import[] = [
       id: "SUP008",
       phoneNumber: "  +84 348775966",
       fullname: "Tech World",
-      address: "876 Spruce Avenue, Tokyo, Japan",
+      address: "876 Spruce Avenue, Tokyo, Japan"
     },
     invoice: [
       {
@@ -573,12 +580,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 40,
         quantity: 25,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-08"),
-    createBy: "Admin008",
+    createBy: "Admin008"
   },
   {
     id: "9",
@@ -586,7 +593,7 @@ export const ImportData: Import[] = [
       id: "SUP009",
       phoneNumber: "  +84 348775966",
       fullname: "Electronic Mart",
-      address: "654 Cedar Street, Mexico City, Mexico",
+      address: "654 Cedar Street, Mexico City, Mexico"
     },
     invoice: [
       {
@@ -597,12 +604,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 60,
         quantity: 15,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-09"),
-    createBy: "Admin009",
+    createBy: "Admin009"
   },
   {
     id: "10",
@@ -610,7 +617,7 @@ export const ImportData: Import[] = [
       id: "SUP010",
       phoneNumber: "  +84 348775966",
       fullname: "Alpha Electronics",
-      address: "345 Willow Drive, Moscow, Russia",
+      address: "345 Willow Drive, Moscow, Russia"
     },
     invoice: [
       {
@@ -621,12 +628,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 30,
         quantity: 40,
-        discount: 7,
-      },
+        discount: 7
+      }
     ],
     status: true,
     createAt: new Date("2024-12-10"),
-    createBy: "Admin010",
+    createBy: "Admin010"
   },
   {
     id: "11",
@@ -634,7 +641,7 @@ export const ImportData: Import[] = [
       id: "SUP011",
       phoneNumber: "  +84 348775966",
       fullname: "Techie Supplies",
-      address: "678 Poplar Lane, Singapore",
+      address: "678 Poplar Lane, Singapore"
     },
     invoice: [
       {
@@ -645,12 +652,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 15,
         quantity: 100,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-11"),
-    createBy: "Admin011",
+    createBy: "Admin011"
   },
   {
     id: "12",
@@ -658,7 +665,7 @@ export const ImportData: Import[] = [
       id: "SUP012",
       phoneNumber: "  +84 348775966",
       fullname: "Smart Solutions",
-      address: "987 Chestnut Road, Seoul, South Korea",
+      address: "987 Chestnut Road, Seoul, South Korea"
     },
     invoice: [
       {
@@ -669,12 +676,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 20,
         quantity: 60,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-12"),
-    createBy: "Admin012",
+    createBy: "Admin012"
   },
   {
     id: "13",
@@ -682,7 +689,7 @@ export const ImportData: Import[] = [
       id: "SUP013",
       phoneNumber: "  +84 348775966",
       fullname: "NextGen Supplies",
-      address: "432 Pineapple Street, Cape Town, South Africa",
+      address: "432 Pineapple Street, Cape Town, South Africa"
     },
     invoice: [
       {
@@ -693,12 +700,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 120,
         quantity: 10,
-        discount: 12,
-      },
+        discount: 12
+      }
     ],
     status: true,
     createAt: new Date("2024-12-13"),
-    createBy: "Admin013",
+    createBy: "Admin013"
   },
   {
     id: "14",
@@ -706,7 +713,7 @@ export const ImportData: Import[] = [
       id: "SUP014",
       phoneNumber: "  +84 348775966",
       fullname: "Global Tech",
-      address: "210 Banana Avenue, Rio de Janeiro, Brazil",
+      address: "210 Banana Avenue, Rio de Janeiro, Brazil"
     },
     invoice: [
       {
@@ -717,12 +724,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 10,
         quantity: 200,
-        discount: 2,
-      },
+        discount: 2
+      }
     ],
     status: true,
     createAt: new Date("2024-12-14"),
-    createBy: "Admin014",
+    createBy: "Admin014"
   },
   {
     id: "15",
@@ -730,7 +737,7 @@ export const ImportData: Import[] = [
       id: "SUP015",
       phoneNumber: "  +84 348775966",
       fullname: "Prime Tech",
-      address: "765 Orange Blvd, Rome, Italy",
+      address: "765 Orange Blvd, Rome, Italy"
     },
     invoice: [
       {
@@ -741,13 +748,13 @@ export const ImportData: Import[] = [
 
         unitPrice: 500,
         quantity: 2,
-        discount: 20,
-      },
+        discount: 20
+      }
     ],
     status: false,
     createAt: new Date("2024-12-15"),
-    createBy: "Admin015",
-  },
+    createBy: "Admin015"
+  }
 ];
 
 export const ProductsData: Product[] = [
@@ -755,180 +762,402 @@ export const ProductsData: Product[] = [
     id: "1",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Leather Wallet",
     price: "$25.99",
     material: "Leather",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "2",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Cotton T-Shirt",
     price: "$15.99",
     material: "Cotton",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "3",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Stainless Steel Watch",
     price: "$199.99",
     material: "Stainless Steel",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "4",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Sports Shoes",
     price: "$49.99",
     material: "Mesh & Rubber",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "5",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Wooden Chair",
     price: "$89.99",
     material: "Wood",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "6",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Silk Scarf",
     price: "$35.00",
     material: "Silk",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "7",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Smartphone Case",
     price: "$9.99",
     material: "Polyurethane",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "8",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Ceramic Mug",
     price: "$12.50",
     material: "Ceramic",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "9",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Guitar",
     price: "$299.99",
     material: "Wood",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "10",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Bluetooth Speaker",
     price: "$89.99",
     material: "Plastic & Metal",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "11",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Canvas Backpack",
     price: "$45.00",
     material: "Canvas",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "12",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "LED Lamp",
     price: "$18.99",
     material: "Plastic & LED",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "13",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Electric Kettle",
     price: "$25.50",
     material: "Stainless Steel",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "14",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Yoga Mat",
     price: "$20.00",
     material: "PVC",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    size: "12",
+    color: "white",
+    category: "1",
+    quantity: 2
   },
   {
     id: "15",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Frying Pan",
     price: "$22.00",
     material: "Cast Iron",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    size: "12",
+    color: "white",
+    category: "1",
+    quantity: 2
   },
   {
     id: "16",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Water Bottle",
     price: "$10.99",
     material: "BPA-Free Plastic",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    size: "12",
+    color: "white",
+    category: "1",
+    quantity: 2
   },
   {
     id: "17",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Handmade Necklace",
     price: "$30.00",
     material: "Silver & Gemstones",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "18",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Wool Blanket",
     price: "$40.00",
     material: "Wool",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "19",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Bluetooth Earbuds",
     price: "$49.99",
     material: "Plastic & Silicone",
-    quantity: 2,
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "white",
+    quantity: 2
   },
   {
     id: "20",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    subImage: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ],
     productName: "Winter Jacket",
     price: "$99.99",
     material: "Polyester & Nylon",
-    quantity: 2,
-  },
+    description: "Elegant Georgous",
+    vouchers: "1",
+    provider: "1",
+    size: "12",
+    color: "white",
+    category: "1",
+    quantity: 2
+  }
 ];

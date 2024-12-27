@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="mdl-js">
-      <body>
+      <body cz-shortcut-listen="true">
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
