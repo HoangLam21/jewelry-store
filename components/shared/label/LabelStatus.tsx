@@ -13,7 +13,7 @@ const LabelStatus: React.FC<LabelStatusProps> = ({
   title,
   text_color,
   background,
-  width = "w-20",
+  width = "w-24",
 }) => {
   return (
     <div

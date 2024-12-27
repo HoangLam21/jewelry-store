@@ -1,31 +1,31 @@
 "use client";
-import StaffInformation from "@/components/admin/staff/StaffInformation";
+import AddProviderInformation from "@/components/admin/provider/AddStaffInformation";
 import Headers from "@/components/shared/Headers";
-import { useRouter } from "next/navigation"; // Đúng cách sử dụng trong App Router
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Page = () => {
   const router = useRouter();
-  const handleBack = () => {
+  const handleCancel = () => {
     router.back();
   };
 
-  const handleAddStaff = () => {
-    router.push(`/admin/staff/add`);
+  const handleAddProvider = () => {
+    router.push(`/admin/provider/add`);
   };
   return (
     <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
-        title="Staff Detail"
+        title="Add Provider"
         firstIcon="iconoir:cancel"
         titleFirstButton="Cancel"
         secondIcon="mingcute:add-line"
-        titleSecondButton="Add Staff"
-        onClickFirstButton={handleBack}
-        onClickSecondButton={handleAddStaff}
+        titleSecondButton="Add Provider"
+        onClickFirstButton={handleCancel}
+        onClickSecondButton={handleAddProvider}
         type={2}
       ></Headers>
-      <StaffInformation />
+      <AddProviderInformation />
     </div>
   );
 };
