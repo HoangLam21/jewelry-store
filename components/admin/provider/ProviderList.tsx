@@ -1,64 +1,43 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { ImportData } from "@/constants/data";
+import { StaffData } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
-import { format } from "date-fns";
-import MyButton from "@/components/shared/button/MyButton";
-import LabelStatus from "@/components/shared/label/LabelStatus";
 
 interface Staff {
   id: string;
-  createAt: string;
-  createBy: string;
-  invoice: [
-    {
-      id: string;
-      productName: string;
-      unitPrice: number;
-      quantity: number;
-      discount: number;
-    }
-  ];
-  status: boolean;
+  fullname: string;
+  gender: string;
+  address: string;
+  earning: number;
+  phone: string;
 }
 
 const columns = [
   { header: "ID", accessor: "id" },
   {
-    header: "CreateAt",
-    accessor: "createAt",
+    header: "Gender",
+    accessor: "gender",
     className: "hidden md:table-cell",
   },
   {
-    header: "CreateBy",
-    accessor: "createBy",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Total",
-    accessor: "invoice",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Status",
-    accessor: "status",
+    header: "Address",
+    accessor: "address",
     className: "hidden md:table-cell",
   },
 
+  { header: "Phone", accessor: "phone", className: "hidden lg:table-cell" },
   { header: "Action", accessor: "action" },
 ];
 
-const ImportList = () => {
+const ProviderList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-  const totalResult = ImportData.length;
-  const [filterOption, setFilterOption] = useState("");
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -67,24 +46,24 @@ const ImportList = () => {
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "fullname" | "total" | "status" | "number";
+  type SortableKeys = "id" | "fullname" | "earning" | "address" | "number";
 
-  const getValueByKey = (item: (typeof ImportData)[0], key: SortableKeys) => {
+  const getValueByKey = (item: (typeof StaffData)[0], key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
       case "fullname":
-        return item.createBy;
-      case "status":
-        return item.status;
-      case "total":
-        return item.invoice.map((it) => it.quantity * it.unitPrice);
+        return item.fullname;
+      case "address":
+        return item.address;
+      case "earning":
+        return item.earning;
       default:
         return "";
     }
   };
 
-  const sorted = [...ImportData].sort((a, b) => {
+  const sorted = [...StaffData].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -109,13 +88,11 @@ const ImportList = () => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
-      item.createBy.toLowerCase().includes(lowerCaseQuery) ||
-      item.createBy.toLowerCase().includes(lowerCaseQuery) ||
-      item.invoice
-        .map((it) => it.quantity * it.unitPrice)
-        .toString()
-        .toLowerCase()
-        .includes(lowerCaseQuery);
+      item.fullname.toLowerCase().includes(lowerCaseQuery) ||
+      item.gender.toLowerCase().includes(lowerCaseQuery) ||
+      item.address.toLowerCase().includes(lowerCaseQuery) ||
+      item.earning.toString().toLowerCase().includes(lowerCaseQuery) ||
+      item.phone.toLowerCase().includes(lowerCaseQuery);
 
     return matchesSearch;
   });
@@ -149,37 +126,18 @@ const ImportList = () => {
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
-          <p>Import Id</p>
+          <p>{item.fullname}</p>
           <p>#00{item.id}</p>
         </div>
       </td>
-      <td className="px-4 py-2">{format(item.createAt, "PPP")}</td>
-      <td className="px-4 py-2">{item.createBy}</td>
+      <td className="px-4 py-2">{item.gender}</td>
+      <td className="px-4 py-2">{item.address}</td>
 
-      <td className="px-4 py-2 hidden md:table-cell">
-        {" "}
-        {`${item.invoice
-          .map((it) => it.quantity * it.unitPrice)
-          .toLocaleString("vi-VN")} VND`}
-      </td>
-      <td className="px-4 py-2">
-        {item.status ? (
-          <LabelStatus
-            title="Done"
-            background="bg-custom-green"
-            text_color="text-dark-green"
-          />
-        ) : (
-          <LabelStatus
-            title="Pending"
-            background="bg-light-yellow"
-            text_color="text-yellow-600"
-          />
-        )}
-      </td>
+      <td className="px-4 py-2">{item.phone}</td>
+
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <Link href={`/admin/import/${item.id}`}>
+          <Link href={`/admin/provider/${item.id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:eye"
@@ -189,7 +147,7 @@ const ImportList = () => {
               />
             </div>
           </Link>
-          <Link href={`/admin/staff/edit/${item.id}`}>
+          <Link href={`/admin/provider/edit/${item.id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:edit"
@@ -227,4 +185,4 @@ const ImportList = () => {
   );
 };
 
-export default ImportList;
+export default ProviderList;

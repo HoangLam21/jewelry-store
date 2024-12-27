@@ -43,7 +43,7 @@ const Sidebar = () => {
         </Link>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-4">
         <span className="text-primary-100 font-bold text-sm">Main menu</span>
       </div>
 
