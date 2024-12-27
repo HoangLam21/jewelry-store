@@ -1,10 +1,30 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
-import { updateCustomerSchema } from "./zod.schema";
 const c = initContract();
 export const contract = c.router({
   user: c.router({}),
   customer: c.router({
+    createCustomer:{
+        method: "POST",
+        path: "/api/customer/create",
+        body: z.object({
+          fullName: z.string(),
+          phoneNumber: z.string(),
+          email: z.string().email(),
+          address: z.string(),
+        }),
+        responses: {
+          201: z.object({
+            fullName: z.string(),
+            phoneNumber: z.string(),
+            email: z.string().email(),
+            address: z.string(),
+            createdAt: z.date(),
+          }),
+          400: z.object({ error: z.string() }),
+          500: z.object({ error: z.string() }),
+        },
+      },
     getCustomers: {
       method: "GET",
       path: "/api/customer/all",
@@ -21,7 +41,12 @@ export const contract = c.router({
     updateCustomer: {
       method: "PUT",
       path: "/api/customer/update",
-      body: updateCustomerSchema,
+      body: z.object({
+        fullName: z.string().optional(),
+        phoneNumber: z.string().optional(),
+        email: z.string().email().optional(),
+        address: z.string().optional(),
+      }),
       responses: {},
       query: z.object({
         id: z.string(),
@@ -36,7 +61,127 @@ export const contract = c.router({
       }),
     },
   }),
-  staff: c.router({}),
+  staff: c.router({
+    createStaff: {
+      method: "POST",
+      path: "/api/staff/create",
+      body: z.object({
+        fullName: z.string(),
+        phoneNumber: z.string(),
+        email: z.string().email(),
+        address: z.string(),
+        avatar: z.string(),
+        enrolledDate: z.date(),
+        salary: z.string(),
+        position: z.string(),
+      }),
+      responses: {
+        201: z.object({
+          fullName: z.string(),
+          phoneNumber: z.string(),
+          email: z.string().email(),
+          address: z.string(),
+          avatar: z.string(),
+          enrolledDate: z.date(),
+          salary: z.string(),
+          position: z.string(),
+          createdAt: z.date(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+    },
+    getStaffs: {
+      method: "GET",
+      path: "/api/staff/all",
+      responses: {
+        200: z.array(
+          z.object({
+            fullName: z.string(),
+            phoneNumber: z.string(),
+            email: z.string().email(),
+            address: z.string(),
+            avatar: z.string(),
+            enrolledDate: z.date(),
+            salary: z.string(),
+            position: z.string(),
+            createdAt: z.date(),
+          })
+        ),
+        500: z.object({ error: z.string() }),
+      },
+    },
+    getStaffById: {
+      method: "GET",
+      path: "/api/staff/id",
+      responses: {
+        200: z.object({
+          fullName: z.string(),
+          phoneNumber: z.string(),
+          email: z.string().email(),
+          address: z.string(),
+          avatar: z.string(),
+          enrolledDate: z.date(),
+          salary: z.string(),
+          position: z.string(),
+          createdAt: z.date(),
+        }),
+        400: z.object({ error: z.string() }),
+        404: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query:z.object({
+        id:z.string()
+      })
+    },
+    updateStaff: {
+      method: "PUT",
+      path: "/api/staff/update",
+      body: z.object({
+        fullName: z.string().optional(),
+        phoneNumber: z.string().optional(),
+        email: z.string().email().optional(),
+        address: z.string().optional(),
+        avatar: z.string().optional(),
+        enrolledDate: z.date().optional(),
+        salary: z.string().optional(),
+        position: z.string().optional(),
+      }),
+      responses: {
+        200: z.object({
+          fullName: z.string(),
+          phoneNumber: z.string(),
+          email: z.string().email(),
+          address: z.string(),
+          avatar: z.string(),
+          enrolledDate: z.date(),
+          salary: z.string(),
+          position: z.string(),
+          createdAt: z.date(),
+        }),
+        
+        400: z.object({ error: z.string() }),
+        404: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query:z.object({
+        id:z.string()
+      })
+    },
+    deleteStaff: {
+      method: "DELETE",
+      path: "/api/staff/delete",
+      responses: {
+        200: z.object({ message: z.string() }),
+        400: z.object({ error: z.string() }),
+        404: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query:z.object({
+        id:z.string()
+      })
+    },
+  }),
   product: c.router({}),
   import: c.router({}),
   provider: c.router({}),

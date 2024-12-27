@@ -1,9 +1,8 @@
 "use server"
 import Staff from "@/database/staff.model";
-import { IStaff } from "@/database/staff.model";
 import { connectToDatabase } from "../mongoose";
 
-export const createStaff = async (data: IStaff) => {
+export const createStaff = async (data: { fullName: string, phoneNumber: string, email: string, address: string, avatar: string, enrolledDate: Date, salary: string, position: string }) => {
   try {
     connectToDatabase();
     const newStaff = await Staff.create({
@@ -11,10 +10,10 @@ export const createStaff = async (data: IStaff) => {
       phoneNumber: data.phoneNumber,
       email: data.email,
       address: data.address,
+      avatar: data.avatar,
       enrolledDate: data.enrolledDate,
       salary: data.salary,
       position: data.position,
-      avatar:data.avatar,
       createdAt: new Date(),
     });
     return newStaff;
@@ -49,7 +48,7 @@ export const getStaffById = async (id: string) => {
   }
 };
 
-export const updateStaff = async (id: string, data: Partial<IStaff>) => {
+export const updateStaff = async (id: string, data: Partial<{ fullName: string, phoneNumber: string, email: string, address: string, avatar: string, enrolledDate: Date, salary: string, position: string }>) => {
   try {
     connectToDatabase();
     const updatedStaff = await Staff.findByIdAndUpdate(
