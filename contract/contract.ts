@@ -324,7 +324,64 @@ export const contract = c.router({
   order: c.router({}),
   finance: c.router({}),
   cart: c.router({}),
-  rating: c.router({}),
+  rating: c.router({
+    getAllRatings: {
+      method: "GET",
+      path: "/api/rating/all",
+      responses: {},
+    },
+    createRating: {
+      method: "POST",
+      path: "/api/rating/create",
+      body: z.object({
+        userId: z.string().uuid(),
+        productId: z.string().uuid(),
+        point: z.number().min(1).max(5),
+        content: z.string().optional(),
+      }),
+      responses: {},
+    },
+
+    getRatingsByProductId: {
+      method: "GET",
+      path: "/api/rating/product",
+      query: z.object({
+        productId: z.string(),
+      }),
+      responses: {},
+    },
+
+    getRatingById: {
+      method: "GET",
+      path: "/api/rating/id",
+      query: z.object({
+        id: z.string(),
+      }),
+      responses: {},
+    },
+
+    updateRating: {
+      method: "PUT",
+      path: "/api/rating/update",
+      body: z.object({
+        point: z.number().min(1).max(5).optional(),
+        content: z.string().optional(),
+      }),
+      responses: {},
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+
+    deleteRating: {
+      method: "DELETE",
+      path: "/api/rating/delete",
+      responses: {},
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+  }),
   voucher: c.router({
     createVoucher: {
       method: "POST",
@@ -332,7 +389,7 @@ export const contract = c.router({
       body: z.object({
         name: z.string(),
         discount: z.number(),
-        expDate: z.string(), // ISO date string format
+        expDate: z.string(),
       }),
       responses: {
         201: z.object({
@@ -347,7 +404,6 @@ export const contract = c.router({
       },
     },
 
-    // Contract cho getVouchers
     getVouchers: {
       method: "GET",
       path: "/api/voucher/all",
@@ -365,7 +421,6 @@ export const contract = c.router({
       },
     },
 
-    // Contract cho getVoucherById
     getVoucherById: {
       method: "GET",
       path: "/api/voucher/id",
@@ -385,14 +440,13 @@ export const contract = c.router({
       },
     },
 
-    // Contract cho updateVoucher
     updateVoucher: {
       method: "PUT",
       path: "/api/voucher/update",
       body: z.object({
-          name: z.string().optional(),
-          discount: z.number().optional(),
-          expDate: z.string().optional(), 
+        name: z.string().optional(),
+        discount: z.number().optional(),
+        expDate: z.string().optional(),
       }),
       responses: {
         200: z.object({
@@ -410,7 +464,6 @@ export const contract = c.router({
       }),
     },
 
-    // Contract cho deleteVoucher
     deleteVoucher: {
       method: "DELETE",
       path: "/api/voucher/delete",
@@ -425,7 +478,7 @@ export const contract = c.router({
         500: z.object({ error: z.string() }),
       },
       query: z.object({
-        id: z.string()
+        id: z.string(),
       }),
     },
   }),

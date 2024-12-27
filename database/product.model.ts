@@ -35,7 +35,7 @@ const ProductSchema = new Schema<IProduct>({
       color: { type: String, required: true },
       price: { type: Number, required: true },
       sales: { type: Number, required: true },
-      stock: { type: Number, required: true },
+      stock: { type: Number, required: true, default:0 },
     },
   ],
 });
