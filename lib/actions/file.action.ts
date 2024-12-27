@@ -5,11 +5,13 @@ import formidable from "formidable";
 
 export const createFile = async (file: formidable.File) => {
   try {
+    
     const createdFile = await cloudinary.uploader.upload(file.filepath);
+    console.log("created file: ",createdFile);
     return await File.create({
-      fileName: createdFile.fileName,
+      fileName: createdFile.display_name,
       url: createdFile.url,
-      publicId: createdFile.publicId,
+      publicId: createdFile.public_id,
       bytes: createdFile.bytes,
       width: createdFile.width,
       height: createdFile.height,

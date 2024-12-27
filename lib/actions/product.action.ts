@@ -1,18 +1,19 @@
 "use server";
 import Product from "@/database/product.model";
 import { connectToDatabase } from "../mongoose";
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import formidable from "formidable";
+import { createFile, deleteFile } from "./file.action";
 
 // Tạo sản phẩm mới
 export const createProduct = async (data: {
   name: string;
   cost: number;
-  images?: formidable.File[];
+  images: formidable.File[];
   description: string;
-  vouchers?: Schema.Types.ObjectId[];
-  provider: Schema.Types.ObjectId;
-  category?: Schema.Types.ObjectId;
+  vouchers?: string[];
+  provider: string;
+  category?: string;
   variants: {
     size: string;
     color: string;
@@ -23,14 +24,21 @@ export const createProduct = async (data: {
 }) => {
   try {
     connectToDatabase();
+    const imageIds: string[] = [];
+    for (const image of data.images) {
+      const createdImage = await createFile(image);
+      imageIds.push(createdImage._id);
+    }
     const newProduct = await Product.create({
       name: data.name,
       cost: data.cost,
-      images: data.images,
+      files: imageIds,
       description: data.description,
-      vouchers: data.vouchers,
-      provider: data.provider,
-      category: data.category,
+      vouchers: data.vouchers?.map(
+        (voucher) => new mongoose.Types.ObjectId(voucher)
+      ),
+      provider: new mongoose.Types.ObjectId(data.provider),
+      category: new mongoose.Types.ObjectId(data.category),
       variants: data.variants,
       createdAt: new Date(),
     });
@@ -45,9 +53,7 @@ export const createProduct = async (data: {
 export const getProducts = async () => {
   try {
     connectToDatabase();
-    const products = await Product.find().populate(
-      "images vouchers provider category"
-    );
+    const products = await Product.find().populate("files provider");
     return products;
   } catch (error) {
     console.log("Error fetching Products: ", error);
@@ -59,9 +65,7 @@ export const getProducts = async () => {
 export const getProductById = async (id: string) => {
   try {
     connectToDatabase();
-    const product = await Product.findById(id).populate(
-      "images vouchers provider category"
-    );
+    const product = await Product.findById(id).populate("files provider");
     if (!product) {
       throw new Error("Product not found");
     }
@@ -72,17 +76,16 @@ export const getProductById = async (id: string) => {
   }
 };
 
-// Cập nhật thông tin sản phẩm
 export const updateProduct = async (
   id: string,
   data: Partial<{
     name: string;
     cost: number;
-    images: Schema.Types.ObjectId[];
+    files: formidable.File[];
     description: string;
-    vouchers: Schema.Types.ObjectId[];
-    provider: Schema.Types.ObjectId;
-    category: Schema.Types.ObjectId;
+    vouchers: string[];
+    provider: string;
+    category: string;
     variants: {
       size: string;
       color: string;
@@ -94,14 +97,25 @@ export const updateProduct = async (
 ) => {
   try {
     connectToDatabase();
+    const updateImageIds: string[] = [];
+    const existProduct = await Product.findById(id);
+    for (const id of existProduct.files) {
+      await deleteFile(id);
+    }
+    if (data.files) {
+      for (const image of data.files) {
+        const createdImage = await createFile(image);
+        updateImageIds.push(createdImage._id);
+      }
+    }
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
         ...data,
-        updatedAt: new Date(),
+        images: updateImageIds,
       },
       { new: true }
-    ).populate("images vouchers provider category");
+    ).populate("files provider");
     if (!updatedProduct) {
       throw new Error("Product not found");
     }
@@ -112,7 +126,6 @@ export const updateProduct = async (
   }
 };
 
-// Xóa sản phẩm
 export const deleteProduct = async (id: string) => {
   try {
     connectToDatabase();

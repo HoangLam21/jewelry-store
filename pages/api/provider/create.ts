@@ -3,11 +3,14 @@ import { createProvider } from "@/lib/actions/provider.action";
 
 export const config = {
   api: {
-    bodyParser: true, 
+    bodyParser: true,
   },
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
     const { name, address, contact } = req.body;
 

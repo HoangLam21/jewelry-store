@@ -182,7 +182,61 @@ export const contract = c.router({
       }),
     },
   }),
-  product: c.router({}),
+  product: c.router({
+    getProducts: {
+      method: "GET",
+      path: "/api/product/all",
+      responses: {
+        200: z.array(
+          z.object({
+            _id: z.string(),
+            name: z.string(),
+            cost: z.number(),
+            description: z.string(),
+            images: z.array(z.string()), 
+            provider: z.string(),
+            category: z.string().optional(),
+          })
+        ),
+        500: z.object({ error: z.string() }),
+      },
+    },
+    getProductById: {
+      method: "GET",
+      path: "/api/product/id",
+      responses: {
+        200: z.object({
+          _id: z.string(),
+          name: z.string(),
+          cost: z.number(),
+          description: z.string(),
+          images: z.array(z.string()), 
+          provider: z.string(),
+          category: z.string().optional(),
+          vouchers: z.array(z.string()).optional(), 
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+    deleteProduct: {
+      method: "DELETE",
+      path: "/api/product/delete",
+      responses: {
+        200: z.object({
+          message: z.string(),
+        }),
+        400: z.object({ error: z.string() }),
+        500: z.object({ error: z.string() }),
+      },
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+  }),
   import: c.router({}),
   provider: c.router({
     createProvider: {
@@ -229,9 +283,9 @@ export const contract = c.router({
         400: z.object({ error: z.string() }),
         500: z.object({ error: z.string() }),
       },
-      query:z.object({
-        id:z.string()
-      })
+      query: z.object({
+        id: z.string(),
+      }),
     },
     updateProvider: {
       method: "PUT",
@@ -250,9 +304,9 @@ export const contract = c.router({
         400: z.object({ error: z.string() }),
         500: z.object({ error: z.string() }),
       },
-      query:z.object({
-        id:z.string()
-      })
+      query: z.object({
+        id: z.string(),
+      }),
     },
     deleteProvider: {
       method: "DELETE",
@@ -262,9 +316,9 @@ export const contract = c.router({
         400: z.object({ error: z.string() }),
         500: z.object({ error: z.string() }),
       },
-      query:z.object({
-        id:z.string()
-      })
+      query: z.object({
+        id: z.string(),
+      }),
     },
   }),
   order: c.router({}),
