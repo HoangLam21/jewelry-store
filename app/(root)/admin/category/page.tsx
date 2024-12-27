@@ -20,65 +20,27 @@ import PaginationUI from "@/types/pagination/Pagination";
 import { Button } from "@/components/ui/button";
 // import { fetchUsers } from "@/lib/services/user.service";
 
-const fakeOrderData: OrderTable[] = [
-  {
-    _id: "1",
-    customerId: "CUST001",
-    createAt: "2024-12-01T10:30:00Z",
-    total: "250.00",
-    createdBy: true,
-  },
-  {
-    _id: "2",
-    customerId: "CUST002",
-    createAt: "2024-12-02T15:45:00Z",
-    total: "500.50",
-    createdBy: false,
-  },
-  {
-    _id: "3",
-    customerId: "CUST003",
-    createAt: "2024-12-03T08:15:00Z",
-    total: "125.75",
-    createdBy: true,
-  },
-  {
-    _id: "4",
-    customerId: "CUST004",
-    createAt: "2024-12-04T13:20:00Z",
-    total: "300.40",
-    createdBy: false,
-  },
-  {
-    _id: "5",
-    customerId: "CUST005",
-    createAt: "2024-12-05T11:05:00Z",
-    total: "450.80",
-    createdBy: true,
-  },
-];
-
 type OrderTable = {
   _id: string;
-  customerId: string;
+  name: string;
   createAt: string;
-  total: string;
-  createdBy: boolean;
+  hot: string;
+  //   createdBy: boolean;
   // enrolled: Date;
 };
 
 const columns = [
-  { header: "Order ID", accessor: "orderId" },
-  { header: "Customer ID", accessor: "customerId" },
+  { header: "Category ID", accessor: "categoryId" },
+  { header: "Name", accessor: "name" },
   { header: "created At", accessor: "createAt" },
-  { header: "created By", accessor: "createdBy" },
+  { header: "Hot", accessor: "hot" },
   { header: "Action", accessor: "action" },
 ];
 
 const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("");
-  // const [usersData, setUsersdata] = useState<any[]>([]);
+  const [usersData, setUsersdata] = useState<any[]>([]);
 
   // useEffect(() => {
   //   let isMounted = true;
@@ -112,21 +74,21 @@ const Page = () => {
 
   type SortableKeys =
     | "_id"
-    | "customerId"
-    | "createdBy"
-    | "total"
+    | "name"
+    // | "createdBy"
+    | "hot"
     | "createdAt";
 
   const getValueByKey = (item: OrderTable, key: SortableKeys) => {
     switch (key) {
       case "_id":
         return item._id;
-      case "customerId":
-        return item.customerId;
-      case "createdBy":
-        return item.createdBy;
-      case "total":
-        return item.total;
+      case "name":
+        return item.name;
+      //   case "createdBy":
+      //     return item.createdBy;
+      case "hot":
+        return item.hot;
       case "createdAt":
         return item.createAt;
       default:
@@ -134,7 +96,7 @@ const Page = () => {
     }
   };
 
-  const sorted = [...fakeOrderData].sort((a, b) => {
+  const sorted = [...usersData].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -160,21 +122,20 @@ const Page = () => {
 
     // Lọc theo searchQuery: fullname, email, và phone
     const matchesSearch =
-      item._id.toLowerCase().includes(lowerCaseQuery) ||
-      item.customerId.toLowerCase().includes(lowerCaseQuery) ||
-      item.total.toLowerCase().includes(lowerCaseQuery) ||
-      format(item.createAt, "dd/MM/yyyy")
+      item.fullname.toLowerCase().includes(lowerCaseQuery) ||
+      item.email.toLowerCase().includes(lowerCaseQuery) ||
+      item.phone.toLowerCase().includes(lowerCaseQuery) ||
+      format(item.enrolled, "dd/MM/yyyy")
         .toLowerCase()
         .includes(lowerCaseQuery);
 
     // Lọc theo bộ lọc trạng thái (online/offline)
-    // const matchesFilter =
-    //   (filterOption === "online" && item.status === "Active") ||
-    //   (filterOption === "offline" && item.status === "Inactive") ||
-    //   !filterOption; // Không có bộ lọc nào được chọn thì hiển thị tất cả
+    const matchesFilter =
+      (filterOption === "online" && item.status === "Active") ||
+      (filterOption === "offline" && item.status === "Inactive") ||
+      !filterOption; // Không có bộ lọc nào được chọn thì hiển thị tất cả
 
-    return matchesSearch;
-    //  && matchesFilter;
+    return matchesSearch && matchesFilter;
   });
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
@@ -208,16 +169,16 @@ const Page = () => {
   const renderRow = (item: OrderTable) => (
     <tr key={item._id} className=" my-4 border-t border-gray-300  text-sm ">
       <td className="px-4 py-2">
-        <Link href={`/order/${item._id}`}>
-          <h3 className="text-base">#{item._id}</h3>
-          {/* <p className="text-base text-gray-500">#{item.id}</p> */}
-        </Link>
+        {/* <Link href={`/user/${item._id}`}> */}
+        <h3 className="text-base">#{item._id}</h3>
+        {/* <p className="text-base text-gray-500">#{item.id}</p> */}
+        {/* </Link> */}
       </td>
       <td className="hidden px-4 py-2 lg:table-cell">
-        <p className="text-base ">{item.customerId}</p>
+        <p className="text-base ">{item.name}</p>
       </td>
       <td className="hidden px-4 py-2 lg:table-cell">
-        <p className="text-base text-gray-500">{item.createdBy}</p>
+        <p className="text-base text-gray-500">{item.hot}</p>
       </td>
       <td className="hidden px-4 py-2 md:table-cell">
         <div className="flex w-full flex-col ">
