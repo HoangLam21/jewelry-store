@@ -40,7 +40,7 @@ const PhoneNumberInput = ({ item, setItem }: { item: any; setItem: any }) => {
         value={phoneNumber}
         onChange={handleChange}
         width="w-full"
-        placeholder="Enter suplier phone number..."
+        placeholder="Enter phone number..."
       />
       {!isValid && (
         <p className="text-red-500 text-sm mt-1">

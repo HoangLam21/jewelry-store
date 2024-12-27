@@ -189,7 +189,7 @@ const ImportList = () => {
               />
             </div>
           </Link>
-          <Link href={`/admin/staff/edit/${item.id}`}>
+          <Link href={`/admin/import/edit/${item.id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:edit"

@@ -1,6 +1,6 @@
 "use client";
-import AddImport from "@/components/admin/import/AddImport";
-import ImportList from "@/components/admin/import/ImportList";
+import EditImport from "@/components/admin/import/EditImport";
+import EditOrder from "@/components/admin/order/EdittOrder";
 import Headers from "@/components/shared/header/Headers";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -12,16 +12,23 @@ const Page = () => {
     router.back();
   };
 
+  const handleAddOrder = () => {
+    router.push(`/admin/order/add`);
+  };
+
   return (
     <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
-        title="Add Import"
+        title="Edit Order"
         firstIcon="iconoir:cancel"
         titleFirstButton="Cancel"
+        secondIcon="mingcute:add-line"
+        titleSecondButton="Add Order"
         onClickFirstButton={handleBack}
-        type={1}
+        onClickSecondButton={handleAddOrder}
+        type={2}
       ></Headers>
-      <AddImport />
+      <EditOrder />
     </div>
   );
 };
