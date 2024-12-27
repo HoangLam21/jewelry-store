@@ -1,8 +1,9 @@
+"use server"
 import Customer from "@/database/customer.model";
 import { ICustomer } from "@/database/customer.model";
 import { connectToDatabase } from "../mongoose";
 
-export const createCustomer = async (data: ICustomer) => {
+export const createCustomer = async (data: {fullName: string,  phoneNumber: string,   email: string,   address: string}) => {
   try {
     connectToDatabase();
     const newCustomer = await Customer.create({
@@ -10,8 +11,6 @@ export const createCustomer = async (data: ICustomer) => {
       phoneNumber: data.phoneNumber,
       email: data.email,
       address: data.address,
-      point: data.point || 0,
-      orders: data.orders || [],
       createAt: new Date()
     });
     return newCustomer;
@@ -24,7 +23,7 @@ export const createCustomer = async (data: ICustomer) => {
 export const getCustomers = async () => {
   try {
     connectToDatabase();
-    const customers = await Customer.find().populate("orders");
+    const customers = await Customer.find();
     return customers;
   } catch (error) {
     console.log("Error fetching Customers: ", error);

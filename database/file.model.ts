@@ -1,7 +1,7 @@
 import { Schema, Document, model, models } from "mongoose";
 import { AuditSchema, IAudit } from "./audit.model";
 
-export interface IImage extends Document, IAudit {
+export interface IFile extends Document, IAudit {
   fileName: string;
   url: string;
   publicId: string;
@@ -11,7 +11,7 @@ export interface IImage extends Document, IAudit {
   format: string;
 }
 
-const ImageSchema = new Schema<IImage>({
+const FileSchema = new Schema<IFile>({
   fileName: { type: String, required: true },
   url: { type: String, required: true },
   publicId: { type: String, required: true },
@@ -21,8 +21,8 @@ const ImageSchema = new Schema<IImage>({
   format: { type: String, required: false }
 });
 
-ImageSchema.add(AuditSchema);
+FileSchema.add(AuditSchema);
 
-const Image = models.Image || model("Image", ImageSchema);
+const File = models.File || model("File", FileSchema);
 
-export default Image;
+export default File;

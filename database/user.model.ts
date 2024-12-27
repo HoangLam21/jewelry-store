@@ -10,7 +10,7 @@ export interface IUser extends Document, IAudit {
   avatar:string;
 }
 
-const UserSchema = new Schema<IUser>({
+export const UserSchema = new Schema<IUser>({
   fullName: { type: String, required: true },
   phoneNumber: { type: String, required: true },
   email: { type: String, required: true },

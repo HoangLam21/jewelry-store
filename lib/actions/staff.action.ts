@@ -1,3 +1,4 @@
+"use server"
 import Staff from "@/database/staff.model";
 import { IStaff } from "@/database/staff.model";
 import { connectToDatabase } from "../mongoose";

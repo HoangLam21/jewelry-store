@@ -6,6 +6,8 @@ export interface IVariant {
   size: string;
   color: string;
   price: number;
+  sales: number;
+  stock: number;
 }
 
 export interface IProduct extends Document, IAudit {
@@ -32,6 +34,7 @@ const ProductSchema = new Schema<IProduct>({
       size: { type: String, required: true },
       color: { type: String, required: true },
       price: { type: Number, required: true },
+      sales: { type: Number, required: true },
       stock: { type: Number, required: true },
     },
   ],
