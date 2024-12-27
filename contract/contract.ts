@@ -222,6 +222,57 @@ export const contract = c.router({
         id: z.string(),
       }),
     },
+    createProduct: {
+      method: "POST",
+      path: "/api/product/create",
+      body: z.object({
+        name: z.string(),
+        cost: z.number(),
+        description: z.string(),
+        vouchers: z.array(z.string()).optional(),
+        provider: z.string(),
+        category: z.string().optional(),
+        variants: z.array(
+          z.object({
+            size: z.string(),
+            color: z.string(),
+            price: z.number(),
+            sales: z.number(),
+            stock: z.number(),
+          })
+        ),
+        images: z.array(z.any()).optional(), 
+      }),
+      responses: {
+      },
+    },
+    updateProduct: {
+      method: "PUT",
+      path: "/api/product/update",
+      query: z.object({
+        id: z.string(),
+      }),
+      body: z.object({
+        name: z.string().optional(),
+        cost: z.number().optional(),
+        description: z.string().optional(),
+        vouchers: z.array(z.string()).optional(),
+        provider: z.string().optional(),
+        category: z.string().optional(),
+        variants: z.array(
+          z.object({
+            size: z.string(),
+            color: z.string(),
+            price: z.number(),
+            sales: z.number(),
+            stock: z.number(),
+          })
+        ).optional(),
+        images: z.array(z.any()).optional(), // `any` to represent images (file uploads)
+      }),
+      responses: {
+      },
+    },
     deleteProduct: {
       method: "DELETE",
       path: "/api/product/delete",
