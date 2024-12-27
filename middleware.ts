@@ -5,20 +5,20 @@ const isProtectedRoute = (url: any) => {
   return url.startsWith("/");
 };
 
-export function middleware(req) {
+export function middleware(req:any) {
   const { pathname } = req.nextUrl;
 
-  // Kiểm tra nếu là route bảo vệ, thực hiện các thao tác bảo vệ
-  if (isProtectedRoute(pathname)) {
-    // Bạn có thể thực hiện logic bảo vệ ở đây
-    // Ví dụ, nếu không có token, trả về một lỗi hoặc chuyển hướng
-    const token = req.cookies.get("auth_token"); // Kiểm tra cookie hoặc header auth
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url)); // Chuyển hướng nếu không có token
-    }
-  }
+  // // Kiểm tra nếu là route bảo vệ, thực hiện các thao tác bảo vệ
+  // if (isProtectedRoute(pathname)) {
+  //   // Bạn có thể thực hiện logic bảo vệ ở đây
+  //   // Ví dụ, nếu không có token, trả về một lỗi hoặc chuyển hướng
+  //   const token = req.cookies.get("auth_token"); // Kiểm tra cookie hoặc header auth
+  //   if (!token) {
+  //     return NextResponse.redirect(new URL("/login", req.url)); // Chuyển hướng nếu không có token
+  //   }
+  // }
 
-  // Nếu không phải route bảo vệ, cho phép tiếp tục
+  // // Nếu không phải route bảo vệ, cho phép tiếp tục
   return NextResponse.next();
 }
 
