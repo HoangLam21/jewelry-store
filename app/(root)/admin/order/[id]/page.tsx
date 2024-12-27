@@ -32,6 +32,7 @@ const Page = ({ params }: { params: Params }) => {
         titleSecondButton="Add Staff"
         onClickFirstButton={handleExport}
         onClickSecondButton={handleAddStaff}
+        type={2}
       ></Headers>
       <div className="w-full rounded-[10px] p-4 shadow-sm">
         <OrderInfomation />

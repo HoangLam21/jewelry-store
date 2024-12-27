@@ -23,6 +23,7 @@ const Page = () => {
         titleSecondButton="Add Order"
         onClickFirstButton={handleCancel}
         onClickSecondButton={handleAddStaff}
+        type={2}
       ></Headers>
       <AddStaffInformation />
     </div>

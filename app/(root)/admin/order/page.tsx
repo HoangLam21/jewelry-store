@@ -18,6 +18,7 @@ import { PaginationProps } from "@/types/pagination";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 // import { fetchUsers } from "@/lib/services/user.service";
 
 const fakeOrderData: OrderTable[] = [
@@ -78,6 +79,15 @@ const columns = [
 const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("");
+  const router = useRouter();
+
+  const handleExport = () => {
+    console.log("Export clicked");
+  };
+
+  const handleAddOder = () => {
+    router.push(`/admin/import/add`);
+  };
   // const [usersData, setUsersdata] = useState<any[]>([]);
 
   // useEffect(() => {
@@ -251,6 +261,7 @@ const Page = () => {
         onClickSecondButton={function (): void {
           throw new Error("Function not implemented.");
         }}
+        type={2}
       />
       <div className=" mt-4 w-full rounded-md shadow-md">
         <div className=" mt-0 flex w-full flex-col items-center justify-between gap-4 rounded-md md:flex-row">

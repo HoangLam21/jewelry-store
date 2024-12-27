@@ -212,6 +212,7 @@ const Page = () => {
         onClickSecondButton={function (): void {
           throw new Error("Function not implemented.");
         }}
+        type={2}
       />
       <div className=" mt-4 w-full rounded-md shadow-md">
         <div className=" mt-0 flex w-full flex-col items-center justify-between gap-4 rounded-md md:flex-row">
