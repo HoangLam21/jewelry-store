@@ -12,21 +12,27 @@ interface ImageInfo {
   url: string;
   fileName: string;
 }
+interface Sizes {
+  size: string;
+  stock: number;
+}
+interface Variant {
+  material: string;
+  sizes: Sizes[];
+}
 interface Product {
   id: string;
   image: string;
   imageInfo: ImageInfo[];
   productName: string;
   price: string;
-  material: string;
   description: string;
   vouchers: string;
   provider: string;
-  size: string;
-  color: string;
   category: string;
-  quantity: number;
+  variants: Variant[];
 }
+
 const defaultDetail: Product = {
   id: "",
   image: "",
@@ -38,15 +44,23 @@ const defaultDetail: Product = {
   ],
   productName: "Unknown Product",
   price: "0",
-  material: "Unknown",
   description: "No description available.",
   vouchers: "No vouchers",
   provider: "Unknown Provider",
   category: "Uncategorized",
-  size: "",
-  color: "",
-  quantity: 0
+  variants: [
+    {
+      material: "Unknown Material",
+      sizes: [
+        {
+          size: "Unknown Size",
+          stock: 0
+        }
+      ]
+    }
+  ]
 };
+
 const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [onEdit, setOnEdit] = useState(false);
@@ -66,20 +80,6 @@ const ProductList = () => {
 
     return matchesSearch;
   });
-
-  const dataLength = filterData.length;
-  const itemsPerPage = 12;
-  const totalPages = Math.ceil(dataLength / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const paginationUI: PaginationProps = {
-    currentPage,
-    setCurrentPage,
-    indexOfLastItem,
-    indexOfFirstItem,
-    totalPages,
-    dataLength
-  };
 
   const [displayedProduct, setDisplayedProduct] =
     useState<Product[]>(filterData);

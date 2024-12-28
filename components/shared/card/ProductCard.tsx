@@ -2,23 +2,35 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import React from "react";
 
+interface ImageInfo {
+  url: string;
+  fileName: string;
+}
+interface Sizes {
+  size: string;
+  stock: number;
+}
+interface Variant {
+  material: string;
+  sizes: Sizes[];
+}
 interface Product {
   id: string;
   image: string;
+  imageInfo: ImageInfo[];
   productName: string;
   price: string;
-  material: string;
   description: string;
   vouchers: string;
   provider: string;
   category: string;
-  quantity: number;
+  variants: Variant[];
 }
 const ProductFrame = ({
   param,
   onDelete,
   onEdit,
-  onDetail,
+  onDetail
 }: {
   param: Product;
   onDelete: (id: string) => void;

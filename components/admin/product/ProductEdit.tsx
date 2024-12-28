@@ -15,20 +15,25 @@ interface ImageInfo {
   url: string;
   fileName: string;
 }
+interface Sizes {
+  size: string;
+  stock: number;
+}
+interface Variant {
+  material: string;
+  sizes: Sizes[];
+}
 interface Product {
   id: string;
   image: string;
   imageInfo: ImageInfo[];
   productName: string;
   price: string;
-  material: string;
   description: string;
   vouchers: string;
   provider: string;
-  size: string;
-  color: string;
   category: string;
-  quantity: number;
+  variants: Variant[];
 }
 
 interface Props {
@@ -53,15 +58,29 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
       }
     ],
     productName: "",
-    price: "",
-    material: "",
+    price: "0.00",
     description: "",
     vouchers: "",
     provider: "",
     category: "",
-    size: "",
-    color: "",
-    quantity: 0
+    variants: [
+      {
+        material: "gold",
+        sizes: [
+          { size: "X", stock: 10 },
+          { size: "M", stock: 15 },
+          { size: "L", stock: 5 }
+        ]
+      },
+      {
+        material: "silver",
+        sizes: [
+          { size: "X", stock: 20 },
+          { size: "M", stock: 10 },
+          { size: "L", stock: 8 }
+        ]
+      }
+    ]
   });
   const handleAdd = () => {
     if (fileInputRef.current) {
@@ -210,7 +229,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                     }}
                   />
                 </div>
-                <div className="w-1/2 h-fit gap-4 flex flex-col">
+                {/* <div className="w-1/2 h-fit gap-4 flex flex-col">
                   <InputEdit
                     titleInput="Material"
                     onChange={(e) =>
@@ -227,7 +246,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                     width="w-full"
                     placeholder={detailProduct.price}
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="flex w-full h-fit">
@@ -243,7 +262,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                   placeholder={detailProduct.description}
                 />
               </div>
-              <div className="flex flex-row gap-4 w-full h-fit">
+              {/* <div className="flex flex-row gap-4 w-full h-fit">
                 <InputSelection
                   width="w-full"
                   titleInput="Voucher"
@@ -279,7 +298,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                   width="w-full"
                   placeholder={detailProduct.color}
                 />
-              </div>
+              </div> */}
             </div>
             <div className="flex justify-end w-full items-center pr-4 pb-2">
               <Button

@@ -40,7 +40,7 @@ const SwiperProduct = ({ urlImage, width, height }: SwiperProductProps) => {
         }} // Sử dụng class cho các nút
         modules={[Navigation]}
         slidesPerView={2}
-        spaceBetween={32}
+        spaceBetween={16}
         onSlideChange={handleSlideChange}
       >
         {urlImage.map((item, index) => (

@@ -210,7 +210,7 @@
 
   /* Nút Next nằm bên phải */
   .swiper-button-next {
-    right: 0;
+    right: -50;
     left: auto;
   }
 

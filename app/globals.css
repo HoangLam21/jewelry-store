@@ -89,6 +89,14 @@ body {
     z-index: 20;
   }
 
+  .scrollable {
+    scrollbar-width: none; /* Ẩn thanh cuộn trong Firefox */
+  }
+
+  .scrollable::-webkit-scrollbar {
+    display: none; /* Ẩn thanh cuộn trong Chrome, Safari, và Opera */
+  }
+
   .container {
     height: 900px; /* Giới hạn chiều cao */
     overflow-y: auto; /* Cho phép cuộn */
