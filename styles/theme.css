@@ -175,4 +175,71 @@
   .scrollable::-webkit-scrollbar {
     display: none;
   }
+
+  /* SWIPER */
+  .mySwiper {
+    position: relative; /* Đảm bảo swiper chứa các nút điều hướng */
+    width: 100%; /* Đảm bảo swiper chiếm toàn bộ chiều rộng */
+    height: auto; /* Chiều cao tự động */
+    overflow: hidden; /* Ẩn phần vượt ra ngoài */
+  }
+  .swiper-container {
+    position: relative; /* Đảm bảo các nút điều hướng được đặt chính xác */
+    width: 100%; /* Đảm bảo rằng swiper chiếm toàn bộ chiều rộng của phần tử chứa */
+    height: auto; /* Điều chỉnh chiều cao tùy theo nội dung bên trong */
+  }
+  /* Nút điều hướng Prev và Next */
+  .swiper-button-prev,
+  .swiper-button-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* Nút Prev nằm bên trái */
+  .swiper-button-prev {
+    left: 0;
+    right: auto;
+  }
+
+  /* Nút Next nằm bên phải */
+  .swiper-button-next {
+    right: 0;
+    left: auto;
+  }
+
+  .swiper-button-prev.cursor-not-allowed,
+  .swiper-button-next.cursor-not-allowed {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .swiper-slide {
+    text-align: center;
+    font-size: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-direction: row;
+    width: fit-content;
+  }
+
+  .swiper-slide img {
+    display: block;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  .swiper-wrapper {
+    display: flex;
+    align-items: center;
+  }
 }
