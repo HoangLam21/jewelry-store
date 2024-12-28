@@ -49,12 +49,23 @@ interface Import {
   createBy: string;
 }
 
+interface ImageInfo {
+  url: string;
+  fileName: string;
+}
 interface Product {
   id: string;
   image: string;
+  imageInfo: ImageInfo[];
   productName: string;
   price: string;
   material: string;
+  description: string;
+  vouchers: string;
+  provider: string;
+  size: string;
+  color: string;
+  category: string;
   quantity: number;
 }
 
@@ -84,7 +95,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 1000000,
-        status: 0,
+        status: 0
       },
       {
         id: "2",
@@ -92,7 +103,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 2000000,
-        status: 1,
+        status: 1
       },
       {
         id: "3",
@@ -100,9 +111,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 2500000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "2",
@@ -128,7 +139,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-20"),
         note: "good service",
         total: 1500000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -136,9 +147,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-20"),
         note: "excellent product",
         total: 3000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "3",
@@ -164,7 +175,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-15"),
         note: "Fast delivery",
         total: 1200000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -172,9 +183,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-16"),
         note: "Great quality",
         total: 1800000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "4",
@@ -201,9 +212,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-30"),
         note: "Happy with the service",
         total: 4000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "5",
@@ -230,7 +241,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-05"),
         note: "Very satisfied",
         total: 2200000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -238,9 +249,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-06"),
         note: "Good experience",
         total: 2000000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "6",
@@ -267,9 +278,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-25"),
         note: "Good product",
         total: 1000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "7",
@@ -296,9 +307,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-01"),
         note: "Excellent service",
         total: 6000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "8",
@@ -324,9 +335,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-10"),
         note: "Very helpful",
         total: 1100000,
-        status: 1,
-      },
-    ],
+        status: 1
+      }
+    ]
   },
   {
     id: "9",
@@ -353,7 +364,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-15"),
         note: "Good product quality",
         total: 3500000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -361,10 +372,10 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-16"),
         note: "Great support",
         total: 4000000,
-        status: 2,
-      },
-    ],
-  },
+        status: 2
+      }
+    ]
+  }
 ];
 
 export const ImportData: Import[] = [
@@ -374,7 +385,7 @@ export const ImportData: Import[] = [
       id: "SUP001",
       phoneNumber: "  +84 348775966",
       fullname: "Kim Hyuk-kyu",
-      address: "123 Main Street, New York, USA",
+      address: "123 Main Street, New York, USA"
     },
     invoice: [
       {
@@ -385,7 +396,7 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
+        discount: 10
       },
       {
         id: "INV002",
@@ -395,7 +406,7 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
+        discount: 10
       },
       {
         id: "INV003",
@@ -405,12 +416,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
-      },
+        discount: 10
+      }
     ],
     status: true,
     createAt: new Date("2024-12-01"),
-    createBy: "Admin001",
+    createBy: "Admin001"
   },
   {
     id: "2",
@@ -418,7 +429,7 @@ export const ImportData: Import[] = [
       id: "SUP002",
       phoneNumber: "  +84 348775966",
       fullname: "DEFT VIPPRO",
-      address: "456 Oak Avenue, London, UK",
+      address: "456 Oak Avenue, London, UK"
     },
     invoice: [
       {
@@ -429,12 +440,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 500,
         quantity: 10,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-02"),
-    createBy: "Admin002",
+    createBy: "Admin002"
   },
   {
     id: "3",
@@ -442,7 +453,7 @@ export const ImportData: Import[] = [
       id: "SUP003",
       phoneNumber: "  +84 348775966",
       fullname: "8386 MÃI ĐỈNH MÃI ĐỈNH ĐỈNH",
-      address: "789 Pine Street, Sydney, Australia",
+      address: "789 Pine Street, Sydney, Australia"
     },
     invoice: [
       {
@@ -453,12 +464,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 50,
         quantity: 20,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-03"),
-    createBy: "Admin003",
+    createBy: "Admin003"
   },
   {
     id: "4",
@@ -466,7 +477,7 @@ export const ImportData: Import[] = [
       id: "SUP004",
       phoneNumber: "  +84 348775966",
       fullname: "TONY TONY CHOPPER",
-      address: "234 Elm Road, Berlin, Germany",
+      address: "234 Elm Road, Berlin, Germany"
     },
     invoice: [
       {
@@ -477,12 +488,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 150,
         quantity: 8,
-        discount: 15,
-      },
+        discount: 15
+      }
     ],
     status: true,
     createAt: new Date("2024-12-04"),
-    createBy: "Admin004",
+    createBy: "Admin004"
   },
   {
     id: "5",
@@ -490,7 +501,7 @@ export const ImportData: Import[] = [
       id: "SUP005",
       phoneNumber: "  +84 348775966",
       fullname: "Global Gadgets",
-      address: "567 Maple Boulevard, Toronto, Canada",
+      address: "567 Maple Boulevard, Toronto, Canada"
     },
     invoice: [
       {
@@ -501,12 +512,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 25,
         quantity: 50,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-05"),
-    createBy: "Admin005",
+    createBy: "Admin005"
   },
   {
     id: "6",
@@ -514,7 +525,7 @@ export const ImportData: Import[] = [
       id: "SUP006",
       phoneNumber: "  +84 348775966",
       fullname: "Gadget Store",
-      address: "901 Birch Lane, Paris, France",
+      address: "901 Birch Lane, Paris, France"
     },
     invoice: [
       {
@@ -525,12 +536,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 300,
         quantity: 12,
-        discount: 8,
-      },
+        discount: 8
+      }
     ],
     status: true,
     createAt: new Date("2024-12-06"),
-    createBy: "Admin006",
+    createBy: "Admin006"
   },
   {
     id: "7",
@@ -538,7 +549,7 @@ export const ImportData: Import[] = [
       id: "SUP007",
       phoneNumber: "  +84 348775966",
       fullname: "Mega Distributors",
-      address: "321 Aspen Road, Dubai, UAE",
+      address: "321 Aspen Road, Dubai, UAE"
     },
     invoice: [
       {
@@ -549,12 +560,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 75,
         quantity: 30,
-        discount: 10,
-      },
+        discount: 10
+      }
     ],
     status: false,
     createAt: new Date("2024-12-07"),
-    createBy: "Admin007",
+    createBy: "Admin007"
   },
   {
     id: "8",
@@ -562,7 +573,7 @@ export const ImportData: Import[] = [
       id: "SUP008",
       phoneNumber: "  +84 348775966",
       fullname: "Tech World",
-      address: "876 Spruce Avenue, Tokyo, Japan",
+      address: "876 Spruce Avenue, Tokyo, Japan"
     },
     invoice: [
       {
@@ -573,12 +584,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 40,
         quantity: 25,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-08"),
-    createBy: "Admin008",
+    createBy: "Admin008"
   },
   {
     id: "9",
@@ -586,7 +597,7 @@ export const ImportData: Import[] = [
       id: "SUP009",
       phoneNumber: "  +84 348775966",
       fullname: "Electronic Mart",
-      address: "654 Cedar Street, Mexico City, Mexico",
+      address: "654 Cedar Street, Mexico City, Mexico"
     },
     invoice: [
       {
@@ -597,12 +608,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 60,
         quantity: 15,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-09"),
-    createBy: "Admin009",
+    createBy: "Admin009"
   },
   {
     id: "10",
@@ -610,7 +621,7 @@ export const ImportData: Import[] = [
       id: "SUP010",
       phoneNumber: "  +84 348775966",
       fullname: "Alpha Electronics",
-      address: "345 Willow Drive, Moscow, Russia",
+      address: "345 Willow Drive, Moscow, Russia"
     },
     invoice: [
       {
@@ -621,12 +632,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 30,
         quantity: 40,
-        discount: 7,
-      },
+        discount: 7
+      }
     ],
     status: true,
     createAt: new Date("2024-12-10"),
-    createBy: "Admin010",
+    createBy: "Admin010"
   },
   {
     id: "11",
@@ -634,7 +645,7 @@ export const ImportData: Import[] = [
       id: "SUP011",
       phoneNumber: "  +84 348775966",
       fullname: "Techie Supplies",
-      address: "678 Poplar Lane, Singapore",
+      address: "678 Poplar Lane, Singapore"
     },
     invoice: [
       {
@@ -645,12 +656,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 15,
         quantity: 100,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-11"),
-    createBy: "Admin011",
+    createBy: "Admin011"
   },
   {
     id: "12",
@@ -658,7 +669,7 @@ export const ImportData: Import[] = [
       id: "SUP012",
       phoneNumber: "  +84 348775966",
       fullname: "Smart Solutions",
-      address: "987 Chestnut Road, Seoul, South Korea",
+      address: "987 Chestnut Road, Seoul, South Korea"
     },
     invoice: [
       {
@@ -669,12 +680,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 20,
         quantity: 60,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-12"),
-    createBy: "Admin012",
+    createBy: "Admin012"
   },
   {
     id: "13",
@@ -682,7 +693,7 @@ export const ImportData: Import[] = [
       id: "SUP013",
       phoneNumber: "  +84 348775966",
       fullname: "NextGen Supplies",
-      address: "432 Pineapple Street, Cape Town, South Africa",
+      address: "432 Pineapple Street, Cape Town, South Africa"
     },
     invoice: [
       {
@@ -693,12 +704,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 120,
         quantity: 10,
-        discount: 12,
-      },
+        discount: 12
+      }
     ],
     status: true,
     createAt: new Date("2024-12-13"),
-    createBy: "Admin013",
+    createBy: "Admin013"
   },
   {
     id: "14",
@@ -706,7 +717,7 @@ export const ImportData: Import[] = [
       id: "SUP014",
       phoneNumber: "  +84 348775966",
       fullname: "Global Tech",
-      address: "210 Banana Avenue, Rio de Janeiro, Brazil",
+      address: "210 Banana Avenue, Rio de Janeiro, Brazil"
     },
     invoice: [
       {
@@ -717,12 +728,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 10,
         quantity: 200,
-        discount: 2,
-      },
+        discount: 2
+      }
     ],
     status: true,
     createAt: new Date("2024-12-14"),
-    createBy: "Admin014",
+    createBy: "Admin014"
   },
   {
     id: "15",
@@ -730,7 +741,7 @@ export const ImportData: Import[] = [
       id: "SUP015",
       phoneNumber: "  +84 348775966",
       fullname: "Prime Tech",
-      address: "765 Orange Blvd, Rome, Italy",
+      address: "765 Orange Blvd, Rome, Italy"
     },
     invoice: [
       {
@@ -741,13 +752,13 @@ export const ImportData: Import[] = [
 
         unitPrice: 500,
         quantity: 2,
-        discount: 20,
-      },
+        discount: 20
+      }
     ],
     status: false,
     createAt: new Date("2024-12-15"),
-    createBy: "Admin015",
-  },
+    createBy: "Admin015"
+  }
 ];
 
 export const ProductsData: Product[] = [
@@ -755,180 +766,580 @@ export const ProductsData: Product[] = [
     id: "1",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_wallet_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_wallet_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_wallet_2.jpg"
+      }
+    ],
     productName: "Leather Wallet",
     price: "$25.99",
     material: "Leather",
-    quantity: 2,
+    description: "Elegant and Gorgeous design",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "12",
+    color: "White",
+    quantity: 2
   },
   {
     id: "2",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_tshirt_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_tshirt_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_tshirt_2.jpg"
+      }
+    ],
     productName: "Cotton T-Shirt",
     price: "$15.99",
     material: "Cotton",
-    quantity: 2,
+    description: "Comfortable and stylish",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "M",
+    color: "White",
+    quantity: 5
   },
   {
     id: "3",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_steel_watch_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_steel_watch_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_steel_watch_2.jpg"
+      }
+    ],
     productName: "Stainless Steel Watch",
     price: "$199.99",
     material: "Stainless Steel",
-    quantity: 2,
+    description: "Elegant design with precision",
+    vouchers: "1",
+    provider: "1",
+    category: "1",
+    size: "One Size",
+    color: "Silver",
+    quantity: 4
   },
   {
     id: "4",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "sports_shoes_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "sports_shoes_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "sports_shoes_2.jpg"
+      }
+    ],
     productName: "Sports Shoes",
     price: "$49.99",
     material: "Mesh & Rubber",
-    quantity: 2,
+    description: "Perfect for running and sports activities",
+    vouchers: "1",
+    provider: "1",
+    category: "2",
+    size: "8",
+    color: "Black",
+    quantity: 3
   },
   {
     id: "5",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "wooden_chair_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "wooden_chair_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "wooden_chair_2.jpg"
+      }
+    ],
     productName: "Wooden Chair",
     price: "$89.99",
     material: "Wood",
-    quantity: 2,
+    description: "Sturdy and comfortable",
+    vouchers: "1",
+    provider: "2",
+    category: "3",
+    size: "One Size",
+    color: "Brown",
+    quantity: 5
   },
   {
     id: "6",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "silk_scarf_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "silk_scarf_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "silk_scarf_2.jpg"
+      }
+    ],
     productName: "Silk Scarf",
     price: "$35.00",
     material: "Silk",
-    quantity: 2,
+    description: "Luxury and comfort",
+    vouchers: "1",
+    provider: "2",
+    category: "4",
+    size: "One Size",
+    color: "Red",
+    quantity: 6
   },
   {
     id: "7",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_case_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_case_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_case_2.jpg"
+      }
+    ],
     productName: "Smartphone Case",
     price: "$9.99",
     material: "Polyurethane",
-    quantity: 2,
+    description: "Protect your phone with style",
+    vouchers: "1",
+    provider: "1",
+    category: "5",
+    size: "One Size",
+    color: "Black",
+    quantity: 10
   },
   {
     id: "8",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Ceramic Mug",
-    price: "$12.50",
-    material: "Ceramic",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_bag_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_bag_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "leather_bag_2.jpg"
+      }
+    ],
+    productName: "Leather Bag",
+    price: "$79.99",
+    material: "Leather",
+    description: "Stylish and durable",
+    vouchers: "1",
+    provider: "2",
+    category: "2",
+    size: "One Size",
+    color: "Brown",
+    quantity: 4
   },
   {
     id: "9",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Guitar",
-    price: "$299.99",
-    material: "Wood",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "kitchen_knife_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "kitchen_knife_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "kitchen_knife_2.jpg"
+      }
+    ],
+    productName: "Kitchen Knife",
+    price: "$35.00",
+    material: "Stainless Steel",
+    description: "Sharp and precise for kitchen use",
+    vouchers: "1",
+    provider: "3",
+    category: "6",
+    size: "One Size",
+    color: "Silver",
+    quantity: 3
   },
   {
     id: "10",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Bluetooth Speaker",
-    price: "$89.99",
-    material: "Plastic & Metal",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_pot_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_pot_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "stainless_pot_2.jpg"
+      }
+    ],
+    productName: "Stainless Steel Pot",
+    price: "$59.99",
+    material: "Stainless Steel",
+    description: "Perfect for cooking",
+    vouchers: "1",
+    provider: "3",
+    category: "6",
+    size: "Medium",
+    color: "Silver",
+    quantity: 7
   },
   {
     id: "11",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Canvas Backpack",
-    price: "$45.00",
-    material: "Canvas",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_shirt_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_shirt_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "cotton_shirt_2.jpg"
+      }
+    ],
+    productName: "Cotton Shirt",
+    price: "$24.99",
+    material: "Cotton",
+    description: "Comfortable and soft",
+    vouchers: "1",
+    provider: "4",
+    category: "1",
+    size: "L",
+    color: "Blue",
+    quantity: 15
   },
   {
     id: "12",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "LED Lamp",
-    price: "$18.99",
-    material: "Plastic & LED",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smart_watch_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smart_watch_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smart_watch_2.jpg"
+      }
+    ],
+    productName: "Smart Watch",
+    price: "$199.99",
+    material: "Plastic, Stainless Steel",
+    description: "Track your health and fitness",
+    vouchers: "2",
+    provider: "5",
+    category: "3",
+    size: "One Size",
+    color: "Black",
+    quantity: 10
   },
   {
     id: "13",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Electric Kettle",
-    price: "$25.50",
-    material: "Stainless Steel",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "headphones_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "headphones_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "headphones_2.jpg"
+      }
+    ],
+    productName: "Wireless Headphones",
+    price: "$79.99",
+    material: "Plastic, Metal",
+    description: "Noise-cancelling, wireless convenience",
+    vouchers: "1",
+    provider: "5",
+    category: "3",
+    size: "One Size",
+    color: "Black",
+    quantity: 8
   },
   {
     id: "14",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Yoga Mat",
-    price: "$20.00",
-    material: "PVC",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "pillow_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "pillow_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "pillow_2.jpg"
+      }
+    ],
+    productName: "Memory Foam Pillow",
+    price: "$29.99",
+    material: "Memory Foam",
+    description: "Comfortable and supportive for a good night's sleep",
+    vouchers: "2",
+    provider: "6",
+    category: "5",
+    size: "Standard",
+    color: "White",
+    quantity: 25
   },
   {
     id: "15",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Frying Pan",
-    price: "$22.00",
-    material: "Cast Iron",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "air_conditioner_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "air_conditioner_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "air_conditioner_2.jpg"
+      }
+    ],
+    productName: "Air Conditioner",
+    price: "$499.99",
+    material: "Plastic, Metal",
+    description: "Cooling your home efficiently",
+    vouchers: "3",
+    provider: "7",
+    category: "4",
+    size: "Medium",
+    color: "White",
+    quantity: 12
   },
   {
     id: "16",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Water Bottle",
-    price: "$10.99",
-    material: "BPA-Free Plastic",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "coffee_machine_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "coffee_machine_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "coffee_machine_2.jpg"
+      }
+    ],
+    productName: "Coffee Machine",
+    price: "$120.00",
+    material: "Plastic, Stainless Steel",
+    description: "Brew your favorite coffee in minutes",
+    vouchers: "1",
+    provider: "8",
+    category: "6",
+    size: "One Size",
+    color: "Black",
+    quantity: 5
   },
   {
     id: "17",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Handmade Necklace",
-    price: "$30.00",
-    material: "Silver & Gemstones",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "smartphone_2.jpg"
+      }
+    ],
+    productName: "Smartphone",
+    price: "$799.99",
+    material: "Glass, Aluminum",
+    description: "Latest model with advanced features",
+    vouchers: "3",
+    provider: "9",
+    category: "3",
+    size: "One Size",
+    color: "Silver",
+    quantity: 20
   },
   {
     id: "18",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Wool Blanket",
-    price: "$40.00",
-    material: "Wool",
-    quantity: 2,
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "vacuum_cleaner_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "vacuum_cleaner_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "vacuum_cleaner_2.jpg"
+      }
+    ],
+    productName: "Vacuum Cleaner",
+    price: "$89.99",
+    material: "Plastic, Metal",
+    description: "Powerful suction for your home",
+    vouchers: "1",
+    provider: "10",
+    category: "6",
+    size: "One Size",
+    color: "Red",
+    quantity: 10
   },
   {
     id: "19",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Bluetooth Earbuds",
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "speaker_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "speaker_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "speaker_2.jpg"
+      }
+    ],
+    productName: "Bluetooth Speaker",
     price: "$49.99",
-    material: "Plastic & Silicone",
-    quantity: 2,
+    material: "Plastic",
+    description: "Portable with great sound",
+    vouchers: "2",
+    provider: "11",
+    category: "3",
+    size: "One Size",
+    color: "Black",
+    quantity: 30
   },
   {
     id: "20",
     image:
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    productName: "Winter Jacket",
-    price: "$99.99",
-    material: "Polyester & Nylon",
-    quantity: 2,
-  },
+    imageInfo: [
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "desk_lamp_main.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "desk_lamp_1.jpg"
+      },
+      {
+        url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+        fileName: "desk_lamp_2.jpg"
+      }
+    ],
+    productName: "Desk Lamp",
+    price: "$29.99",
+    material: "Plastic",
+    description: "Adjustable and energy-efficient",
+    vouchers: "1",
+    provider: "12",
+    category: "5",
+    size: "One Size",
+    color: "White",
+    quantity: 12
+  }
 ];
