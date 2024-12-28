@@ -6,21 +6,28 @@ import "swiper/css/pagination";
 import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
 import MyButton from "@/components/shared/button/MyButton";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import product from "@/pages/api/rating/product";
 
 const fakeData = [
   {
+    id: "1",
     title: "NEW ITEMS",
     description: "PANDORA MOMENTS DISNEY BEISENDER STITCH",
     smallImage: "/assets/images/798844C01_RGB.jpg",
     largeImage: "/assets/images/b8f853f6c53f6d0b10f11436826fd0bb.jpg",
   },
   {
+    id: "2",
+
     title: "NEW ITEMS",
     description: "PANDORA MOMENTS NEW CHARM BRACELET",
     smallImage: "/assets/images/798844C01_RGB.jpg",
     largeImage: "/assets/images/b8f853f6c53f6d0b10f11436826fd0bb.jpg",
   },
   {
+    id: "3",
+
     title: "NEW ITEMS",
     description: "PANDORA MOMENTS DISNEY BEISENDER SPECIAL",
     smallImage: "/assets/images/798844C01_RGB.jpg",
@@ -29,6 +36,11 @@ const fakeData = [
 ];
 
 const swiper = () => {
+  const router = useRouter();
+
+  const handleNavigateProductDetail = (id: string) => {
+    router.push(`/product/${id}`);
+  };
   return (
     <div>
       <Swiper
@@ -69,6 +81,9 @@ const swiper = () => {
                   width={256}
                   height={256}
                   className="w-[256px] h-[256px] rounded-full absolute mt-[339px] mr-80"
+                  onClick={() =>
+                    handleNavigateProductDetail(item.id.toString())
+                  }
                 ></Image>
                 <Image
                   src={item.largeImage}
@@ -76,6 +91,9 @@ const swiper = () => {
                   width={420}
                   height={595}
                   className="w-[420px] h-[595px] rounded-t-full"
+                  onClick={() =>
+                    handleNavigateProductDetail(item.id.toString())
+                  }
                 ></Image>
               </div>
             </div>
