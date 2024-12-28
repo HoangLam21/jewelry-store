@@ -1,15 +1,7 @@
 import { Schema, model, models, Document } from "mongoose";
-import { ObjectId } from "mongodb";
 import { AuditSchema, IAudit } from "./audit.model";
-
-export interface IVariant {
-  size: string;
-  color: string;
-  price: number;
-  sales: number;
-  stock: number;
-}
-
+import Voucher from "./voucher.model";
+import ProductProvider from "./provider.model";
 export interface IProduct extends Document, IAudit {
   name: string;
   cost: number;
@@ -18,7 +10,13 @@ export interface IProduct extends Document, IAudit {
   vouchers: Schema.Types.ObjectId[];
   provider: Schema.Types.ObjectId;
   category: Schema.Types.ObjectId;
-  variants: IVariant[];
+  collections: string;
+  variants: {
+    material: string;
+    sizes: { size: string; stock: number }[];
+    addOn: number;
+  }[];
+  sales: number;
 }
 
 const ProductSchema = new Schema<IProduct>({
@@ -27,17 +25,19 @@ const ProductSchema = new Schema<IProduct>({
   files: { type: [Schema.Types.ObjectId], ref: "File", required: true },
   description: { type: String, required: true },
   vouchers: { type: [Schema.Types.ObjectId], ref: "Voucher", required: false },
-  provider: { type: Schema.Types.ObjectId, ref: "Provider", required: true },
+  provider: { type: Schema.Types.ObjectId, ref: "ProductProvider", required: true },
   category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
-  variants: [
-    {
-      size: { type: String, required: true },
-      color: { type: String, required: true },
-      price: { type: Number, required: true },
-      sales: { type: Number, required: true },
-      stock: { type: Number, required: true, default:0 },
-    },
-  ],
+  collections: { type: String },
+  variants: {
+    type: [
+      {
+        material: { type: String },
+        sizes: { type: [{ size: { type: String }, stock: { type: Number } }] },
+        addOn: Number,
+      },
+    ],
+  },
+  sales: { type: Number, default: 0 },
 });
 
 ProductSchema.add(AuditSchema);

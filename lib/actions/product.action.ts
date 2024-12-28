@@ -4,6 +4,9 @@ import { connectToDatabase } from "../mongoose";
 import mongoose, { Schema } from "mongoose";
 import formidable from "formidable";
 import { createFile, deleteFile } from "./file.action";
+import Voucher from "@/database/voucher.model";
+import ProductProvider from "@/database/provider.model";
+import File from "@/database/file.model";
 
 // Tạo sản phẩm mới
 export const createProduct = async (data: {
@@ -14,12 +17,11 @@ export const createProduct = async (data: {
   vouchers?: string[];
   provider: string;
   category?: string;
+  collections?: string;
   variants: {
-    size: string;
-    color: string;
-    price: number;
-    sales: number;
-    stock: number;
+    material: string;
+    sizes: { size: string; stock: number }[];
+    addOn: number;
   }[];
 }) => {
   try {
@@ -40,7 +42,7 @@ export const createProduct = async (data: {
       provider: new mongoose.Types.ObjectId(data.provider),
       category: new mongoose.Types.ObjectId(data.category),
       variants: data.variants,
-      createdAt: new Date(),
+      collections: data.collections,
     });
     return newProduct;
   } catch (error) {
@@ -52,8 +54,20 @@ export const createProduct = async (data: {
 export const getProducts = async () => {
   try {
     connectToDatabase();
-    const products = await Product.find().populate("files provider vouchers");
-    return products;
+    const products = await Product.find();
+    const productResponse = [];
+    for (const product of products) {
+      const files = await File.find({ _id: { $in: product.files } });
+      const vouchers = await Voucher.find({ _id: { $in: product.vouchers } });
+      const provider = await ProductProvider.findById(product.provider);
+      productResponse.push({
+        ...product.toObject(),
+        vouchers: vouchers,
+        provider: provider,
+        files: files,
+      });
+    }
+    return productResponse;
   } catch (error) {
     console.log("Error fetching Products: ", error);
     throw new Error("Failed to fetch products");
@@ -63,11 +77,20 @@ export const getProducts = async () => {
 export const getProductById = async (id: string) => {
   try {
     connectToDatabase();
-    const product = await Product.findById(id).populate("files provider vouchers");
+    const product = await Product.findById(id);
+
     if (!product) {
       throw new Error("Product not found");
     }
-    return product;
+    const files = await File.find({ _id: { $in: product.files } });
+    const vouchers = await Voucher.find({ _id: { $in: product.vouchers } });
+    const provider = await ProductProvider.findById(product.provider);
+    return {
+      ...product.toObject,
+      files: files,
+      vouchers: vouchers,
+      provider: provider,
+    };
   } catch (error) {
     console.log("Error fetching Product by ID: ", error);
     throw new Error("Failed to fetch product");
@@ -84,12 +107,11 @@ export const updateProduct = async (
     vouchers: string[];
     provider: string;
     category: string;
+    collections?: string;
     variants: {
-      size: string;
-      color: string;
-      price: number;
-      sales: number;
-      stock: number;
+      material: string;
+      sizes: { size: string; stock: number }[];
+      addOn: number;
     }[];
   }>
 ) => {
@@ -113,11 +135,21 @@ export const updateProduct = async (
         images: updateImageIds,
       },
       { new: true }
-    ).populate("files provider vouchers");
+    );
+    const files = await File.find({ _id: { $in: updatedProduct.files } });
+    const vouchers = await Voucher.find({
+      _id: { $in: updatedProduct.vouchers },
+    });
+    const provider = await ProductProvider.findById(updatedProduct.provider);
     if (!updatedProduct) {
       throw new Error("Product not found");
     }
-    return updatedProduct;
+    return {
+      ...updatedProduct.toObject(),
+      files: files,
+      vouchers: vouchers,
+      provider: provider,
+    };
   } catch (error) {
     console.log("Error updating Product: ", error);
     throw new Error("Failed to update product");
