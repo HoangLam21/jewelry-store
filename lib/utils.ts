@@ -15,3 +15,43 @@ export const formatPrice = (price: string | number): string => {
     currencyDisplay: "code",
   }).format(numericPrice);
 };
+
+export type SortableKeys<T> = keyof T;
+
+export interface SortConfig<T> {
+  key: SortableKeys<T>;
+  direction: "ascending" | "descending";
+}
+
+export const getValueByKey = <T>(item: T, key: SortableKeys<T>) => {
+  return item[key];
+};
+
+export const sortData = <T>(data: T[], sortConfig: SortConfig<T>): T[] => {
+  return [...data].sort((a, b) => {
+    const aValue = getValueByKey(a, sortConfig.key);
+    const bValue = getValueByKey(b, sortConfig.key);
+
+    if (aValue < bValue) {
+      return sortConfig.direction === "ascending" ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === "ascending" ? 1 : -1;
+    }
+    return 0;
+  });
+};
+
+export const filterData = <T>(
+  data: T[],
+  query: string,
+  searchableKeys: SortableKeys<T>[]
+): T[] => {
+  const lowerCaseQuery = query.toLowerCase();
+
+  return data.filter((item) =>
+    searchableKeys.some((key) =>
+      String(getValueByKey(item, key)).toLowerCase().includes(lowerCaseQuery)
+    )
+  );
+};

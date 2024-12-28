@@ -39,18 +39,29 @@ interface Staff {
   numberSaleInvoice: SaleInvoice[];
 }
 
-const EditStaffInformation = () => {
-  const { id } = useParams<{ id: string }>() as { id: string };
-  const [staff, setStaff] = useState<Staff | null>(null);
-  const [updateStaff, setUpdateStaff] = useState<Staff | null>(null);
+const defaultStaff: Staff = {
+  id: "",
+  gender: "",
+  position: "",
+  earning: 0,
+  phone: "",
+  fullname: "",
+  dob: new Date(),
+  email: "",
+  address: "",
+  city: "",
+  country: "",
+  district: "",
+  experience: "",
+  kindOfJob: "",
+  description: "",
+  dow: new Date(),
+  numberSaleInvoice: [], // Danh sách hóa đơn rỗng
+};
 
-  useEffect(() => {
-    if (id) {
-      const foundStaff = StaffData.find((item) => item.id === id);
-      setStaff(foundStaff || null);
-      setUpdateStaff(foundStaff || null);
-    }
-  }, [id]);
+const AddVoucherInformation = () => {
+  const { id } = useParams<{ id: string }>() as { id: string };
+  const [updateStaff, setUpdateStaff] = useState<Staff | null>(defaultStaff);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (updateStaff) {
@@ -120,7 +131,7 @@ const EditStaffInformation = () => {
           </div>
           <div className="flex-1 flex flex-col justify-between">
             <LabelInformation
-              content={staff ? `#${staff.id}` : ""}
+              content={updateStaff ? `#${updateStaff.id}` : ""}
               title="ID"
             />
             <div className="flex gap-8 ">
@@ -333,4 +344,4 @@ const EditStaffInformation = () => {
   );
 };
 
-export default EditStaffInformation;
+export default AddVoucherInformation;

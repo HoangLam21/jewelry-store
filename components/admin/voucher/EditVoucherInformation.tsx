@@ -39,7 +39,7 @@ interface Staff {
   numberSaleInvoice: SaleInvoice[];
 }
 
-const EditStaffInformation = () => {
+const EditVoucherInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [staff, setStaff] = useState<Staff | null>(null);
   const [updateStaff, setUpdateStaff] = useState<Staff | null>(null);
@@ -333,4 +333,4 @@ const EditStaffInformation = () => {
   );
 };
 
-export default EditStaffInformation;
+export default EditVoucherInformation;
