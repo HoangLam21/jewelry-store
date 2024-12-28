@@ -7,6 +7,7 @@ import PaginationUI from "@/types/pagination/Pagination";
 import React, { useEffect, useState } from "react";
 import ProductDetail from "./ProductDetail";
 import ProductEdit from "./ProductEdit";
+import Format from "@/components/shared/card/ConfirmCard";
 interface ImageInfo {
   url: string;
   fileName: string;
@@ -83,10 +84,23 @@ const ProductList = () => {
   const [displayedProduct, setDisplayedProduct] =
     useState<Product[]>(filterData);
 
-  const handleDelete = (id: string) => {
-    setDisplayedProduct((prev) => prev.filter((item) => item.id !== id));
-    console.log("delete");
+  const handleConfirmDelete = (id: string) => {
+    const detail = filterData.find((item) => item.id === id);
+    if (detail) setDetailItem(detail);
     setOnDelete(true);
+  };
+  const handleCancelConfirm = () => {
+    setOnDelete(false);
+  };
+
+  const handleDelete = (id: string) => {
+    const detail = filterData.find((item) => item.id === id);
+    if (detail)
+      setDisplayedProduct((prev) =>
+        prev.filter((item) => item.id !== detail.id)
+      );
+    setOnDelete(false);
+    console.log("delete");
   };
 
   const handleEdit = (id: string) => {
@@ -117,7 +131,7 @@ const ProductList = () => {
             <ProductFrame
               key={item.id}
               param={item}
-              onDelete={() => handleDelete(item.id)}
+              onDelete={() => handleConfirmDelete(item.id)}
               onDetail={() => handleDetail(item.id)}
               onEdit={() => handleEdit(item.id)}
             />
@@ -137,6 +151,17 @@ const ProductList = () => {
         <ProductEdit
           detailProduct={detailItem}
           onBack={(value: boolean) => handleBack(value)}
+        />
+      )}
+
+      {onDelete && (
+        <Format
+          onClose={handleCancelConfirm}
+          label="Delete"
+          content="delete"
+          userName={detailItem.productName}
+          onConfirmDelete={() => handleDelete(detailItem.id)}
+          type="delete"
         />
       )}
     </>

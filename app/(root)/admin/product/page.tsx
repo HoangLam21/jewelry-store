@@ -1,18 +1,12 @@
 "use client";
 import AddProduct from "@/components/admin/product/AddProduct";
 import ProductList from "@/components/admin/product/ProductList";
-import StaffList from "@/components/admin/staff/StaffList";
-import Headers from "@/components/shared/Headers";
-import { useRouter } from "next/navigation";
+import Headers from "@/components/shared/header/Headers";
 import React, { useState } from "react";
 
 const Page = () => {
   const [openAddProduct, setOpenAddProduct] = useState(false);
-  const [openAddVoucher, setOpenAddVoucher] = useState(false);
-  const router = useRouter();
-  const handleAddVoucher = () => {
-    setOpenAddVoucher(true);
-  };
+  const handleExport = () => {};
 
   const handleAddProduct = () => {
     setOpenAddProduct(true);
@@ -20,7 +14,6 @@ const Page = () => {
 
   const handleBack = (value: boolean) => {
     setOpenAddProduct(value);
-    setOpenAddVoucher(value);
   };
   return (
     <>
@@ -28,10 +21,10 @@ const Page = () => {
         <Headers
           title="Products"
           firstIcon="clarity:export-line"
-          titleFirstButton="Add voucher"
+          titleFirstButton="Export"
           secondIcon="mingcute:add-line"
           titleSecondButton="Add Products"
-          onClickFirstButton={handleAddVoucher}
+          onClickFirstButton={handleExport}
           onClickSecondButton={handleAddProduct}
           type={2}
         ></Headers>
