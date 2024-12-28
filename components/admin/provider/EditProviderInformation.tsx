@@ -40,7 +40,7 @@ interface Staff {
 }
 
 const EditProviderInformation = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>() as { id: string };
   const [staff, setStaff] = useState<Staff | null>(null);
   const [updateStaff, setUpdateStaff] = useState<Staff | null>(null);
 
