@@ -1,6 +1,7 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import Image from "next/image";
 
 const collections = [
   {
@@ -105,9 +106,11 @@ const Collections = () => {
                   />
                 </div>
                 <div className="flex justify-center items-center w-[250px] h-[250px] bg-white dark:bg-dark-400">
-                  <img
+                  <Image
                     src={chunk[5]?.image}
                     alt=""
+                    width={230}
+                    height={230}
                     className="w-[230px] h-[230px] object-cover"
                   />
                 </div>

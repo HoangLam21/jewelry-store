@@ -6,13 +6,15 @@ export interface IRating extends Document, IAudit {
   productId: Schema.Types.ObjectId;
   point: number;
   content:string;
+  images:Schema.Types.ObjectId;
 }
 
 const RatingSchema = new Schema<IRating>({
-  userId: { type: Schema.Types.ObjectId, required: true },
+  userId: { type: Schema.Types.ObjectId, ref:"Customer",required: true },
   productId: { type: Schema.Types.ObjectId, required: true },
   point: { type: Number, required: true, default: 5 },
-  content:{type:String}
+  content:{type:String},
+  images:{type:[Schema.Types.ObjectId], ref:"File"}
 });
 
 RatingSchema.add(AuditSchema);
