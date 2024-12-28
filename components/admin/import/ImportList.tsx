@@ -30,7 +30,7 @@ interface Staff {
 const columns = [
   { header: "ID", accessor: "id" },
   {
-    header: "CreateAT",
+    header: "CreateAt",
     accessor: "createAt",
     className: "hidden md:table-cell",
   },
@@ -189,7 +189,7 @@ const ImportList = () => {
               />
             </div>
           </Link>
-          <Link href={`/admin/staff/edit/${item.id}`}>
+          <Link href={`/admin/import/edit/${item.id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:edit"

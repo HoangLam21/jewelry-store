@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button";
 
 const TableSearch = ({
   onSearch,
+  onSort,
 }: {
   onSearch: (searchQuery: string) => void;
-  onSort: (searchQuery: string) => void;
+  onSort?: (searchQuery: string) => void;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("");

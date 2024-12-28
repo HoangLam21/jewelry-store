@@ -4,7 +4,7 @@ import TableSearch from "@/components/shared/table/TableSearch";
 import { ProductsData } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import PaginationUI from "@/types/pagination/Pagination";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductDetail from "./ProductDetail";
 import ProductEdit from "./ProductEdit";
 interface ImageInfo {
@@ -80,9 +80,11 @@ const ProductList = () => {
     dataLength
   };
 
+  const [displayedProduct, setDisplayedProduct] =
+    useState<Product[]>(filterData);
+
   const handleDelete = (id: string) => {
-    const detail = filterData.find((item) => item.id === id);
-    if (detail) setDetailItem(detail);
+    setDisplayedProduct((prev) => prev.filter((item) => item.id !== id));
     console.log("delete");
     setOnDelete(true);
   };
@@ -111,7 +113,7 @@ const ProductList = () => {
       <div className="flex w-full flex-col p-4 rounded-md shadow-sm">
         <TableSearch onSearch={setSearchQuery} onSort={() => {}} />
         <div className="flex flex-row flex-wrap items-start justify-items-stretch gap-7 mt-6 max-h-[550px] h-[550px] overflow-x-auto container">
-          {filterData.map((item) => (
+          {displayedProduct.map((item) => (
             <ProductFrame
               key={item.id}
               param={item}

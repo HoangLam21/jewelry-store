@@ -9,6 +9,10 @@ import LabelInformation from "@/components/shared/label/LabelInformation";
 import ImportCard from "@/components/shared/card/ImportCard";
 import { formatPrice } from "@/lib/utils";
 import ImportOrderCard from "@/components/shared/card/ImportOrderCard";
+import TableSearch from "@/components/shared/table/TableSearch";
+import TableSearchNoFilter from "@/components/shared/table/TableSearchNoFilter";
+import PhoneNumberInput from "@/components/shared/input/PhoneInput";
+import Image from "next/image";
 
 interface Invoice {
   id: string;
@@ -45,6 +49,8 @@ interface Product {
 const stockInfTitle = "font-medium text-[16px] ";
 
 const AddImport = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const [item, setItem] = useState<Import>({
     id: "",
     suplier: {
@@ -58,8 +64,6 @@ const AddImport = () => {
     createAt: new Date(), // Ngày hiện tại
     createBy: "",
   });
-
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // State to store the selected product
 
   if (!item || !item.invoice) {
     return (
@@ -90,6 +94,67 @@ const AddImport = () => {
     }));
   };
 
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isValid, setIsValid] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
+        setIsValid(false);
+      } else {
+        setIsValid(true);
+      }
+    }, 500); // Chờ 500ms sau lần nhập cuối cùng
+
+    return () => clearTimeout(timer);
+  }, [phoneNumber]);
+
+  const handleChange = (e: any) => {
+    setPhoneNumber(e.target.value);
+  };
+
+  const isValidPhoneNumber = (phoneNumber: string) => {
+    // Kiểm tra nếu phoneNumber chỉ chứa số và có độ dài 10
+    const phoneRegex = /^\d{10}$/;
+    return phoneRegex.test(phoneNumber);
+  };
+
+  const changeSuplierNumberPhoneField = (field: string, value: string) => {
+    if (field === "phoneNumber") {
+      if (isValidPhoneNumber(value)) {
+        // Cập nhật giá trị nếu hợp lệ
+        setItem((prevSuplier) => ({
+          ...prevSuplier,
+          [field]: value,
+        }));
+      } else {
+        // Hiển thị thông báo lỗi nếu không hợp lệ
+        alert("Số điện thoại phải là số và có đúng 10 chữ số.");
+      }
+    } else {
+      // Xử lý cho các trường khác
+      setItem((prevSuplier) => ({
+        ...prevSuplier,
+        [field]: value,
+      }));
+    }
+  };
+
+  const filterData = ProductsData.filter((item) => {
+    const lowerCaseQuery = searchQuery.toLowerCase();
+
+    // Lọc theo searchQuery: fullname, email, và phone
+    const matchesSearch =
+      item.productName.toLowerCase().includes(lowerCaseQuery) ||
+      item.price.toLowerCase().includes(lowerCaseQuery) ||
+      item.id.toLowerCase().includes(lowerCaseQuery) ||
+      item.quantity.toString().toLowerCase().includes(lowerCaseQuery);
+
+    // Lọc theo bộ lọc trạng thái (online/offline)
+
+    return matchesSearch;
+  });
+
   // Function to add product to cart
   const [cartItems, setCartItems] = useState<Product[]>([]); // State to store products in the cart
 
@@ -111,11 +176,17 @@ const AddImport = () => {
   };
 
   const updateCart = (updatedItem: Product) => {
-    setCartItems((prev) =>
-      prev.map((item) => (item.id === updatedItem.id ? updatedItem : item))
-    );
+    setCartItems((prev) => {
+      if (updatedItem.quantity === 0) {
+        // Loại bỏ sản phẩm nếu số lượng bằng 0
+        return prev.filter((item) => item.id !== updatedItem.id);
+      }
+      // Cập nhật sản phẩm nếu số lượng lớn hơn 0
+      return prev.map((item) =>
+        item.id === updatedItem.id ? updatedItem : item
+      );
+    });
   };
-
   const totalAmount = cartItems.reduce(
     (total, item) =>
       total + parseFloat(item.price.replace("$", "")) * item.quantity,
@@ -130,8 +201,6 @@ const AddImport = () => {
         (item.quantity / 100),
     0
   );
-
-  console.log(cartItems, "this iss carrt iteam");
 
   return (
     <div className="w-full h-full rounded-md shadow-md">
@@ -161,13 +230,7 @@ const AddImport = () => {
             width="w-full"
             placeholder="Enter suplier name..."
           />
-          <InputEdit
-            titleInput="Phone number"
-            value={item.suplier.phoneNumber}
-            onChange={(e) => changeSuplierField("phoneNumber", e.target.value)}
-            width="w-full"
-            placeholder="Enter suplier phone number..."
-          />
+          <PhoneNumberInput item={item} setItem={setItem} />
           <InputEdit
             titleInput="Address"
             value={item.suplier.address}
@@ -179,9 +242,13 @@ const AddImport = () => {
 
         {/* Invoice Detail */}
         <TitleSession title="Import Product" />
+        <div className="w-full md:w-2/3 lg:w-[250px]">
+          <TableSearchNoFilter onSearch={setSearchQuery} />
+        </div>
+
         <div className="w-full h-4/6 flex overflow-hidden">
-          <div className="container grid md:grid-cols-3 lg:grid-cols-5 grid-cols-1 w-full gap-8 max-h-[400px] md:w-2/3 lg:w-3/4 overflow-y-auto pr-2">
-            {ProductsData.map((product: Product) => (
+          <div className="container grid md:grid-cols-3 lg:grid-cols-5 grid-cols-1 w-full gap-8 max-h-[400px] md:w-2/3 lg:w-3/4 overflow-y-auto ">
+            {filterData.map((product: Product) => (
               <ImportCard
                 key={product.id}
                 item={product}
@@ -189,7 +256,6 @@ const AddImport = () => {
               />
             ))}
           </div>
-
           {/* Cart Section */}
           <div className="flex flex-col md:w-2/5 w-2/3 lg:w-2/5 max-h-[400px]">
             {cartItems.length > 0 ? (
@@ -214,23 +280,36 @@ const AddImport = () => {
                 <div className="w-full flex flex-col gap-4 p-2">
                   <div className="HDNH_maincontent_footer_total flex justify-between">
                     <span className={stockInfTitle}>Sub total:</span>
-                    <div className="HDNH_total">{totalAmount}</div>
+                    <div className="HDNH_total">{formatPrice(totalAmount)}</div>
                   </div>
                   <div className="HDNH_maincontent_footer_discount flex justify-between">
                     <span className={stockInfTitle}>Discount:</span>
-                    <div className="HDNH_discount">{totalDiscount}</div>
+                    <div className="HDNH_discount">
+                      {formatPrice(totalDiscount)}
+                    </div>
                   </div>
                   <hr className="my-2" />
                   <div className="HDNH_maincontent_footer_finaltotal flex justify-between">
                     <span className="font-bold text-[16px]">Total:</span>
                     <div className="HDNH_finaltotal font-bold">
-                      {totalAmount - totalDiscount}
+                      {formatPrice(totalAmount - totalDiscount)}
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <p>Your cart is empty.</p>
+              <div className="flex-1 flex flex-col justify-start items-center font-medium text-[16px]">
+                Your cart is empty.
+                <div className="w-52 h-52 ">
+                  <Image
+                    src={"/assets/images/EmptyCart.jpg"}
+                    alt="empty cart"
+                    width={200}
+                    height={230}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
             )}
           </div>
         </div>

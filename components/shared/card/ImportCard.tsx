@@ -20,7 +20,7 @@ const ImportCard = ({
 }) => {
   return (
     <div
-      className="w-28 h-44 rounded-lg bg-gray-100 flex flex-col gap-1"
+      className="w-28 h-44 rounded-lg bg-gray-100 flex flex-col gap-1 hover:cursor-pointer"
       onClick={onClick}
     >
       <div className="w-full h-32 rounded-lg">

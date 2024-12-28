@@ -1,13 +1,13 @@
 "use client";
 import StaffInformation from "@/components/admin/staff/StaffInformation";
-import Headers from "@/components/shared/Headers";
+import Headers from "@/components/shared/header/Headers";
 import { useRouter } from "next/navigation"; // Đúng cách sử dụng trong App Router
 import React from "react";
 
 const Page = () => {
   const router = useRouter();
-  const handleExport = () => {
-    console.log("Export clicked");
+  const handleBack = () => {
+    router.back();
   };
 
   const handleAddStaff = () => {
@@ -21,7 +21,7 @@ const Page = () => {
         titleFirstButton="Cancel"
         secondIcon="mingcute:add-line"
         titleSecondButton="Add Staff"
-        onClickFirstButton={handleExport}
+        onClickFirstButton={handleBack}
         onClickSecondButton={handleAddStaff}
         type={2}
       ></Headers>

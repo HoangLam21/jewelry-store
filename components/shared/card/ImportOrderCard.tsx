@@ -19,7 +19,7 @@ const ImportOrderCard = ({
 }) => {
   const handleQuantityChange = (newQuantity: string) => {
     const quantity = parseInt(newQuantity, 10);
-    if (isNaN(quantity) || quantity < 1) return; // Nếu không hợp lệ, bỏ qua
+    if (isNaN(quantity)) return; // Bỏ qua nếu giá trị không hợp lệ
     const updatedItem = { ...item, quantity }; // Cập nhật số lượng
     updateCart(updatedItem); // Gửi thông tin mới về cho cha
   };
@@ -49,7 +49,7 @@ const ImportOrderCard = ({
           value={item.quantity}
           onChange={(e) => handleQuantityChange(e.target.value)}
           min={1}
-          className="w-16 h-6 border border-gray-300 rounded-md px-2 text-sm focus:outline-none mx-2"
+          className="w-16 h-6 border border-gray-300 rounded-md self-center text-sm focus:outline-none text-center"
         />
         <button
           onClick={() => handleQuantityChange((item.quantity + 1).toString())}
