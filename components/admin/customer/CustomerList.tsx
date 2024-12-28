@@ -7,10 +7,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
+import Format from "@/components/shared/card/ConfirmCard";
 
 interface OrderCustomer {
   id: string;
-  createAt: Date;
+  createAt: string;
   createBy: string;
   cost: number;
 }
@@ -26,6 +27,17 @@ interface Customer {
   sales: number;
   orders: OrderCustomer[];
 }
+const defaultDetail: Customer = {
+  id: "",
+  fullName: "",
+  phoneNumber: "",
+  email: "",
+  address: "",
+  avatar: "",
+  point: 0,
+  sales: 0,
+  orders: []
+};
 
 const columns = [
   { header: "Customer Name", accessor: "name" },
@@ -51,8 +63,10 @@ const columns = [
 const CustomerList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [onDelete, setOnDelete] = useState(false);
   const [filterOption, setFilterOption] = useState("");
 
+  //SEARCH
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
     direction: "ascending" | "descending";
@@ -61,7 +75,6 @@ const CustomerList = () => {
     direction: "ascending"
   });
   type SortableKeys = "id" | "fullname" | "point" | "sales";
-
   const getValueByKey = (item: (typeof CustomerData)[0], key: SortableKeys) => {
     switch (key) {
       case "id":
@@ -76,7 +89,6 @@ const CustomerList = () => {
         return "";
     }
   };
-
   const sorted = [...CustomerData].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
@@ -89,7 +101,6 @@ const CustomerList = () => {
     }
     return 0;
   });
-
   const requestSort = (key: SortableKeys) => {
     let direction: "ascending" | "descending" = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -97,7 +108,11 @@ const CustomerList = () => {
     }
     setSortConfig({ key, direction });
   };
+  const handleSort = (key: SortableKeys) => {
+    requestSort(key);
+  };
 
+  //PAGINATION
   const filterData = sorted.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
@@ -110,13 +125,13 @@ const CustomerList = () => {
 
     return matchesSearch;
   });
-
-  const dataLength = filterData.length;
+  const [displayedList, setDisplayedList] = useState<Customer[]>(filterData);
+  const dataLength = displayedList.length;
   const itemsPerPage = 8;
   const totalPages = Math.ceil(dataLength / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentData = filterData.slice(startIndex, endIndex);
+  const currentData = displayedList.slice(startIndex, endIndex);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const paginationUI: PaginationProps = {
@@ -128,10 +143,22 @@ const CustomerList = () => {
     dataLength
   };
 
-  const handleSort = () => {
-    console.log("this is sort");
+  //DELETE
+  const handleDelete = (id: string) => {
+    setOnDelete(false);
+    setDisplayedList((prev) => prev.filter((item) => item.id !== id));
+  };
+  const [detailItem, setDetailItem] = useState<Customer>(defaultDetail);
+  const handleConfirmDelete = (id: string) => {
+    const detail = displayedList.find((item) => item.id === id);
+    if (detail) setDetailItem(detail);
+    setOnDelete(true);
+  };
+  const handleCancelConfirm = () => {
+    setOnDelete(false);
   };
 
+  //RENDER TABLE
   const renderRow = (item: Customer) => (
     <tr
       key={item.id}
@@ -174,7 +201,10 @@ const CustomerList = () => {
               />
             </div>
           </Link>
-          <div className="w-7 h-7 flex items-center justify-center rounded-full">
+          <div
+            className="w-7 h-7 flex items-center justify-center rounded-full cursor-pointer"
+            onClick={() => handleConfirmDelete(item.id)}
+          >
             <Icon
               icon="tabler:trash"
               width={24}
@@ -187,18 +217,38 @@ const CustomerList = () => {
     </tr>
   );
   return (
-    <div className="w-full flex flex-col p-4 rounded-md shadow-sm">
-      <TableSearch onSearch={setSearchQuery} onSort={handleSort} />
-      <Table
-        columns={columns}
-        data={currentData}
-        renderRow={renderRow}
-        onSort={handleSort}
-      />
-      <div className="p-4 mt-4 text-sm flex items-center justify-center md:justify-between text-gray-500 dark:text-dark-360">
-        <PaginationUI paginationUI={paginationUI} />
+    <>
+      <div className="w-full flex flex-col p-4 rounded-md shadow-sm">
+        <TableSearch
+          onSearch={setSearchQuery}
+          onSort={(searchQuery: string) =>
+            handleSort(searchQuery as SortableKeys)
+          }
+        />
+        <Table
+          columns={columns}
+          data={currentData}
+          renderRow={renderRow}
+          onSort={(searchQuery: string) =>
+            handleSort(searchQuery as SortableKeys)
+          }
+        />
+        <div className="p-4 mt-4 text-sm flex items-center justify-center md:justify-between text-gray-500 dark:text-dark-360">
+          <PaginationUI paginationUI={paginationUI} />
+        </div>
       </div>
-    </div>
+
+      {onDelete && (
+        <Format
+          onClose={handleCancelConfirm}
+          label="Delete"
+          content="delete customer"
+          userName={detailItem.fullName}
+          onConfirmDelete={() => handleDelete(detailItem.id)}
+          type="delete"
+        />
+      )}
+    </>
   );
 };
 
