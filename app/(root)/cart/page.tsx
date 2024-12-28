@@ -4,10 +4,15 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Page() {
   const { state } = useCart();
+  const router = useRouter();
+  const handleCheckout = () => {
+    router.push("/checkout");
+  };
 
   const totalOriginalPrice = state.items.reduce(
     (acc, item) => acc + item.cost * item.quantity,
@@ -83,7 +88,6 @@ export default function Page() {
               </ul>
             </div>
 
-            {/* Tổng tiền giảm */}
             <div className="text-[20px] font-normal jost mt-4">
               <span>Total Discount: </span>
               <div className="text-end">
@@ -94,7 +98,6 @@ export default function Page() {
             </div>
             <hr className="mt-2"></hr>
 
-            {/* Tổng tiền cuối */}
             <div className="text-[20px] font-medium jost mt-4">
               <span>Total Final Price: </span>
               <div className="text-end">
@@ -109,7 +112,11 @@ export default function Page() {
             <Button className="bg-primary-100 text-white w-[20%] pr-2 rounded-none">
               CONTINUE SHOPPING
             </Button>
-            <Button className="bg-primary-100 w-[20%] text-white pr-2 rounded-none ml-3">
+
+            <Button
+              onClick={handleCheckout}
+              className="bg-primary-100 w-[20%] text-white pr-2 rounded-none ml-3"
+            >
               PROCESS TO CHECKOUT
             </Button>
           </div>

@@ -6,7 +6,7 @@ const ProductCard = ({ item }: { item: any }) => {
   const { dispatch } = useCart();
   return (
     <div
-      className="relative w-[260px] h-[454px] hover:shadow-lg transition-all"
+      className="relative w-[260px] h-[454px] transition-all"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
