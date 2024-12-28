@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
+import { CartProvider } from "@/contexts/CartContext";
 
 // const geistSans = localFont({
 //   // src: "./fonts/GeistVF.woff",
@@ -26,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="mdl-js">
       <body>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <CartProvider>{children}</CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
