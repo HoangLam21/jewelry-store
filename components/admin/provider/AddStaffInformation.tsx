@@ -60,7 +60,6 @@ const defaultStaff: Staff = {
 };
 
 const AddProviderInformation = () => {
-  const { id } = useParams<{ id: string }>();
   const [updateStaff, setUpdateStaff] = useState<Staff | null>(defaultStaff);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

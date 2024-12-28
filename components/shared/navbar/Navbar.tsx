@@ -45,7 +45,6 @@ const Navbar = () => {
         </Sheet>
       </div>
 
-      {/* Right side options */}
       <div className="flex-between w-auto pr-5">
         <Theme />
         <Icon
@@ -56,7 +55,10 @@ const Navbar = () => {
           icon="solar:user-bold"
           className="text-dark100_light500 mr-5 text-[20px]"
         />
-        <Icon icon="mdi:cart" className="text-dark100_light500 text-[20px]" />
+        <Link href="/cart">
+          <Icon icon="mdi:cart" className="text-dark100_light500 text-[20px]" />
+        </Link>
+
         <div className="flex w-auto sm:hidden">
           <MobileNav />
         </div>

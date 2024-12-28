@@ -1,16 +1,54 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createRating } from "@/lib/actions/rating.action"; // Adjust path as needed
+import { createRating } from "@/lib/actions/rating.action";
+import { IncomingForm } from "formidable";
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+const parseFormData = async (req: NextApiRequest) => {
+  return new Promise((resolve, reject) => {
+    const form = new IncomingForm();
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ fields, files });
+      }
+    });
+  });
+};
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === "POST") {
-    const { userId, productId, point, content } = req.body;
-
-    if (!userId || !productId || !point || !content) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
-
     try {
-      const newRating = await createRating({ userId, productId, point, content });
+      const { fields, files }: any = await parseFormData(req);
+
+      const { userId, productId, point, content } = fields;
+      const images = files?.images
+        ? Array.isArray(files.images)
+          ? files.images
+          : [files.images]
+        : [];
+
+      // Validate required fields
+      if (!userId || !productId || !point || !content) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      // Create the rating
+      const newRating = await createRating({
+        userId,
+        productId,
+        point: Number(point),
+        content:typeof content ==="string"? content:content[0],
+        images,
+      });
+
       return res.status(201).json(newRating);
     } catch (error) {
       console.error("Error creating rating: ", error);

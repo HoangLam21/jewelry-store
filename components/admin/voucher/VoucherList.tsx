@@ -1,39 +1,42 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { StaffData } from "@/constants/data";
+import { Vouchers } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
+import { format } from "date-fns";
 
-interface Staff {
+interface Voucher {
   id: string;
-  gender: string;
-  address: string;
-  earning: number;
-  phone: string;
+  name: string;
+  discount: string;
+  expDate: Date;
 }
 
 const columns = [
   { header: "ID", accessor: "id" },
   {
-    header: "Gender",
-    accessor: "gender",
+    header: "Name",
+    accessor: "name",
     className: "hidden md:table-cell",
   },
   {
-    header: "Address",
-    accessor: "address",
+    header: "Discount",
+    accessor: "discount",
     className: "hidden md:table-cell",
   },
-
-  { header: "Phone", accessor: "phone", className: "hidden lg:table-cell" },
+  {
+    header: "Expire Date",
+    accessor: "expDate",
+    className: "hidden lg:table-cell",
+  },
   { header: "Action", accessor: "action" },
 ];
 
-const ProviderList = () => {
+const VoucherList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
@@ -45,24 +48,22 @@ const ProviderList = () => {
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "gender" | "earning" | "address" | "number";
+  type SortableKeys = "id" | "name" | "expDate" | "discount";
 
-  const getValueByKey = (item: (typeof StaffData)[0], key: SortableKeys) => {
+  const getValueByKey = (item: (typeof Vouchers)[0], key: SortableKeys) => {
     switch (key) {
-      case "id":
-        return item.id;
-      case "gender":
-        return item.gender;
-      case "address":
-        return item.address;
-      case "earning":
-        return item.earning;
+      case "name":
+        return item.name;
+      case "discount":
+        return item.discount;
+      case "expDate":
+        return item.expDate;
       default:
         return "";
     }
   };
 
-  const sorted = [...StaffData].sort((a, b) => {
+  const sorted = [...Vouchers].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -87,11 +88,10 @@ const ProviderList = () => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
-      item.gender.toLowerCase().includes(lowerCaseQuery) ||
-      item.gender.toLowerCase().includes(lowerCaseQuery) ||
-      item.address.toLowerCase().includes(lowerCaseQuery) ||
-      item.earning.toString().toLowerCase().includes(lowerCaseQuery) ||
-      item.phone.toLowerCase().includes(lowerCaseQuery);
+      item.id.toLowerCase().includes(lowerCaseQuery) ||
+      item.name.toLowerCase().includes(lowerCaseQuery) ||
+      item.discount.toString().toLowerCase().includes(lowerCaseQuery) ||
+      item.expDate.toString().toLowerCase().includes(lowerCaseQuery);
 
     return matchesSearch;
   });
@@ -118,45 +118,24 @@ const ProviderList = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (item: Staff) => (
+  const renderRow = (item: Voucher) => (
     <tr
       key={item.id}
       className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
-          <p>{item.gender}</p>
+          <p>{item.name}</p>
           <p>#00{item.id}</p>
         </div>
       </td>
-      <td className="px-4 py-2">{item.gender}</td>
-      <td className="px-4 py-2">{item.address}</td>
-
-      <td className="px-4 py-2">{item.phone}</td>
+      <td className="px-4 py-2">{item.name}</td>
+      <td className="px-4 py-2">{item.discount}</td>
+      <td className="px-4 py-2">{format(item.expDate, "PPP")}</td>
 
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <Link href={`/admin/provider/${item.id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full">
-              <Icon
-                icon="tabler:eye"
-                width={24}
-                height={24}
-                className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1"
-              />
-            </div>
-          </Link>
-          <Link href={`/admin/provider/edit/${item.id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full">
-              <Icon
-                icon="tabler:edit"
-                width={24}
-                height={24}
-                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1"
-              />
-            </div>
-          </Link>
-          <div className="w-7 h-7 flex items-center justify-center rounded-full">
+          <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
             <Icon
               icon="tabler:trash"
               width={24}
@@ -184,4 +163,4 @@ const ProviderList = () => {
   );
 };
 
-export default ProviderList;
+export default VoucherList;

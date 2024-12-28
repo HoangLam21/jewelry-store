@@ -63,7 +63,7 @@ const columns = [
 ];
 
 const ProviderInformation = () => {
-  const { id } = useParams<{ id: string }>(); // Ensure id is typed
+  const { id } = useParams<{ id: string }>() as { id: string };
   const [staff, setStaff] = useState<Staff | null>(null); // Store staff data safely
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);

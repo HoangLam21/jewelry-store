@@ -53,6 +53,7 @@ interface ImageInfo {
   url: string;
   fileName: string;
 }
+
 interface Product {
   id: string;
   image: string;
@@ -67,6 +68,27 @@ interface Product {
   color: string;
   category: string;
   quantity: number;
+}
+
+interface Voucher {
+  id: string;
+  name: string;
+  discount: number;
+  expDate: Date;
+}
+
+interface Comment {
+  id: string;
+  userId: string;
+  userName: string;
+  productId: string;
+  rating: number;
+  createAt: Date;
+  productNamme: string;
+  size: string;
+  material: string;
+  comment: string;
+  image: string[];
 }
 
 interface OrderCustomer {
@@ -1360,6 +1382,279 @@ export const ProductsData: Product[] = [
     size: "One Size",
     color: "White",
     quantity: 12
+  }
+];
+
+export const Vouchers: Voucher[] = [
+  {
+    id: "1",
+    name: "Discount 10%",
+    discount: 10,
+    expDate: new Date("2025-01-01")
+  },
+  {
+    id: "2",
+    name: "Flash Sale 20%",
+    discount: 20,
+    expDate: new Date("2025-01-02")
+  },
+  {
+    id: "3",
+    name: "Holiday Special 15%",
+    discount: 15,
+    expDate: new Date("2025-02-14")
+  },
+  {
+    id: "4",
+    name: "Free Shipping",
+    discount: 10,
+    expDate: new Date("2025-03-01")
+  },
+  {
+    id: "5",
+    name: "Black Friday 25%",
+    discount: 25,
+    expDate: new Date("2025-11-29")
+  },
+  {
+    id: "6",
+    name: "Cyber Monday 30%",
+    discount: 30,
+    expDate: new Date("2025-12-02")
+  },
+  {
+    id: "7",
+    name: "New Year 20%",
+    discount: 20,
+    expDate: new Date("2025-01-01")
+  },
+  {
+    id: "8",
+    name: "Valentine's Day 15%",
+    discount: 15,
+    expDate: new Date("2025-02-14")
+  },
+  {
+    id: "9",
+    name: "Summer Sale 10%",
+    discount: 10,
+    expDate: new Date("2025-07-01")
+  },
+  {
+    id: "10",
+    name: "Spring Special 12%",
+    discount: 12,
+    expDate: new Date("2025-04-01")
+  },
+  {
+    id: "11",
+    name: "Easter Special 18%",
+    discount: 18,
+    expDate: new Date("2025-04-20")
+  },
+  {
+    id: "12",
+    name: "Back to School 5%",
+    discount: 5,
+    expDate: new Date("2025-08-15")
+  },
+  {
+    id: "13",
+    name: "Birthday Bash 25%",
+    discount: 25,
+    expDate: new Date("2025-09-01")
+  },
+  {
+    id: "14",
+    name: "Shopping Festival 35%",
+    discount: 35,
+    expDate: new Date("2025-10-15")
+  },
+  {
+    id: "15",
+    name: "Anniversary 50%",
+    discount: 50,
+    expDate: new Date("2025-12-01")
+  },
+  {
+    id: "16",
+    name: "Lucky Day 22%",
+    discount: 22,
+    expDate: new Date("2025-05-13")
+  },
+  {
+    id: "17",
+    name: "Weekend Special 11%",
+    discount: 11,
+    expDate: new Date("2025-06-07")
+  },
+  {
+    id: "18",
+    name: "Winter Warm-Up 14%",
+    discount: 14,
+    expDate: new Date("2025-12-15")
+  },
+  {
+    id: "19",
+    name: "Festival of Lights 20%",
+    discount: 20,
+    expDate: new Date("2025-11-10")
+  },
+  {
+    id: "20",
+    name: "Year-End Clearance 40%",
+    discount: 40,
+    expDate: new Date("2025-12-31")
+  }
+];
+
+export const Comments: Comment[] = [
+  {
+    id: "1",
+    userId: "user01",
+    userName: "Alice",
+    productId: "1",
+    rating: 5,
+    createAt: new Date("2024-12-20T12:30:00"),
+    productNamme: "Gold Necklace",
+    size: "M",
+    material: "Gold",
+    comment: "Absolutely stunning piece! Highly recommend.",
+    image: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
+  },
+  {
+    id: "2",
+    userId: "user02",
+    userName: "Bob",
+    productId: "1",
+    rating: 4,
+    createAt: new Date("2024-12-21T14:00:00"),
+    productNamme: "Silver Bracelet",
+    size: "L",
+    material: "Silver",
+    comment: "Great quality, but delivery was a bit late.",
+    image: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
+  },
+  {
+    id: "3",
+    userId: "user03",
+    userName: "Charlie",
+    productId: "1",
+    rating: 3,
+    createAt: new Date("2024-12-18T16:00:00"),
+    productNamme: "Diamond Ring",
+    size: "S",
+    material: "Gold",
+    comment: "Looks good but smaller than expected.",
+    image: []
+  },
+  {
+    id: "4",
+    userId: "user04",
+    userName: "Diana",
+    productId: "1",
+    rating: 5,
+    createAt: new Date("2024-12-15T10:30:00"),
+    productNamme: "Pearl Earrings",
+    size: "M",
+    material: "Silver",
+    comment: "Beautiful and well-made. Perfect gift!",
+    image: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
+  },
+  {
+    id: "5",
+    userId: "user05",
+    userName: "Eve",
+    productId: "1",
+    rating: 2,
+    createAt: new Date("2024-12-14T08:45:00"),
+    productNamme: "Platinum Ring",
+    size: "L",
+    material: "Platinum",
+    comment: "Too expensive for the quality provided.",
+    image: []
+  },
+  {
+    id: "6",
+    userId: "user06",
+    userName: "Frank",
+    productId: "1",
+    rating: 4,
+    createAt: new Date("2024-12-22T11:20:00"),
+    productNamme: "Titanium Watch",
+    size: "M",
+    material: "Titanium",
+    comment: "Looks stylish and durable.",
+    image: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
+  },
+  {
+    id: "7",
+    userId: "user07",
+    userName: "Grace",
+    productId: "1",
+    rating: 5,
+    createAt: new Date("2024-12-19T09:15:00"),
+    productNamme: "Gold Chain",
+    size: "S",
+    material: "Gold",
+    comment: "Exactly what I was looking for. Perfect size!",
+    image: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
+  },
+  {
+    id: "8",
+    userId: "user08",
+    userName: "Hank",
+    productId: "1",
+    rating: 3,
+    createAt: new Date("2024-12-17T14:10:00"),
+    productNamme: "Ruby Pendant",
+    size: "M",
+    material: "Silver",
+    comment: "Color not as vibrant as in the pictures.",
+    image: []
+  },
+  {
+    id: "9",
+    userId: "user09",
+    userName: "Ivy",
+    productId: "1",
+    rating: 5,
+    createAt: new Date("2024-12-23T12:00:00"),
+    productNamme: "Emerald Necklace",
+    size: "L",
+    material: "Gold",
+    comment: "Very elegant. Got many compliments!",
+    image: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
+  },
+  {
+    id: "10",
+    userId: "user10",
+    userName: "Jack",
+    productId: "1",
+    rating: 4,
+    createAt: new Date("2024-12-16T13:50:00"),
+    productNamme: "Silver Ring",
+    size: "M",
+    material: "Silver",
+    comment: "Simple and classy. Good for daily wear.",
+    image: [
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
   }
 ];
 

@@ -218,7 +218,7 @@ const ImportList = () => {
         columns={columns}
         data={currentData}
         renderRow={renderRow}
-        onSort={handleSort}
+        onSort={(key: string) => requestSort(key as SortableKeys)}
       />
       <div className="p-4 mt-4 text-sm flex items-center justify-center md:justify-between text-gray-500 dark:text-dark-360">
         <PaginationUI paginationUI={paginationUI} />

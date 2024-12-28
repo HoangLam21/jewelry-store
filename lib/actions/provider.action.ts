@@ -1,6 +1,5 @@
 "use server"
-import Provider from "@/database/provider.model";
-import { IProvider } from "@/database/provider.model";
+import ProductProvider from "@/database/provider.model";
 import { connectToDatabase } from "../mongoose";
 
 export const createProvider = async (data: { 
@@ -10,7 +9,7 @@ export const createProvider = async (data: {
 }) => {
   try {
     connectToDatabase();
-    const newProvider = await Provider.create({
+    const newProvider = await ProductProvider.create({
       name: data.name,
       address: data.address,
       contact: data.contact,
@@ -25,7 +24,7 @@ export const createProvider = async (data: {
 export const getProviders = async () => {
   try {
     connectToDatabase();
-    const providers = await Provider.find();
+    const providers = await ProductProvider.find();
     return providers;
   } catch (error) {
     console.log("Error fetching Providers: ", error);
@@ -36,7 +35,7 @@ export const getProviders = async () => {
 export const getProviderById = async (id: string) => {
   try {
     connectToDatabase();
-    const provider = await Provider.findById(id);
+    const provider = await ProductProvider.findById(id);
     if (!provider) {
       throw new Error("Provider not found");
     }
@@ -54,7 +53,7 @@ export const updateProvider = async (id: string, data: Partial<{
 }>) => {
   try {
     connectToDatabase();
-    const updatedProvider = await Provider.findByIdAndUpdate(
+    const updatedProvider = await ProductProvider.findByIdAndUpdate(
       id,
       {
         ...data
@@ -74,7 +73,7 @@ export const updateProvider = async (id: string, data: Partial<{
 export const deleteProvider = async (id: string) => {
   try {
     connectToDatabase();
-    const deletedProvider = await Provider.findByIdAndDelete(id);
+    const deletedProvider = await ProductProvider.findByIdAndDelete(id);
     if (!deletedProvider) {
       throw new Error("Provider not found");
     }

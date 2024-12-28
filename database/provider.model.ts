@@ -1,20 +1,20 @@
 import { Schema, Document, model, models } from "mongoose";
 import { AuditSchema, IAudit } from "./audit.model";
 
-export interface IProvider extends Document, IAudit {
+export interface IProductProvider extends Document, IAudit {
   name: string;
   address: string;
   contact: string;
 }
 
-const ProviderSchema = new Schema<IProvider>({
+const ProductProviderSchema = new Schema<IProductProvider>({
   name: { type: String, required: true },
   address: { type: String, required: true },
   contact: { type: String, required: true },
 });
 
-ProviderSchema.add(AuditSchema);
+ProductProviderSchema.add(AuditSchema);
 
-const Provider = models.Provider || model("Provider", ProviderSchema);
+const ProductProvider = models.ProductProvider || model("ProductProvider", ProductProviderSchema);
 
-export default Provider;
+export default ProductProvider;

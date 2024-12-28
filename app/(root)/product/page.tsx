@@ -14,8 +14,10 @@ const fakeJewelryData = [
       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
     category: "Ring",
     material: "Gold",
-    rating: 4.5, // New property
-    sales: 120, // New property
+    rating: 4.5,
+    sales: 120,
+    voucherName: "Golden Deal",
+    discount: 10,
   },
   {
     _id: "2",
@@ -27,6 +29,8 @@ const fakeJewelryData = [
     material: "Silver",
     rating: 4.0,
     sales: 90,
+    voucherName: "Shiny Silver",
+    discount: 15,
   },
   {
     _id: "3",
@@ -38,6 +42,8 @@ const fakeJewelryData = [
     material: "Platinum",
     rating: 4.8,
     sales: 150,
+    voucherName: "Premium Platinum",
+    discount: 20,
   },
   {
     _id: "4",
@@ -49,6 +55,8 @@ const fakeJewelryData = [
     material: "Rose Gold",
     rating: 3.9,
     sales: 50,
+    voucherName: "Rose Charm Special",
+    discount: 5,
   },
   {
     _id: "5",
@@ -60,6 +68,8 @@ const fakeJewelryData = [
     material: "Gold",
     rating: 4.9,
     sales: 200,
+    voucherName: "Diamond Delight",
+    discount: 25,
   },
   {
     _id: "6",
@@ -71,6 +81,8 @@ const fakeJewelryData = [
     material: "Emerald",
     rating: 4.3,
     sales: 110,
+    voucherName: "Emerald Sparkle",
+    discount: 12,
   },
   {
     _id: "7",
@@ -82,6 +94,8 @@ const fakeJewelryData = [
     material: "Ruby",
     rating: 4.6,
     sales: 130,
+    voucherName: "Ruby Shine",
+    discount: 18,
   },
   {
     _id: "8",
@@ -93,6 +107,8 @@ const fakeJewelryData = [
     material: "Sapphire",
     rating: 4.7,
     sales: 140,
+    voucherName: "Sapphire Luxury",
+    discount: 22,
   },
   {
     _id: "9",
@@ -104,6 +120,8 @@ const fakeJewelryData = [
     material: "Pearl",
     rating: 4.2,
     sales: 80,
+    voucherName: "Pearl Elegance",
+    discount: 10,
   },
   {
     _id: "10",
@@ -115,6 +133,8 @@ const fakeJewelryData = [
     material: "Platinum",
     rating: 4.4,
     sales: 100,
+    voucherName: "Cufflink Platinum",
+    discount: 15,
   },
   {
     _id: "11",
@@ -126,6 +146,8 @@ const fakeJewelryData = [
     material: "Gold",
     rating: 3.8,
     sales: 40,
+    voucherName: "Golden Anklet Deal",
+    discount: 7,
   },
   {
     _id: "12",
@@ -137,6 +159,8 @@ const fakeJewelryData = [
     material: "Diamond",
     rating: 4.9,
     sales: 180,
+    voucherName: "Diamond Shine",
+    discount: 30,
   },
   {
     _id: "13",
@@ -148,6 +172,8 @@ const fakeJewelryData = [
     material: "Silver",
     rating: 3.7,
     sales: 30,
+    voucherName: "Silver Style",
+    discount: 8,
   },
   {
     _id: "14",
@@ -159,6 +185,8 @@ const fakeJewelryData = [
     material: "Gold",
     rating: 4.1,
     sales: 70,
+    voucherName: "Golden Glow",
+    discount: 12,
   },
 ];
 
