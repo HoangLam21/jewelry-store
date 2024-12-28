@@ -56,6 +56,11 @@ export const sidebarLinks: SidebarLink[] = [
     label: "Product",
   },
   {
+    icon: "material-symbols:timer-outline",
+    route: "/admin/voucher",
+    label: "Voucher",
+  },
+  {
     icon: "ph:video",
     route: "/admin/order",
     label: "Order",

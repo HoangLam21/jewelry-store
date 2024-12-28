@@ -10,7 +10,6 @@ import PaginationUI from "@/types/pagination/Pagination";
 
 interface Staff {
   id: string;
-  fullname: string;
   gender: string;
   address: string;
   earning: number;
@@ -46,14 +45,14 @@ const ProviderList = () => {
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "fullname" | "earning" | "address" | "number";
+  type SortableKeys = "id" | "gender" | "earning" | "address" | "number";
 
   const getValueByKey = (item: (typeof StaffData)[0], key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
-      case "fullname":
-        return item.fullname;
+      case "gender":
+        return item.gender;
       case "address":
         return item.address;
       case "earning":
@@ -88,7 +87,7 @@ const ProviderList = () => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
-      item.fullname.toLowerCase().includes(lowerCaseQuery) ||
+      item.gender.toLowerCase().includes(lowerCaseQuery) ||
       item.gender.toLowerCase().includes(lowerCaseQuery) ||
       item.address.toLowerCase().includes(lowerCaseQuery) ||
       item.earning.toString().toLowerCase().includes(lowerCaseQuery) ||
@@ -126,7 +125,7 @@ const ProviderList = () => {
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
-          <p>{item.fullname}</p>
+          <p>{item.gender}</p>
           <p>#00{item.id}</p>
         </div>
       </td>
@@ -176,7 +175,7 @@ const ProviderList = () => {
         columns={columns}
         data={currentData}
         renderRow={renderRow}
-        onSort={handleSort}
+        onSort={(key: string) => requestSort(key as SortableKeys)}
       />
       <div className="p-4 mt-4 text-sm flex items-center justify-center md:justify-between text-gray-500 dark:text-dark-360">
         <PaginationUI paginationUI={paginationUI} />

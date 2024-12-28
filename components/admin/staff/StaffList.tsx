@@ -52,14 +52,14 @@ const StaffList = () => {
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "fullname" | "earning" | "position" | "number";
+  type SortableKeys = "id" | "gender" | "earning" | "position" | "number";
 
   const getValueByKey = (item: (typeof StaffData)[0], key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
-      case "fullname":
-        return item.fullname;
+      case "gender":
+        return item.gender;
       case "position":
         return item.position;
       case "earning":
@@ -186,7 +186,7 @@ const StaffList = () => {
         columns={columns}
         data={currentData}
         renderRow={renderRow}
-        onSort={handleSort}
+        onSort={(key: string) => requestSort(key as SortableKeys)}
       />
       <div className="p-4 mt-4 text-sm flex items-center justify-center md:justify-between text-gray-500 dark:text-dark-360">
         <PaginationUI paginationUI={paginationUI} />
