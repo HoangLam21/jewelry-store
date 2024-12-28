@@ -351,6 +351,7 @@ export const contract = c.router({
         productId: z.string().uuid(),
         point: z.number().min(1).max(5),
         content: z.string().optional(),
+        images: z.string().optional(),
       }),
       responses: {},
     },
@@ -379,6 +380,7 @@ export const contract = c.router({
       body: z.object({
         point: z.number().min(1).max(5).optional(),
         content: z.string().optional(),
+        images: z.string().optional(),
       }),
       responses: {},
       query: z.object({
