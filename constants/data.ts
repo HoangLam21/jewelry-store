@@ -91,6 +91,27 @@ interface Comment {
   image: string[];
 }
 
+interface ImportInvoice {
+  id: string;
+  createAt: string;
+  createBy: string;
+  total: number;
+  status: number;
+}
+
+interface Provider {
+  _id: string;
+  name: string;
+  address: string;
+  representativeName: string;
+  createAt: Date;
+  contact: string;
+  city: string;
+  country: string;
+  email: string;
+  numberImportInvoice: ImportInvoice[];
+}
+
 export const StaffData: Staff[] = [
   {
     id: "1",
@@ -1635,6 +1656,207 @@ export const Comments: Comment[] = [
     comment: "Simple and classy. Good for daily wear.",
     image: [
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
+    ],
+  },
+];
+
+export const Providers: Provider[] = [
+  {
+    _id: "1",
+    name: "Fresh Produce Ltd.",
+    address: "123 Green Road",
+    representativeName: "John Smith",
+    createAt: new Date("2023-01-15"),
+    contact: "0123456789",
+    city: "New York",
+    country: "USA",
+    email: "info@freshproduce.com",
+    numberImportInvoice: [
+      {
+        id: "i1",
+        createAt: "2023-03-01",
+        createBy: "John Doe",
+        total: 5000,
+        status: 1,
+      },
+      {
+        id: "i2",
+        createAt: "2023-04-10",
+        createBy: "Alice Johnson",
+        total: 3000,
+        status: 0,
+      },
+    ],
+  },
+  {
+    _id: "2",
+    name: "Tech Supplies Inc.",
+    address: "456 Tech Avenue",
+    representativeName: "Alice Brown",
+    createAt: new Date("2023-02-20"),
+    contact: "0987654321",
+    city: "San Francisco",
+    country: "USA",
+    email: "support@techsupplies.com",
+    numberImportInvoice: [
+      {
+        id: "i3",
+        createAt: "2023-05-05",
+        createBy: "Bob Carter",
+        total: 12000,
+        status: 1,
+      },
+    ],
+  },
+  {
+    _id: "3",
+    name: "Global Textiles Co.",
+    address: "789 Fashion Blvd",
+    representativeName: "Maria Gonzalez",
+    createAt: new Date("2023-03-30"),
+    contact: "0111222333",
+    city: "London",
+    country: "UK",
+    email: "contact@globaltextiles.com",
+    numberImportInvoice: [
+      {
+        id: "i4",
+        createAt: "2023-06-15",
+        createBy: "Sophia Lewis",
+        total: 8000,
+        status: 1,
+      },
+    ],
+  },
+  {
+    _id: "4",
+    name: "Organic Goods",
+    address: "654 Health Street",
+    representativeName: "Emma Wilson",
+    createAt: new Date("2023-04-10"),
+    contact: "0223344556",
+    city: "Berlin",
+    country: "Germany",
+    email: "hello@organicgoods.de",
+    numberImportInvoice: [],
+  },
+  {
+    _id: "5",
+    name: "Asia Electronics",
+    address: "12 Circuit Lane",
+    representativeName: "Chen Wei",
+    createAt: new Date("2023-05-20"),
+    contact: "0334455667",
+    city: "Beijing",
+    country: "China",
+    email: "sales@asiaelectronics.cn",
+    numberImportInvoice: [
+      {
+        id: "i5",
+        createAt: "2023-07-10",
+        createBy: "Lin Zhang",
+        total: 20000,
+        status: 1,
+      },
+      {
+        id: "i6",
+        createAt: "2023-07-20",
+        createBy: "Huang Li",
+        total: 18000,
+        status: 0,
+      },
+    ],
+  },
+  {
+    _id: "6",
+    name: "Euro Machinery",
+    address: "77 Industrial Park",
+    representativeName: "Peter Muller",
+    createAt: new Date("2023-06-15"),
+    contact: "0445566778",
+    city: "Paris",
+    country: "France",
+    email: "info@euromachinery.fr",
+    numberImportInvoice: [
+      {
+        id: "i7",
+        createAt: "2023-08-01",
+        createBy: "Claire Dubois",
+        total: 30000,
+        status: 1,
+      },
+    ],
+  },
+  {
+    _id: "7",
+    name: "South America Coffee",
+    address: "89 Coffee Avenue",
+    representativeName: "Carlos Mendoza",
+    createAt: new Date("2023-07-10"),
+    contact: "0556677889",
+    city: "Rio de Janeiro",
+    country: "Brazil",
+    email: "info@sacoffee.com.br",
+    numberImportInvoice: [],
+  },
+  {
+    _id: "8",
+    name: "North Supplies",
+    address: "101 Logistic Way",
+    representativeName: "James Anderson",
+    createAt: new Date("2023-08-01"),
+    contact: "0667788990",
+    city: "Toronto",
+    country: "Canada",
+    email: "contact@northsupplies.ca",
+    numberImportInvoice: [
+      {
+        id: "i8",
+        createAt: "2023-09-10",
+        createBy: "Sarah Thompson",
+        total: 7000,
+        status: 1,
+      },
+    ],
+  },
+  {
+    _id: "9",
+    name: "Australian Farming",
+    address: "333 Ranch Road",
+    representativeName: "Olivia Taylor",
+    createAt: new Date("2023-09-15"),
+    contact: "0778899001",
+    city: "Sydney",
+    country: "Australia",
+    email: "info@aussiefarm.com.au",
+    numberImportInvoice: [
+      {
+        id: "i9",
+        createAt: "2023-10-05",
+        createBy: "Michael Brown",
+        total: 2500,
+        status: 0,
+      },
+    ],
+  },
+  {
+    _id: "10",
+    name: "Modern Furniture",
+    address: "22 Designer Street",
+    representativeName: "Sophia Roberts",
+    createAt: new Date("2023-10-01"),
+    contact: "0889900112",
+    city: "Los Angeles",
+    country: "USA",
+    email: "sales@modernfurniture.com",
+    numberImportInvoice: [
+      {
+        id: "i10",
+        createAt: "2023-11-01",
+        createBy: "Emily Davis",
+        total: 15000,
+        status: 1,
+      },
     ],
   },
 ];

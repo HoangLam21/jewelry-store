@@ -1,35 +1,28 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { StaffData } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
-
-interface Staff {
-  id: string;
-  gender: string;
-  address: string;
-  earning: number;
-  phone: string;
-}
+import { fetchProvider } from "@/lib/service/provider.service";
 
 const columns = [
-  { header: "ID", accessor: "id" },
+  { header: "ID", accessor: "_id" },
   {
-    header: "Gender",
-    accessor: "gender",
+    header: "Name",
+    accessor: "name",
     className: "hidden md:table-cell",
   },
+
   {
     header: "Address",
     accessor: "address",
     className: "hidden md:table-cell",
   },
 
-  { header: "Phone", accessor: "phone", className: "hidden lg:table-cell" },
+  { header: "Phone", accessor: "contact", className: "hidden lg:table-cell" },
   { header: "Action", accessor: "action" },
 ];
 
@@ -38,6 +31,34 @@ const ProviderList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
 
+  const [provider, setProvider] = useState<Provider[] | null>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadProvider = async () => {
+      try {
+        const data = await fetchProvider();
+        if (isMounted) {
+          setProvider(data);
+        }
+      } catch (error) {
+        console.error("Error loading Provider:", error);
+      }
+    };
+    loadProvider();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!provider) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-white">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
     direction: "ascending" | "descending";
@@ -45,24 +66,25 @@ const ProviderList = () => {
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "gender" | "earning" | "address" | "number";
+  type SortableKeys = "id" | "name" | "contact" | "address" | "number";
 
-  const getValueByKey = (item: (typeof StaffData)[0], key: SortableKeys) => {
+  const getValueByKey = (item: (typeof provider)[0], key: SortableKeys) => {
     switch (key) {
       case "id":
-        return item.id;
-      case "gender":
-        return item.gender;
+        return item._id;
+      case "name":
+        return item.name;
+
       case "address":
         return item.address;
-      case "earning":
-        return item.earning;
+      case "contact":
+        return item.contact;
       default:
         return "";
     }
   };
 
-  const sorted = [...StaffData].sort((a, b) => {
+  const sorted = [...provider].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -87,11 +109,9 @@ const ProviderList = () => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
-      item.gender.toLowerCase().includes(lowerCaseQuery) ||
-      item.gender.toLowerCase().includes(lowerCaseQuery) ||
+      item.name.toLowerCase().includes(lowerCaseQuery) ||
       item.address.toLowerCase().includes(lowerCaseQuery) ||
-      item.earning.toString().toLowerCase().includes(lowerCaseQuery) ||
-      item.phone.toLowerCase().includes(lowerCaseQuery);
+      item.contact.toString().toLowerCase().includes(lowerCaseQuery);
 
     return matchesSearch;
   });
@@ -118,25 +138,24 @@ const ProviderList = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (item: Staff) => (
+  const renderRow = (item: Provider) => (
     <tr
-      key={item.id}
+      key={item._id}
       className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
-          <p>{item.gender}</p>
-          <p>#00{item.id}</p>
+          <p>{item._id}</p>
         </div>
       </td>
-      <td className="px-4 py-2">{item.gender}</td>
+      <td className="px-4 py-2">{item.name}</td>
       <td className="px-4 py-2">{item.address}</td>
 
-      <td className="px-4 py-2">{item.phone}</td>
+      <td className="px-4 py-2">{item.contact}</td>
 
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <Link href={`/admin/provider/${item.id}`}>
+          <Link href={`/admin/provider/${item._id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:eye"
@@ -146,7 +165,7 @@ const ProviderList = () => {
               />
             </div>
           </Link>
-          <Link href={`/admin/provider/edit/${item.id}`}>
+          <Link href={`/admin/provider/edit/${item._id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:edit"

@@ -1,21 +1,13 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { StaffData } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
-
-interface Staff {
-  id: string;
-  fullname: string;
-  gender: string;
-  position: string;
-  earning: number;
-  phone: string;
-}
+import { fetchStaff } from "@/lib/service/staff.service";
+import { Staff } from "@/dto/StaffDTO";
 
 const columns = [
   { header: "ID", accessor: "id" },
@@ -42,8 +34,36 @@ const StaffList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-  const totalResult = StaffData.length;
   const [filterOption, setFilterOption] = useState("");
+  const [staffs, setStaffs] = useState<Staff[] | null>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadStaff = async () => {
+      try {
+        const data = await fetchStaff();
+        if (isMounted) {
+          setStaffs(data);
+        }
+      } catch (error) {
+        console.error("Error loading staff:", error);
+      }
+    };
+    loadStaff();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!staffs) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-white">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
+  const totalResult = staffs.length;
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -54,22 +74,22 @@ const StaffList = () => {
   });
   type SortableKeys = "id" | "gender" | "earning" | "position" | "number";
 
-  const getValueByKey = (item: (typeof StaffData)[0], key: SortableKeys) => {
+  const getValueByKey = (item: (typeof staffs)[0], key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
       case "gender":
-        return item.gender;
+        return item.position;
       case "position":
         return item.position;
       case "earning":
-        return item.earning;
+        return item.salary;
       default:
         return "";
     }
   };
 
-  const sorted = [...StaffData].sort((a, b) => {
+  const sorted = [...staffs].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -90,25 +110,27 @@ const StaffList = () => {
     setSortConfig({ key, direction });
   };
 
+  console.log(staffs, "staffs");
+
   const filterData = sorted.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
-      item.fullname.toLowerCase().includes(lowerCaseQuery) ||
-      item.gender.toLowerCase().includes(lowerCaseQuery) ||
+      item.fullName.toLowerCase().includes(lowerCaseQuery) ||
       item.position.toLowerCase().includes(lowerCaseQuery) ||
-      item.earning.toString().toLowerCase().includes(lowerCaseQuery) ||
-      item.phone.toLowerCase().includes(lowerCaseQuery);
+      item.position.toLowerCase().includes(lowerCaseQuery) ||
+      item.salary.toString().toLowerCase().includes(lowerCaseQuery) ||
+      item.phoneNumber.toLowerCase().includes(lowerCaseQuery);
 
     return matchesSearch;
   });
 
-  const totalPages = Math.ceil(filterData.length / rowsPerPage);
+  const totalPages = Math.ceil(staffs.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const currentData = filterData.slice(startIndex, endIndex);
+  const currentData = staffs.slice(startIndex, endIndex);
 
-  const dataLength = filterData.length;
+  const dataLength = staffs.length;
   const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -132,18 +154,18 @@ const StaffList = () => {
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
-          <p>{item.fullname}</p>
+          <p>{item.fullName}</p>
           <p>#00{item.id}</p>
         </div>
       </td>
-      <td className="px-4 py-2">{item.gender}</td>
+      <td className="px-4 py-2">{item.fullName}</td>
       <td className="px-4 py-2">{item.position}</td>
 
       <td className="px-4 py-2 hidden md:table-cell">
         {" "}
-        {`${item.earning.toLocaleString("vi-VN")} VND`}
+        {`${item.salary} VND`}
       </td>
-      <td className="px-4 py-2">{item.phone}</td>
+      <td className="px-4 py-2">{item.phoneNumber}</td>
 
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
