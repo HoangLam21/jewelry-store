@@ -12,7 +12,6 @@ import { PaginationProps } from "@/types/pagination";
 import TableSearch from "@/components/shared/table/TableSearch";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
-import LabelStatus from "@/components/shared/label/LabelStatus";
 
 interface OrderCustomer {
   id: string;
@@ -91,9 +90,9 @@ const CustomerInformation = () => {
       case "cost":
         return item.cost;
       case "createBy":
-        return item.createBy.toLowerCase(); // So sánh chuỗi không phân biệt chữ hoa/thường
+        return item.createBy.toLowerCase();
       case "createAt":
-        return new Date(item.createAt).getTime(); // So sánh thời gian
+        return new Date(item.createAt).getTime();
       default:
         return "";
     }
@@ -117,6 +116,9 @@ const CustomerInformation = () => {
       direction = "descending";
     }
     setSortConfig({ key, direction });
+  };
+  const handleSort = (key: SortableKeys) => {
+    requestSort(key);
   };
 
   const filteredOrders = sorted.filter((orders) => {
@@ -146,10 +148,6 @@ const CustomerInformation = () => {
     indexOfFirstItem,
     totalPages,
     dataLength
-  };
-
-  const handleSort = (key: SortableKeys) => {
-    requestSort(key);
   };
 
   const renderRow = (orders: OrderCustomer) => (
@@ -182,7 +180,7 @@ const CustomerInformation = () => {
           <div className="w-1/5">
             <Image
               alt="avatar"
-              src="/assets/images/avatar.jpg"
+              src={Customer.avatar || "/assets/images/avatar.jpg"}
               width={115}
               height={130}
               className="rounded-md"

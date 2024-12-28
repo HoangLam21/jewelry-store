@@ -1365,7 +1365,7 @@ export const ProductsData: Product[] = [
 
 export const CustomerData: Customer[] = [
   {
-    id: "customer004",
+    id: "1",
     fullName: "Phạm Thị D",
     phoneNumber: "0945678901",
     email: "phamthid@example.com",
@@ -1383,7 +1383,7 @@ export const CustomerData: Customer[] = [
     ]
   },
   {
-    id: "customer005",
+    id: "2",
     fullName: "Võ Văn E",
     phoneNumber: "0976543210",
     email: "vovane@example.com",
@@ -1407,7 +1407,7 @@ export const CustomerData: Customer[] = [
     ]
   },
   {
-    id: "customer006",
+    id: "3",
     fullName: "Đặng Thị F",
     phoneNumber: "0923456789",
     email: "dangthif@example.com",
@@ -1425,7 +1425,7 @@ export const CustomerData: Customer[] = [
     ]
   },
   {
-    id: "customer007",
+    id: "4",
     fullName: "Ngô Văn G",
     phoneNumber: "0967890123",
     email: "ngovang@example.com",
@@ -1449,7 +1449,7 @@ export const CustomerData: Customer[] = [
     ]
   },
   {
-    id: "customer008",
+    id: "5",
     fullName: "Bùi Thị H",
     phoneNumber: "0932109876",
     email: "buithih@example.com",
@@ -1465,35 +1465,5 @@ export const CustomerData: Customer[] = [
         cost: 180.0
       }
     ]
-  },
-  ...Array.from({ length: 15 }, (_, i) => {
-    const id = `customer${String(i + 9).padStart(3, "0")}`;
-    const ordersCount = Math.floor(Math.random() * 4) + 1;
-    const orders = Array.from({ length: ordersCount }, (_, j) => ({
-      id: `order${id}-${j + 1}`,
-      createAt: new Date(
-        2024,
-        Math.floor(Math.random() * 12),
-        Math.floor(Math.random() * 28) + 1
-      ).toISOString(),
-      createBy: `admin${Math.floor(Math.random() * 10) + 1}`,
-      cost: parseFloat((Math.random() * 500 + 50).toFixed(2))
-    }));
-
-    const sales = orders.reduce((total, order) => total + order.cost, 0);
-
-    return {
-      id,
-      fullName: `Khách Hàng ${i + 9}`,
-      phoneNumber: `09${Math.floor(Math.random() * 90000000) + 10000000}`,
-      email: `customer${i + 9}@example.com`,
-      address: `Số ${Math.floor(Math.random() * 100 + 1)} Đường XYZ, Quận ${
-        Math.floor(Math.random() * 12) + 1
-      }, TP.HCM`,
-      avatar: `https://example.com/avatar${i + 9}.jpg`,
-      point: Math.floor(Math.random() * 300),
-      sales,
-      orders
-    };
-  })
+  }
 ];

@@ -65,7 +65,7 @@ const CustomerList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [onDelete, setOnDelete] = useState(false);
   const [filterOption, setFilterOption] = useState("");
-
+  const [displayedList, setDisplayedList] = useState<Customer[]>(CustomerData);
   //SEARCH
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -74,22 +74,27 @@ const CustomerList = () => {
     key: "id",
     direction: "ascending"
   });
-  type SortableKeys = "id" | "fullname" | "point" | "sales";
-  const getValueByKey = (item: (typeof CustomerData)[0], key: SortableKeys) => {
+  type SortableKeys = "id" | "fullname" | "point" | "sales" | "email";
+  const getValueByKey = (
+    item: (typeof displayedList)[0],
+    key: SortableKeys
+  ) => {
     switch (key) {
       case "id":
         return item.id;
       case "fullname":
-        return item.fullName;
+        return item.fullName.toLowerCase();
       case "point":
         return item.point;
       case "sales":
         return item.sales;
+      case "email":
+        return item.email.toLowerCase();
       default:
         return "";
     }
   };
-  const sorted = [...CustomerData].sort((a, b) => {
+  const sorted = [...displayedList].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -112,26 +117,24 @@ const CustomerList = () => {
     requestSort(key);
   };
 
-  //PAGINATION
-  const filterData = sorted.filter((item) => {
-    const lowerCaseQuery = searchQuery.toLowerCase();
-    // Lọc theo searchQuery
-    const matchesSearch =
-      item.fullName.toLowerCase().includes(lowerCaseQuery) ||
-      item.email.toLowerCase().includes(lowerCaseQuery) ||
-      item.point === parseInt(lowerCaseQuery, 10) ||
-      item.phoneNumber.toString().toLowerCase().includes(lowerCaseQuery) ||
-      item.id.toLowerCase().includes(lowerCaseQuery);
-
-    return matchesSearch;
+  //SEARCH
+  const filteredData = sorted.filter((item) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      item.fullName.toLowerCase().includes(query) ||
+      item.email.toLowerCase().includes(query) ||
+      item.id.toLowerCase().includes(query) ||
+      item.phoneNumber.includes(query)
+    );
   });
-  const [displayedList, setDisplayedList] = useState<Customer[]>(filterData);
-  const dataLength = displayedList.length;
+
+  //PAGINATION
+  const dataLength = filteredData.length;
   const itemsPerPage = 8;
   const totalPages = Math.ceil(dataLength / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentData = displayedList.slice(startIndex, endIndex);
+  const currentData = filteredData.slice(startIndex, endIndex);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const paginationUI: PaginationProps = {
@@ -191,7 +194,7 @@ const CustomerList = () => {
               />
             </div>
           </Link>
-          <Link href={`/admin/Customer/edit/${item.id}`}>
+          <Link href={`/admin/customer/edit/${item.id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:edit"
@@ -220,7 +223,7 @@ const CustomerList = () => {
     <>
       <div className="w-full flex flex-col p-4 rounded-md shadow-sm">
         <TableSearch
-          onSearch={setSearchQuery}
+          onSearch={(query) => setSearchQuery(query)}
           onSort={(searchQuery: string) =>
             handleSort(searchQuery as SortableKeys)
           }
