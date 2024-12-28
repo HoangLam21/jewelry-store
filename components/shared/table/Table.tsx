@@ -6,7 +6,7 @@ const Table = ({
   columns,
   renderRow,
   data,
-  onSort,
+  onSort
 }: {
   columns: { header: string; accessor: string; className?: string }[];
   renderRow: (item: any) => React.ReactNode;
@@ -25,7 +25,7 @@ const Table = ({
               <div className="flex items-center">
                 <span>{col.header}</span>
                 <div
-                  className="px-2 inline-flex items-center dark:text-dark-360"
+                  className="px-2 inline-flex items-center dark:text-dark-360 cursor-pointer"
                   onClick={() => onSort(col.accessor)} // Pass column key for sorting
                 >
                   <Icon

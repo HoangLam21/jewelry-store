@@ -69,6 +69,25 @@ interface Product {
   quantity: number;
 }
 
+interface OrderCustomer {
+  id: string;
+  createAt: string;
+  createBy: string;
+  cost: number;
+}
+
+interface Customer {
+  id: string;
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  address: string;
+  avatar: string;
+  point: number;
+  sales: number;
+  orders: OrderCustomer[];
+}
+
 export const StaffData: Staff[] = [
   {
     id: "1",
@@ -1342,4 +1361,139 @@ export const ProductsData: Product[] = [
     color: "White",
     quantity: 12
   }
+];
+
+export const CustomerData: Customer[] = [
+  {
+    id: "customer004",
+    fullName: "Phạm Thị D",
+    phoneNumber: "0945678901",
+    email: "phamthid@example.com",
+    address: "12 Đường KLM, Phường STU, Quận 4, TP.HCM",
+    avatar: "https://example.com/avatar4.jpg",
+    point: 220,
+    sales: 320.5,
+    orders: [
+      {
+        id: "order006",
+        createAt: new Date("2024-11-30").toISOString(),
+        createBy: "admin006",
+        cost: 320.5
+      }
+    ]
+  },
+  {
+    id: "customer005",
+    fullName: "Võ Văn E",
+    phoneNumber: "0976543210",
+    email: "vovane@example.com",
+    address: "34 Đường VWX, Phường YZ, Quận 5, TP.HCM",
+    avatar: "https://example.com/avatar5.jpg",
+    point: 90,
+    sales: 230.25,
+    orders: [
+      {
+        id: "order007",
+        createAt: new Date("2024-11-15").toISOString(),
+        createBy: "admin007",
+        cost: 150.25
+      },
+      {
+        id: "order008",
+        createAt: new Date("2024-11-22").toISOString(),
+        createBy: "admin008",
+        cost: 80.0
+      }
+    ]
+  },
+  {
+    id: "customer006",
+    fullName: "Đặng Thị F",
+    phoneNumber: "0923456789",
+    email: "dangthif@example.com",
+    address: "56 Đường XYZ, Phường OPQ, Quận 6, TP.HCM",
+    avatar: "https://example.com/avatar6.jpg",
+    point: 110,
+    sales: 300.0,
+    orders: [
+      {
+        id: "order009",
+        createAt: new Date("2024-12-01").toISOString(),
+        createBy: "admin009",
+        cost: 300.0
+      }
+    ]
+  },
+  {
+    id: "customer007",
+    fullName: "Ngô Văn G",
+    phoneNumber: "0967890123",
+    email: "ngovang@example.com",
+    address: "78 Đường ABC, Phường DEF, Quận 7, TP.HCM",
+    avatar: "https://example.com/avatar7.jpg",
+    point: 250,
+    sales: 650.5,
+    orders: [
+      {
+        id: "order010",
+        createAt: new Date("2024-11-25").toISOString(),
+        createBy: "admin010",
+        cost: 450.5
+      },
+      {
+        id: "order011",
+        createAt: new Date("2024-11-28").toISOString(),
+        createBy: "admin011",
+        cost: 200.0
+      }
+    ]
+  },
+  {
+    id: "customer008",
+    fullName: "Bùi Thị H",
+    phoneNumber: "0932109876",
+    email: "buithih@example.com",
+    address: "90 Đường GHI, Phường JKL, Quận 8, TP.HCM",
+    avatar: "https://example.com/avatar8.jpg",
+    point: 170,
+    sales: 180.0,
+    orders: [
+      {
+        id: "order012",
+        createAt: new Date("2024-12-10").toISOString(),
+        createBy: "admin012",
+        cost: 180.0
+      }
+    ]
+  },
+  ...Array.from({ length: 15 }, (_, i) => {
+    const id = `customer${String(i + 9).padStart(3, "0")}`;
+    const ordersCount = Math.floor(Math.random() * 4) + 1;
+    const orders = Array.from({ length: ordersCount }, (_, j) => ({
+      id: `order${id}-${j + 1}`,
+      createAt: new Date(
+        2024,
+        Math.floor(Math.random() * 12),
+        Math.floor(Math.random() * 28) + 1
+      ).toISOString(),
+      createBy: `admin${Math.floor(Math.random() * 10) + 1}`,
+      cost: parseFloat((Math.random() * 500 + 50).toFixed(2))
+    }));
+
+    const sales = orders.reduce((total, order) => total + order.cost, 0);
+
+    return {
+      id,
+      fullName: `Khách Hàng ${i + 9}`,
+      phoneNumber: `09${Math.floor(Math.random() * 90000000) + 10000000}`,
+      email: `customer${i + 9}@example.com`,
+      address: `Số ${Math.floor(Math.random() * 100 + 1)} Đường XYZ, Quận ${
+        Math.floor(Math.random() * 12) + 1
+      }, TP.HCM`,
+      avatar: `https://example.com/avatar${i + 9}.jpg`,
+      point: Math.floor(Math.random() * 300),
+      sales,
+      orders
+    };
+  })
 ];
