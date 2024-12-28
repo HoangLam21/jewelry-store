@@ -17,7 +17,7 @@ const TableSearch = ({
   onSort,
 }: {
   onSearch: (searchQuery: string) => void;
-  onSort?: (searchQuery: string) => void;
+  onSort?: (filterOption: string) => void;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("");
