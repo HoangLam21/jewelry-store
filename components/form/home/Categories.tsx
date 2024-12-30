@@ -1,6 +1,7 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import Image from "next/image";
 
 const jewelryCategories = [
   {
@@ -53,6 +54,12 @@ const Categories = () => {
           </p>
         </div>
       </div>
+      <Image
+        src="https://i.pinimg.com/736x/93/8f/90/938f9041e18dcfda399d73f04d61dc68.jpg"
+        alt=""
+        width={200}
+        height={200}
+      />
       <Swiper
         spaceBetween={20}
         slidesPerView={5}
@@ -62,14 +69,16 @@ const Categories = () => {
         className="mt-[30px]"
       >
         {jewelryCategories.map((category) => (
-          <SwiperSlide key={category.id}>
-            <div className="category-card flex flex-col items-center">
+          <SwiperSlide key={category.id} className="">
+            <div className=" flex flex-col items-center justify-center !important">
               <img
                 src={category.image}
                 alt={category.name}
-                className="w-[200px] h-[200px] object-cover rounded-full"
+                width={200}
+                height={200}
+                className="w-[200px] h-[200px] object-cover rounded-full !important"
               />
-              <p className=" text-lg jost capitalize font-nomal mt-2 text-dark100_light500">
+              <p className="text-lg jost capitalize mt-2 text-dark100_light500">
                 {category.name.toUpperCase()}
               </p>
             </div>

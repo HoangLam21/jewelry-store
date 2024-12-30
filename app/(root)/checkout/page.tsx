@@ -4,32 +4,41 @@ import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import ShippingInfomation from "@/components/form/checkout/ShippingInfomation";
 
 export default function Page() {
   const { state } = useCart();
-
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [totalFinalPrice, setTotalFinalPrice] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [deliveryMethod, setDeliveryMethod] = useState("standard");
+  const [city, setCity] = useState("");
+  const [shippingFee, setShippingFee] = useState(0);
 
   useEffect(() => {
-    // Tính tổng giá gốc
     const originalPrice = state.items.reduce(
       (sum, item) => sum + item.cost * item.quantity,
       0
     );
-
-    // Giả sử tổng giảm giá là 10% của giá gốc
     const discount = originalPrice * 0.1;
-
-    // Tính tổng giá cuối cùng sau giảm giá
     const finalPrice = originalPrice - discount;
 
     setTotalOriginalPrice(originalPrice);
     setTotalDiscount(discount);
     setTotalFinalPrice(finalPrice);
   }, [state.items]);
+
+  useEffect(() => {
+    const calculateShippingFee = () => {
+      if (deliveryMethod === "fast") return 5000;
+      if (deliveryMethod === "express") return 30000;
+      return paymentMethod === "vnpay" ? 25000 : 30000;
+    };
+    setShippingFee(calculateShippingFee());
+  }, [deliveryMethod, paymentMethod, city]);
+
+  const calculateGrandTotal = () => totalFinalPrice + shippingFee;
 
   return (
     <>
@@ -59,70 +68,7 @@ export default function Page() {
             SHIPPING INFOMATION
           </h2>
           <form className="flex flex-col space-y-4">
-            <label className="font-light text-[16px]">
-              Name<span className="text-primary-100">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-full p-3 border  bg-transparent dark:bg-dark-400"
-            />
-            <label className="font-light mt-2 text-[16px]">
-              Country / Region<span className="text-primary-100">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Country"
-              className="w-full p-3 border  bg-transparent dark:bg-dark-400"
-            />
-            <label className="font-light mt-2 text-[16px]">
-              Town / City<span className="text-primary-100">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="City"
-              className="w-full p-3 border  bg-transparent dark:bg-dark-400"
-            />
-            <label className="font-light mt-2 text-[16px]">
-              District<span className="text-primary-100">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="District"
-              className="w-full p-3 border  bg-transparent dark:bg-dark-400"
-            />
-            <label className="font-light mt-2 text-[16px]">
-              Street address<span className="text-primary-100">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Street Address"
-              className="w-full p-3 border  bg-transparent dark:bg-dark-400"
-            />
-            <label className="font-light mt-2 text-[16px]">
-              Phone<span className="text-primary-100">*</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Phone"
-              className="w-full p-3 border  bg-transparent dark:bg-dark-400"
-            />
-            <label className="font-light mt-2 text-[16px]">
-              Email<span className="text-primary-100">*</span>
-            </label>
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full p-3 border  bg-transparent dark:bg-dark-400"
-            />
-            <label className="font-light mt-2 text-[16px]">
-              Note<span className="text-primary-100"></span>
-            </label>
-            <textarea
-              placeholder="Note"
-              rows={4}
-              className="w-full p-3 border mb-2 bg-transparent dark:bg-dark-400"
-            ></textarea>
+            <ShippingInfomation city={city} setCity={setCity} />
             <button
               type="submit"
               className="bg-primary-100 text-white p-3  hover:bg-primary-200"
@@ -183,24 +129,68 @@ export default function Page() {
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="w-full p-3 border rounded-none bg-transparent "
             >
-              <option value="cod">Cash on Delivery (+30k shipping fee)</option>
-              <option value="vnpay">VNPay (+25k shipping fee)</option>
+              <option value="cod">Cash on Delivery (30k shipping fee)</option>
+              <option value="vnpay">VNPay (25k shipping fee)</option>
             </select>
           </div>
 
-          {/* Tổng tiền sau phí ship */}
+          <div className="mt-6">
+            <label className="block mb-2 text-[18px] font-medium">
+              Delivery Method:
+            </label>
+            <div className="space-y-2">
+              <div>
+                <input
+                  type="radio"
+                  id="standard"
+                  name="delivery"
+                  value="standard"
+                  checked={deliveryMethod === "standard"}
+                  onChange={(e) => setDeliveryMethod(e.target.value)}
+                />
+                <label htmlFor="standard" className="ml-2">
+                  Standard Delivery (No extra fee)
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="fast"
+                  name="delivery"
+                  value="fast"
+                  checked={deliveryMethod === "fast"}
+                  onChange={(e) => setDeliveryMethod(e.target.value)}
+                />
+                <label htmlFor="fast" className="ml-2">
+                  Fast Delivery (+5k shipping fee)
+                </label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="express"
+                  name="delivery"
+                  value="express"
+                  checked={deliveryMethod === "express"}
+                  onChange={(e) => setDeliveryMethod(e.target.value)}
+                  disabled={city.toLowerCase() !== "ho chi minh"}
+                />
+                <label htmlFor="express" className="ml-2">
+                  Express Delivery (30k shipping fee, only available in Ho Chi
+                  Minh City)
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div className="mt-6">
             <div className="text-[18px] font-medium flex justify-between">
               <span>Shipping Fee:</span>
-              <span>{paymentMethod === "vnpay" ? "+25k" : "+30k"}</span>
+              <span>₫{shippingFee.toLocaleString()}</span>
             </div>
             <div className="text-[18px] font-semibold flex justify-between mt-4">
               <span>Grand Total:</span>
-              <span>
-                {paymentMethod === "vnpay"
-                  ? `₫${(totalFinalPrice + 25000).toFixed(2)}`
-                  : `₫${(totalFinalPrice + 30000).toFixed(2)}`}
-              </span>
+              <span>₫{calculateGrandTotal().toLocaleString()}</span>
             </div>
           </div>
         </div>

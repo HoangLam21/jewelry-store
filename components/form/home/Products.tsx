@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
+import Image from "next/image";
 
 const newArrivals = [
   {
@@ -182,16 +183,19 @@ const Products = () => {
         // navigation={true}
         pagination={{ clickable: true }}
         modules={[Navigation, Pagination]}
-        className="mt-[30px] "
+        className="mt-[30px] w-full "
       >
         {getProducts().map((product) => (
           <SwiperSlide key={product.id}>
             <div className="product-card flex flex-col mx-auto w-[82%]">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-[280px] h-[350px] object-cover"
-              />
+              <div className="w-[280px] h-[350px]">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
               <p className="text-dark100_light500 jost text-[20px] font-normal mt-2">
                 {product.name.toUpperCase()}
               </p>
