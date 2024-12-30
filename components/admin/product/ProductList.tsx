@@ -85,7 +85,7 @@ const ProductList = () => {
     useState<Product[]>(filterData);
 
   const handleConfirmDelete = (id: string) => {
-    const detail = filterData.find((item) => item.id === id);
+    const detail = displayedProduct.find((item) => item.id === id);
     if (detail) setDetailItem(detail);
     setOnDelete(true);
   };

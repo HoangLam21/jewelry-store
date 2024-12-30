@@ -3,8 +3,11 @@ import React, { useState } from "react";
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
+  PaginationNext,
+  PaginationPrevious
 } from "@/components/ui/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { PaginationProps } from ".";
@@ -21,7 +24,7 @@ const PaginationUI: React.FC<pagination> = ({ paginationUI }) => {
     indexOfFirstItem,
     indexOfLastItem,
     totalPages,
-    dataLength,
+    dataLength
   } = paginationUI;
 
   let displayedPages: any[] = [];
@@ -40,7 +43,7 @@ const PaginationUI: React.FC<pagination> = ({ paginationUI }) => {
             currentPage + 1,
             currentPage + 2,
             "...",
-            totalPages,
+            totalPages
           ];
           edgePage = edgePage + 3;
         }
@@ -66,18 +69,18 @@ const PaginationUI: React.FC<pagination> = ({ paginationUI }) => {
       )}
       <div className="flex w-fit h-fit">
         <Pagination className="mx-auto flex w-full justify-end">
-          <PaginationContent className="flex flex-row items-center justify-end gap-[12px]">
+          <PaginationContent className="flex flex-row items-center justify-end gap-3">
             <PaginationItem>
               <Button
                 onClick={() => setCurrentPage(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="flex w-fit h-fit bg-transparent hover:bg-transparent p-0"
+                className="flex w-fit h-fit bg-transparent hover:bg-transparent shadow-none p-0"
               >
                 <Icon
                   icon="carbon:previous-outline"
                   width={20}
-                  height={18}
-                  className="dark:text-dark-450 text-light-550"
+                  height={20}
+                  className="dark:text-dark-450 text-light-500"
                 />
               </Button>
             </PaginationItem>
@@ -86,7 +89,7 @@ const PaginationUI: React.FC<pagination> = ({ paginationUI }) => {
               if (page === "...") {
                 return (
                   <PaginationItem key={`ellipsis`}>
-                    <span className="text-light-550 dark:text-dark-450 text-[14px] font-normal">
+                    <span className="text-light-500 dark:text-dark-450 text-[14px] font-normal">
                       ...
                     </span>
                   </PaginationItem>
@@ -101,11 +104,11 @@ const PaginationUI: React.FC<pagination> = ({ paginationUI }) => {
                       }}
                       className={`${
                         currentPage === page
-                          ? "active bg-light-550 bg-opacity-30 dark:bg-dark-450 dark:bg-opacity-30 rounded-full items-center justify-center h-fit w-fit"
+                          ? "active bg-light-600 bg-opacity-30 dark:bg-dark-450 dark:bg-opacity-30 rounded-full items-center justify-center h-fit w-fit px-2 py-1"
                           : "items-center justify-center h-fit w-fit"
                       }`}
                     >
-                      <p className="text-light-550 dark:text-dark-450 text-[14px] font-normal px-[6px] py-0">
+                      <p className="text-light-500 dark:text-dark-450 text-[14px] font-normal">
                         {page}
                       </p>
                     </PaginationLink>
@@ -118,13 +121,13 @@ const PaginationUI: React.FC<pagination> = ({ paginationUI }) => {
               <Button
                 onClick={() => setCurrentPage(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="flex w-fit h-fit bg-transparent hover:bg-transparent p-0"
+                className="flex w-fit h-fit bg-transparent hover:bg-transparent shadow-none p-0"
               >
                 <Icon
                   icon="carbon:next-outline"
                   width={20}
-                  height={18}
-                  className="dark:text-dark-450 text-light-550"
+                  height={20}
+                  className="dark:text-dark-450 text-light-500"
                 />
               </Button>
             </PaginationItem>
