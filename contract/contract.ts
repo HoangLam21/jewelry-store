@@ -493,7 +493,6 @@ export const contract = c.router({
             }),
         },
     }),
-    category: c.router({}),
     finance: c.router({
         createFinance: {
             method: "POST",
