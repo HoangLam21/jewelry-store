@@ -1,17 +1,16 @@
 import { Schema, model, models, Document } from "mongoose";
-import { ObjectId } from "mongodb";
 import { AuditSchema, IAudit } from "./audit.model";
 
 export interface IReport extends Document, IAudit {
-  staff: Schema.Types.ObjectId;
-  finances: Schema.Types.ObjectId[];
-  revenue: number;
+    staff: Schema.Types.ObjectId;
+    finances: Schema.Types.ObjectId[];
+    revenue: number;
 }
 
 const ReportSchema = new Schema<IReport>({
-  staff: { type: Schema.Types.ObjectId, ref: "Staff", required: true },
-  finances: { type: [Schema.Types.ObjectId], ref: "Finance", required: true },
-  revenue: { type: Number, required: true },
+    staff: { type: Schema.Types.ObjectId, ref: "Staff", required: true },
+    finances: { type: [Schema.Types.ObjectId], ref: "Finance", required: true },
+    revenue: { type: Number, required: true },
 });
 
 ReportSchema.add(AuditSchema);
