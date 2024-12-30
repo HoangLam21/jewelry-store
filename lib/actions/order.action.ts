@@ -8,7 +8,53 @@ import Customer from "@/database/customer.model";
 import File from "@/database/file.model";
 import ProductProvider from "@/database/provider.model";
 import Staff from "@/database/staff.model";
+import Voucher from "@/database/voucher.model";
 
+export const getOrders = async () => {
+    try {
+        connectToDatabase();
+        const orders = await Order.find();
+        const orderResponse = [];
+        for (const order of orders) {
+            const customer = await Customer.findById(order.customer);
+            const staff = await Staff.findById(order.staff);
+            const orderDetails = order.details;
+            const products = [];
+            for (const [productId, quantity] of orderDetails) {
+                const product = await Product.findById(productId.toString());
+                if (!product) {
+                    throw new Error("Product not found");
+                }
+                const vouchers = await Voucher.find({
+                    _id: { $in: product.vouchers },
+                });
+                const provider = await ProductProvider.findById(
+                    product.provider
+                );
+                const files = await File.find({ _id: { $in: product.files } });
+                products.push({
+                    product: {
+                        ...product.toObject(),
+                        vouchers: vouchers,
+                        provider: provider,
+                        files: files,
+                    },
+                    quantity: quantity,
+                });
+            }
+            orderResponse.push({
+                ...order.toObject(),
+                customer: customer,
+                staff: staff,
+                products: products,
+            });
+        }
+        return orderResponse;
+    } catch (error) {
+        console.log("Error fetching Orders: ", error);
+        throw new Error("Failed to fetch orders");
+    }
+};
 // Tạo đơn hàng mới
 export const createOrder = async (data: {
     cost: number;

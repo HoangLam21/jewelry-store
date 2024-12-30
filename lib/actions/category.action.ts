@@ -1,9 +1,110 @@
-"use server";
-
+// category.action
 import Category from "@/database/category.model";
 import Product from "@/database/product.model";
 import mongoose from "mongoose";
 import { connectToDatabase } from "../mongoose";
+
+// Create a new category
+export const createCategory = async (data: {
+    name: string;
+    description: string;
+}) => {
+    try {
+        await connectToDatabase();
+        const newCategory = await Category.create({
+            name: data.name,
+            description: data.description,
+        });
+        return newCategory;
+    } catch (error) {
+        console.log("Error creating category: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to create category");
+    } finally {
+        await mongoose.connection.close();
+    }
+};
+
+// Get all categories
+export const getCategories = async () => {
+    try {
+        await connectToDatabase();
+        const categories = await Category.find();
+        return categories;
+    } catch (error) {
+        console.log("Error fetching categories: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to fetch categories");
+    } finally {
+        await mongoose.connection.close();
+    }
+};
+
+// Get a category by ID
+export const getCategoryById = async (id: string) => {
+    try {
+        await connectToDatabase();
+        const category = await Category.findById(id);
+        if (!category) {
+            throw new Error("Category not found");
+        }
+        return category;
+    } catch (error) {
+        console.log("Error fetching category: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to fetch category");
+    } finally {
+        await mongoose.connection.close();
+    }
+};
+
+// Update a category
+export const updateCategory = async (
+    id: string,
+    data: Partial<{
+        name: string;
+        description: string;
+    }>
+) => {
+    try {
+        await connectToDatabase();
+        const updatedCategory = await Category.findByIdAndUpdate(
+            id,
+            {
+                ...data,
+            },
+            { new: true }
+        );
+        if (!updatedCategory) {
+            throw new Error("Category not found");
+        }
+        return updatedCategory;
+    } catch (error) {
+        console.log("Error updating category: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to update category");
+    } finally {
+        await mongoose.connection.close();
+    }
+};
+
+// Delete a category
+export const deleteCategory = async (id: string) => {
+    try {
+        await connectToDatabase();
+        const deletedCategory = await Category.findByIdAndDelete(id);
+        if (!deletedCategory) {
+            throw new Error("Category not found");
+        }
+        return true;
+    } catch (error) {
+        console.log("Error deleting category: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to delete category");
+    } finally {
+        await mongoose.connection.close();
+    }
+};
 
 // Add a product to a category
 export const addProductToCategory = async (
