@@ -13,17 +13,7 @@ export const contract = c.router({
         email: z.string().email(),
         address: z.string(),
       }),
-      responses: {
-        201: z.object({
-          fullName: z.string(),
-          phoneNumber: z.string(),
-          email: z.string().email(),
-          address: z.string(),
-          createdAt: z.date(),
-        }),
-        400: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
-      },
+      responses: {},
     },
     getCustomers: {
       method: "GET",
@@ -186,38 +176,12 @@ export const contract = c.router({
     getProducts: {
       method: "GET",
       path: "/api/product/all",
-      responses: {
-        200: z.array(
-          z.object({
-            _id: z.string(),
-            name: z.string(),
-            cost: z.number(),
-            description: z.string(),
-            images: z.array(z.string()),
-            provider: z.string(),
-            category: z.string().optional(),
-          })
-        ),
-        500: z.object({ error: z.string() }),
-      },
+      responses: {},
     },
     getProductById: {
       method: "GET",
       path: "/api/product/id",
-      responses: {
-        200: z.object({
-          _id: z.string(),
-          name: z.string(),
-          cost: z.number(),
-          description: z.string(),
-          images: z.array(z.string()),
-          provider: z.string(),
-          category: z.string().optional(),
-          vouchers: z.array(z.string()).optional(),
-        }),
-        400: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
-      },
+      responses: {},
       query: z.object({
         id: z.string(),
       }),
@@ -234,17 +198,20 @@ export const contract = c.router({
         category: z.string().optional(),
         variants: z.array(
           z.object({
-            size: z.string(),
-            color: z.string(),
-            price: z.number(),
-            sales: z.number(),
-            stock: z.number(),
+            material: z.string(),
+            sizes: z.array(
+              z.object({
+                size: z.string(),
+                stock: z.number(),
+              })
+            ),
+            addOn: z.number(),
           })
         ),
-        images: z.array(z.any()).optional(), 
+        collections: z.string(),
+        images: z.array(z.any()).optional(),
       }),
-      responses: {
-      },
+      responses: {},
     },
     updateProduct: {
       method: "PUT",
@@ -261,17 +228,20 @@ export const contract = c.router({
         category: z.string().optional(),
         variants: z.array(
           z.object({
-            size: z.string(),
-            color: z.string(),
-            price: z.number(),
-            sales: z.number(),
-            stock: z.number(),
+            material: z.string(),
+            sizes: z.array(
+              z.object({
+                size: z.string(),
+                stock: z.number(),
+              })
+            ),
+            addOn: z.number(),
           })
-        ).optional(),
-        images: z.array(z.any()).optional(), // `any` to represent images (file uploads)
+        ),
+        collections: z.string(),
+        images: z.array(z.any()).optional(),
       }),
-      responses: {
-      },
+      responses: {},
     },
     deleteProduct: {
       method: "DELETE",
@@ -298,15 +268,7 @@ export const contract = c.router({
         address: z.string(),
         contact: z.string(),
       }),
-      responses: {
-        201: z.object({
-          name: z.string(),
-          address: z.string(),
-          contact: z.string(),
-        }),
-        400: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
-      },
+      responses: {},
     },
     getProviders: {
       method: "GET",
@@ -389,6 +351,7 @@ export const contract = c.router({
         productId: z.string().uuid(),
         point: z.number().min(1).max(5),
         content: z.string().optional(),
+        images: z.string().optional(),
       }),
       responses: {},
     },
@@ -417,6 +380,7 @@ export const contract = c.router({
       body: z.object({
         point: z.number().min(1).max(5).optional(),
         content: z.string().optional(),
+        images: z.string().optional(),
       }),
       responses: {},
       query: z.object({

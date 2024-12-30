@@ -2,7 +2,7 @@
 import TitleSession from "@/components/shared/label/TitleSession";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { StaffData } from "@/constants/data";
+import { CustomerData } from "@/constants/data";
 import Image from "next/image";
 import LabelInformation from "@/components/shared/label/LabelInformation";
 import MyButton from "@/components/shared/button/MyButton";
@@ -10,68 +10,57 @@ import InputEdit from "@/components/shared/input/InputEdit";
 import InputDate from "@/components/shared/input/InputDate";
 import InputSelection from "@/components/shared/input/InputSelection";
 
-interface SaleInvoice {
+interface OrderCustomer {
   id: string;
-  customer: string;
-  createDate: Date;
-  note: string;
-  total: number;
-  status: number;
+  createAt: string;
+  createBy: string;
+  cost: number;
 }
 
-interface Staff {
+interface Customer {
   id: string;
-  gender: string;
-  position: string;
-  earning: number;
-  phone: string;
-  fullname: string;
-  dob: Date;
+  fullName: string;
+  phoneNumber: string;
   email: string;
   address: string;
-  city: string;
-  country: string;
-  district: string;
-  experience: string;
-  kindOfJob: string;
-  description: string;
-  dow: Date;
-  numberSaleInvoice: SaleInvoice[];
+  avatar: string;
+  point: number;
+  sales: number;
+  orders: OrderCustomer[];
 }
+const defaultDetail: Customer = {
+  id: "",
+  fullName: "",
+  phoneNumber: "",
+  email: "",
+  address: "",
+  avatar: "",
+  point: 0,
+  sales: 0,
+  orders: []
+};
 
-const EditProviderInformation = () => {
-  const { id } = useParams<{ id: string }>() as { id: string };
-  const [staff, setStaff] = useState<Staff | null>(null);
-  const [updateStaff, setUpdateStaff] = useState<Staff | null>(null);
-
-  useEffect(() => {
-    if (id) {
-      const foundStaff = StaffData.find((item) => item.id === id);
-      setStaff(foundStaff || null);
-      setUpdateStaff(foundStaff || null);
-    }
-  }, [id]);
+const AddCustomerInformation = () => {
+  const [updateCustomer, setUpdateCustomer] = useState<Customer>(defaultDetail);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (updateStaff) {
-      setUpdateStaff({
-        ...updateStaff,
-        [e.target.name]: e.target.value,
+    if (updateCustomer) {
+      setUpdateCustomer({
+        ...updateCustomer,
+        [e.target.name]: e.target.value
       });
     }
   };
 
   const handleDateChange = (date: string) => {
-    if (updateStaff) {
-      const updatedInvoices = updateStaff.numberSaleInvoice.map((invoice) => ({
-        ...invoice,
-        createDate: new Date(date),
+    if (updateCustomer) {
+      const updatedOrder = updateCustomer.orders.map((orders) => ({
+        ...orders,
+        createAt: new Date(date).toISOString()
       }));
-      setUpdateStaff({
-        ...updateStaff,
-        dob: new Date(date),
-        dow: new Date(date),
-        numberSaleInvoice: updatedInvoices,
+      setUpdateCustomer({
+        ...updateCustomer,
+        orders: updatedOrder
       });
     }
   };
@@ -112,7 +101,7 @@ const EditProviderInformation = () => {
           <div className="w-1/5">
             <Image
               alt="avatar"
-              src="/assets/images/avatar.jpg"
+              src={updateCustomer.avatar || "/assets/images/avatar.jpg"}
               width={115}
               height={115}
               className="rounded-full"
@@ -120,7 +109,7 @@ const EditProviderInformation = () => {
           </div>
           <div className="flex-1 flex flex-col justify-between">
             <LabelInformation
-              content={staff ? `#${staff.id}` : ""}
+              content={updateCustomer ? `#${updateCustomer.id}` : ""}
               title="ID"
             />
             <div className="flex gap-8 ">
@@ -148,13 +137,7 @@ const EditProviderInformation = () => {
             name="fullname"
             onChange={handleChange}
             placeholder="Enter Fullname"
-            value={updateStaff?.fullname ?? ""}
-          />
-          <InputDate
-            titleInput="Date of birth"
-            width="w-full"
-            value={updateStaff ? formatDate(updateStaff.dob) : ""}
-            onChange={() => {}}
+            value={updateCustomer.fullName}
           />
           <InputEdit
             titleInput="Phone"
@@ -162,7 +145,7 @@ const EditProviderInformation = () => {
             name="phone"
             onChange={handleChange}
             placeholder="Enter Phone"
-            value={updateStaff?.phone ?? ""}
+            value={updateCustomer.phoneNumber}
           />
           <InputEdit
             titleInput="Email"
@@ -170,19 +153,7 @@ const EditProviderInformation = () => {
             name="email"
             onChange={handleChange}
             placeholder="Enter Fullname"
-            value={updateStaff?.email ?? ""}
-          />
-          <InputSelection
-            width="w-full"
-            titleInput="Gender"
-            options={["Male", "Female", "Orther"]}
-            value={updateStaff?.gender ?? "Male"}
-            onChange={(value) => {
-              setUpdateStaff((prev) => ({
-                ...prev!,
-                gender: value,
-              }));
-            }}
+            value={updateCustomer.email}
           />
         </div>
       </div>
@@ -195,49 +166,13 @@ const EditProviderInformation = () => {
 
       <div className="w-full p-6 flex flex-col gap-6">
         <div className="w-full grid grid-cols-2 gap-x-20 gap-y-4">
-          <InputSelection
-            width="w-full"
-            titleInput="Country"
-            options={["VietNam", "UK", "US", "JP", "C", "K", "Canada"]}
-            value={updateStaff?.country ?? "VietNam"}
-            onChange={(value) => {
-              setUpdateStaff((prev) => ({
-                ...prev!,
-                country: value,
-              }));
-            }}
-          />
-          <InputSelection
-            width="w-full"
-            titleInput="City"
-            options={["TP.HCM", "HN", "DN", "HP", "PT", "VT"]}
-            value={updateStaff?.city ?? "TP.HCM"}
-            onChange={(value) => {
-              setUpdateStaff((prev) => ({
-                ...prev!,
-                city: value,
-              }));
-            }}
-          />
-          <InputSelection
-            width="w-full"
-            titleInput="District"
-            options={["Q1", "Q2", "BT", "Q7", "Q9", "TD"]}
-            value={updateStaff?.district ?? "Q1"}
-            onChange={(value) => {
-              setUpdateStaff((prev) => ({
-                ...prev!,
-                district: value,
-              }));
-            }}
-          />
           <InputEdit
             titleInput="Address"
             width="w-full"
             name="address"
             onChange={handleChange}
             placeholder="Enter Address"
-            value={updateStaff?.address ?? ""}
+            value={updateCustomer.address}
           />
         </div>
       </div>
@@ -253,7 +188,7 @@ const EditProviderInformation = () => {
             name="email"
             onChange={handleChange}
             placeholder="Enter Username"
-            value={updateStaff?.email ?? ""}
+            value={updateCustomer.email}
           />
           <InputEdit
             titleInput="Password"
@@ -261,7 +196,7 @@ const EditProviderInformation = () => {
             name="phone"
             onChange={handleChange}
             placeholder="Enter Password"
-            value={updateStaff?.phone ?? ""}
+            value={updateCustomer.phoneNumber}
           />
         </div>
       </div>
@@ -280,4 +215,4 @@ const EditProviderInformation = () => {
   );
 };
 
-export default EditProviderInformation;
+export default AddCustomerInformation;

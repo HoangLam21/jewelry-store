@@ -1,9 +1,10 @@
 "use client";
 import ProductCard from "@/components/card/product/ProductCard";
 import FilterProduct from "@/components/form/product/FilterProduct";
+import { fetchProducts } from "@/lib/services/product.service";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const fakeJewelryData = [
   {
@@ -195,6 +196,25 @@ const Page = () => {
   const [sortOption, setSortOption] = useState<string>("default");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+
+  useEffect(() => {
+    let isMounted = true;
+    const getAllProducts = async () => {
+      try {
+        const data = await fetchProducts();
+        console.log(data);
+        if (isMounted) {
+          // setPosts(data);
+        }
+      } catch (error) {
+        console.error("Error loading posts:", error);
+      }
+    };
+    getAllProducts();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSortChange = (option: string) => {
     setSortOption(option);
