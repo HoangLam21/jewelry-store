@@ -1,20 +1,15 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { Vouchers } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import { format } from "date-fns";
-
-interface Voucher {
-  id: string;
-  name: string;
-  discount: string;
-  expDate: Date;
-}
+import { Voucher } from "@/dto/VoucherDTO";
+import { deleteVoucher, fetchVoucher } from "@/lib/service/voucher.service";
+import Format from "@/components/shared/card/ConfirmCard";
 
 const columns = [
   { header: "ID", accessor: "id" },
@@ -36,10 +31,25 @@ const columns = [
   { header: "Action", accessor: "action" },
 ];
 
-const VoucherList = () => {
+const VoucherList = ({
+  voucherList,
+  setVoucherList,
+}: {
+  voucherList: Voucher[] | null;
+  setVoucherList: any;
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
+  const [deleteVoucherId, setDeleteVoucherId] = useState<string | null>(null);
+
+  if (!voucherList) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-white">
+        <div className="loader"></div>
+      </div>
+    );
+  }
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -50,7 +60,7 @@ const VoucherList = () => {
   });
   type SortableKeys = "id" | "name" | "expDate" | "discount";
 
-  const getValueByKey = (item: (typeof Vouchers)[0], key: SortableKeys) => {
+  const getValueByKey = (item: Voucher, key: SortableKeys) => {
     switch (key) {
       case "name":
         return item.name;
@@ -63,7 +73,7 @@ const VoucherList = () => {
     }
   };
 
-  const sorted = [...Vouchers].sort((a, b) => {
+  const sorted = [...voucherList].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -88,7 +98,7 @@ const VoucherList = () => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
-      item.id.toLowerCase().includes(lowerCaseQuery) ||
+      item._id.toLowerCase().includes(lowerCaseQuery) ||
       item.name.toLowerCase().includes(lowerCaseQuery) ||
       item.discount.toString().toLowerCase().includes(lowerCaseQuery) ||
       item.expDate.toString().toLowerCase().includes(lowerCaseQuery);
@@ -118,35 +128,63 @@ const VoucherList = () => {
     console.log("this is sort");
   };
 
+  const handleDeleteVoucher = async (voucherId: string) => {
+    try {
+      await deleteVoucher(voucherId);
+      setVoucherList((prevVoucher: any) =>
+        prevVoucher.filter((voucher: any) => voucher._id !== voucherId)
+      );
+      () => setDeleteVoucherId(null);
+      alert("Repost voucher successfully!");
+    } catch (error) {
+      alert("Failed to delete voucher!");
+      console.error("Failed to delete voucher:", error);
+    }
+  };
+
   const renderRow = (item: Voucher) => (
     <tr
-      key={item.id}
+      key={item._id}
       className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
-          <p>{item.name}</p>
-          <p>#00{item.id}</p>
+          <p>#{item._id}</p>
         </div>
       </td>
       <td className="px-4 py-2">{item.name}</td>
-      <td className="px-4 py-2">{item.discount}</td>
-      <td className="px-4 py-2">{format(item.expDate, "PPP")}</td>
+      <td className="px-4 py-2">{item.discount}%</td>
+      <td className="px-4 py-2">{format(new Date(item.expDate), "PPP")}</td>
 
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
+          <div
+            className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer"
+            onClick={() => setDeleteVoucherId(item._id)}
+          >
             <Icon
               icon="tabler:trash"
               width={24}
               height={24}
-              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1"
+              className="dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1"
             />
           </div>
         </div>
       </td>
+      {deleteVoucherId === item._id && (
+        <td colSpan={columns.length}>
+          <Format
+            onClose={() => setDeleteVoucherId(null)}
+            content={`delete: `}
+            label={"Delete voucher"}
+            userName={item.name}
+            onConfirmDelete={() => handleDeleteVoucher(item._id)}
+          />
+        </td>
+      )}
     </tr>
   );
+
   return (
     <div className="w-full flex flex-col p-4 rounded-md shadow-sm">
       <TableSearch onSearch={setSearchQuery} onSort={handleSort} />

@@ -29,7 +29,6 @@ interface Staff {
 
 interface Import {
   id: string;
-
   suplier: {
     id: string;
     phoneNumber: string;
