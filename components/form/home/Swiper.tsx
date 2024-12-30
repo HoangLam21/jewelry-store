@@ -49,7 +49,7 @@ const swiper = () => {
         mousewheel={true}
         keyboard={true}
         modules={[Navigation, Pagination, Mousewheel, Keyboard]}
-        className="w-[95%] h-auto p-2 overflow-hidden "
+        className="w-[95%] h-[100px] p-2 overflow-hidden "
       >
         {fakeData.map((item, index) => (
           <SwiperSlide className="px-[3%]" key={index}>
@@ -65,11 +65,14 @@ const swiper = () => {
                   <div className="w-44 mt-5">
                     <MyButton
                       title="SHOP NOW"
-                      backgroundColor="background-light500_dark100"
+                      background="background-light500_dark100"
                       rounded="none"
-                      color="text-dark500_light100"
-                      fontSize="text-sm"
-                      fontWeight="font-light"
+                      text_color="text-dark500_light100"
+                      text="text-sm"
+                      event={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      width={""} // fontWeight="font-light"
                     ></MyButton>
                   </div>
                 </div>

@@ -16,6 +16,7 @@ type MyButtonProps = {
   px?: string;
   py?: string;
   text?: string;
+  rounded?: string;
 };
 
 const MyButton: React.FC<MyButtonProps> = ({
@@ -31,6 +32,7 @@ const MyButton: React.FC<MyButtonProps> = ({
   px = "px-4",
   py = "py-[8px]",
   text = "text-[14px]",
+  rounded = "none",
 }) => {
   return (
     <div
@@ -42,7 +44,8 @@ const MyButton: React.FC<MyButtonProps> = ({
         width,
         height,
         px,
-        py // Padding
+        py, // Padding
+        rounded
       )}
       style={{
         borderWidth: "0.5px", // Set border width if necessary
