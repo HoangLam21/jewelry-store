@@ -7,6 +7,7 @@ import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import { fetchProvider } from "@/lib/service/provider.service";
+import { Provider } from "@/dto/ProviderDTO";
 
 const columns = [
   { header: "ID", accessor: "_id" },
@@ -26,38 +27,16 @@ const columns = [
   { header: "Action", accessor: "action" },
 ];
 
-const ProviderList = () => {
+const ProviderList = ({
+  provider,
+  setProvider,
+}: {
+  provider: Provider[];
+  setProvider: any;
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-
-  const [provider, setProvider] = useState<Provider[] | null>([]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const loadProvider = async () => {
-      try {
-        const data = await fetchProvider();
-        if (isMounted) {
-          setProvider(data);
-        }
-      } catch (error) {
-        console.error("Error loading Provider:", error);
-      }
-    };
-    loadProvider();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  if (!provider) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-white">
-        <div className="loader"></div>
-      </div>
-    );
-  }
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;

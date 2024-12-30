@@ -30,38 +30,17 @@ const columns = [
   { header: "Action", accessor: "action" },
 ];
 
-const StaffList = () => {
+const StaffList = ({
+  staffs,
+  setStaffs,
+}: {
+  staffs: Staff[];
+  setStaffs: any;
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
   const [filterOption, setFilterOption] = useState("");
-  const [staffs, setStaffs] = useState<Staff[] | null>([]);
-
-  useEffect(() => {
-    let isMounted = true;
-    const loadStaff = async () => {
-      try {
-        const data = await fetchStaff();
-        if (isMounted) {
-          setStaffs(data);
-        }
-      } catch (error) {
-        console.error("Error loading staff:", error);
-      }
-    };
-    loadStaff();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  if (!staffs) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-white">
-        <div className="loader"></div>
-      </div>
-    );
-  }
 
   const totalResult = staffs.length;
 
