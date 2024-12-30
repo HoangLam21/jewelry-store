@@ -11,19 +11,25 @@ const ProductCard = ({ item }: { item: any }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <img
-        src={item.images}
+        src={item.files[0].url}
         alt={item.name}
         className="w-full h-[350px] mt-2"
       />
       <h2 className="text-[20px] jost font-normal uppercase text-dark100_light500">
         {item.name}
       </h2>
-      <p className="text-[#939393]">{item.category}</p>
+      <p className="text-[#939393]">
+        {item.variants.map((variant: any, index: any) => (
+          <span key={index}>
+            {variant.material}
+            {index < item.variants.length - 1 && ", "}
+          </span>
+        ))}
+      </p>
       <p className="text-primary-100 text-[20px] text-right w-full">
-        ${item.cost}
+        {item.cost} vnđ
       </p>
 
-      {/* Nút "Thêm vào giỏ hàng" */}
       {isHovered && (
         <button
           className="absolute w-full bottom-24 left-1/2 transform -translate-x-1/2 bg-primary-100 text-white px-4 py-2  shadow-md transition-all hover:bg-primary-200"

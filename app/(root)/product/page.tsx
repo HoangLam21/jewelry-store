@@ -6,193 +6,194 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-const fakeJewelryData = [
-  {
-    _id: "1",
-    name: "Gold Ring",
-    cost: 150,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Ring",
-    material: "Gold",
-    rating: 4.5,
-    sales: 120,
-    voucherName: "Golden Deal",
-    discount: 10,
-  },
-  {
-    _id: "2",
-    name: "Silver Necklace",
-    cost: 200,
-    images:
-      "https://i.pinimg.com/736x/36/22/87/3622878f3b40dc5e3ff8807f64daa774.jpg",
-    category: "Necklace",
-    material: "Silver",
-    rating: 4.0,
-    sales: 90,
-    voucherName: "Shiny Silver",
-    discount: 15,
-  },
-  {
-    _id: "3",
-    name: "Platinum Bracelet",
-    cost: 350,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Bracelet",
-    material: "Platinum",
-    rating: 4.8,
-    sales: 150,
-    voucherName: "Premium Platinum",
-    discount: 20,
-  },
-  {
-    _id: "4",
-    name: "Rose Gold Charm",
-    cost: 120,
-    images:
-      "https://i.pinimg.com/736x/36/22/87/3622878f3b40dc5e3ff8807f64daa774.jpg",
-    category: "Charm",
-    material: "Rose Gold",
-    rating: 3.9,
-    sales: 50,
-    voucherName: "Rose Charm Special",
-    discount: 5,
-  },
-  {
-    _id: "5",
-    name: "Diamond Ring",
-    cost: 500,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Ring",
-    material: "Gold",
-    rating: 4.9,
-    sales: 200,
-    voucherName: "Diamond Delight",
-    discount: 25,
-  },
-  {
-    _id: "6",
-    name: "Emerald Earrings",
-    cost: 220,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Earrings",
-    material: "Emerald",
-    rating: 4.3,
-    sales: 110,
-    voucherName: "Emerald Sparkle",
-    discount: 12,
-  },
-  {
-    _id: "7",
-    name: "Ruby Pendant",
-    cost: 300,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Pendant",
-    material: "Ruby",
-    rating: 4.6,
-    sales: 130,
-    voucherName: "Ruby Shine",
-    discount: 18,
-  },
-  {
-    _id: "8",
-    name: "Sapphire Bracelet",
-    cost: 400,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Bracelet",
-    material: "Sapphire",
-    rating: 4.7,
-    sales: 140,
-    voucherName: "Sapphire Luxury",
-    discount: 22,
-  },
-  {
-    _id: "9",
-    name: "Pearl Necklace",
-    cost: 180,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Necklace",
-    material: "Pearl",
-    rating: 4.2,
-    sales: 80,
-    voucherName: "Pearl Elegance",
-    discount: 10,
-  },
-  {
-    _id: "10",
-    name: "Platinum Cufflinks",
-    cost: 250,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Cufflinks",
-    material: "Platinum",
-    rating: 4.4,
-    sales: 100,
-    voucherName: "Cufflink Platinum",
-    discount: 15,
-  },
-  {
-    _id: "11",
-    name: "Gold Anklet",
-    cost: 140,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Anklet",
-    material: "Gold",
-    rating: 3.8,
-    sales: 40,
-    voucherName: "Golden Anklet Deal",
-    discount: 7,
-  },
-  {
-    _id: "12",
-    name: "Diamond Earrings",
-    cost: 600,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Earrings",
-    material: "Diamond",
-    rating: 4.9,
-    sales: 180,
-    voucherName: "Diamond Shine",
-    discount: 30,
-  },
-  {
-    _id: "13",
-    name: "Silver Brooch",
-    cost: 100,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Brooch",
-    material: "Silver",
-    rating: 3.7,
-    sales: 30,
-    voucherName: "Silver Style",
-    discount: 8,
-  },
-  {
-    _id: "14",
-    name: "Gold Pendant",
-    cost: 170,
-    images:
-      "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
-    category: "Pendant",
-    material: "Gold",
-    rating: 4.1,
-    sales: 70,
-    voucherName: "Golden Glow",
-    discount: 12,
-  },
-];
+// const fakeJewelryData = [
+//   {
+//     _id: "1",
+//     name: "Gold Ring",
+//     cost: 150,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Ring",
+//     material: "Gold",
+//     rating: 4.5,
+//     sales: 120,
+//     voucherName: "Golden Deal",
+//     discount: 10,
+//   },
+//   {
+//     _id: "2",
+//     name: "Silver Necklace",
+//     cost: 200,
+//     images:
+//       "https://i.pinimg.com/736x/36/22/87/3622878f3b40dc5e3ff8807f64daa774.jpg",
+//     category: "Necklace",
+//     material: "Silver",
+//     rating: 4.0,
+//     sales: 90,
+//     voucherName: "Shiny Silver",
+//     discount: 15,
+//   },
+//   {
+//     _id: "3",
+//     name: "Platinum Bracelet",
+//     cost: 350,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Bracelet",
+//     material: "Platinum",
+//     rating: 4.8,
+//     sales: 150,
+//     voucherName: "Premium Platinum",
+//     discount: 20,
+//   },
+//   {
+//     _id: "4",
+//     name: "Rose Gold Charm",
+//     cost: 120,
+//     images:
+//       "https://i.pinimg.com/736x/36/22/87/3622878f3b40dc5e3ff8807f64daa774.jpg",
+//     category: "Charm",
+//     material: "Rose Gold",
+//     rating: 3.9,
+//     sales: 50,
+//     voucherName: "Rose Charm Special",
+//     discount: 5,
+//   },
+//   {
+//     _id: "5",
+//     name: "Diamond Ring",
+//     cost: 500,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Ring",
+//     material: "Gold",
+//     rating: 4.9,
+//     sales: 200,
+//     voucherName: "Diamond Delight",
+//     discount: 25,
+//   },
+//   {
+//     _id: "6",
+//     name: "Emerald Earrings",
+//     cost: 220,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Earrings",
+//     material: "Emerald",
+//     rating: 4.3,
+//     sales: 110,
+//     voucherName: "Emerald Sparkle",
+//     discount: 12,
+//   },
+//   {
+//     _id: "7",
+//     name: "Ruby Pendant",
+//     cost: 300,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Pendant",
+//     material: "Ruby",
+//     rating: 4.6,
+//     sales: 130,
+//     voucherName: "Ruby Shine",
+//     discount: 18,
+//   },
+//   {
+//     _id: "8",
+//     name: "Sapphire Bracelet",
+//     cost: 400,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Bracelet",
+//     material: "Sapphire",
+//     rating: 4.7,
+//     sales: 140,
+//     voucherName: "Sapphire Luxury",
+//     discount: 22,
+//   },
+//   {
+//     _id: "9",
+//     name: "Pearl Necklace",
+//     cost: 180,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Necklace",
+//     material: "Pearl",
+//     rating: 4.2,
+//     sales: 80,
+//     voucherName: "Pearl Elegance",
+//     discount: 10,
+//   },
+//   {
+//     _id: "10",
+//     name: "Platinum Cufflinks",
+//     cost: 250,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Cufflinks",
+//     material: "Platinum",
+//     rating: 4.4,
+//     sales: 100,
+//     voucherName: "Cufflink Platinum",
+//     discount: 15,
+//   },
+//   {
+//     _id: "11",
+//     name: "Gold Anklet",
+//     cost: 140,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Anklet",
+//     material: "Gold",
+//     rating: 3.8,
+//     sales: 40,
+//     voucherName: "Golden Anklet Deal",
+//     discount: 7,
+//   },
+//   {
+//     _id: "12",
+//     name: "Diamond Earrings",
+//     cost: 600,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Earrings",
+//     material: "Diamond",
+//     rating: 4.9,
+//     sales: 180,
+//     voucherName: "Diamond Shine",
+//     discount: 30,
+//   },
+//   {
+//     _id: "13",
+//     name: "Silver Brooch",
+//     cost: 100,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Brooch",
+//     material: "Silver",
+//     rating: 3.7,
+//     sales: 30,
+//     voucherName: "Silver Style",
+//     discount: 8,
+//   },
+//   {
+//     _id: "14",
+//     name: "Gold Pendant",
+//     cost: 170,
+//     images:
+//       "https://i.pinimg.com/736x/4f/60/e1/4f60e1af35435ffd63ff4a469948eafd.jpg",
+//     category: "Pendant",
+//     material: "Gold",
+//     rating: 4.1,
+//     sales: 70,
+//     voucherName: "Golden Glow",
+//     discount: 12,
+//   },
+// ];
 
 const Page = () => {
-  const [filteredData, setFilteredData] = useState<any[]>(fakeJewelryData);
+  const [productsData, setProductsData] = useState<any[]>([]);
+  const [filteredData, setFilteredData] = useState<any[]>(productsData);
   const [sortOption, setSortOption] = useState<string>("default");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -202,9 +203,8 @@ const Page = () => {
     const getAllProducts = async () => {
       try {
         const data = await fetchProducts();
-        console.log(data);
         if (isMounted) {
-          // setPosts(data);
+          setProductsData(data);
         }
       } catch (error) {
         console.error("Error loading posts:", error);
@@ -264,7 +264,7 @@ const Page = () => {
       <div className="w-full block md:flex mt-5">
         <div className="w-full p-4 md:w-[25%] px-14">
           <FilterProduct
-            fakeJewelryData={fakeJewelryData}
+            productsData={productsData}
             setFilteredData={setFilteredData}
           />
         </div>
@@ -276,7 +276,7 @@ const Page = () => {
             <select
               value={sortOption}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="px-3 py-2 border rounded-md text-dark100_light500"
+              className="px-3 py-2 border bg-transparent rounded-md text-dark100_light500"
             >
               <option value="default">Default</option>
               <option value="price-asc">Price: Low to High</option>
