@@ -42,14 +42,14 @@ const swiper = () => {
     router.push(`/product/${id}`);
   };
   return (
-    <div>
+    <div className="w-full h-full">
       <Swiper
         cssMode={true}
         navigation={true}
         mousewheel={true}
         keyboard={true}
         modules={[Navigation, Pagination, Mousewheel, Keyboard]}
-        className="w-[95%] h-[100px] p-2 overflow-hidden "
+        className="w-[95%] h-full p-2 "
       >
         {fakeData.map((item, index) => (
           <SwiperSlide className="px-[3%]" key={index}>
@@ -77,22 +77,24 @@ const swiper = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end w-full h-full">
                 <Image
                   src={item.smallImage}
                   alt=""
                   width={256}
                   height={256}
-                  className="w-[256px] h-[256px] rounded-full absolute mt-[339px] mr-80"
+                  layout="intrinsic"
+                  className="w-[256px] h-[256px] rounded-full absolute mt-[370px] mr-80"
                   onClick={() =>
                     handleNavigateProductDetail(item.id.toString())
                   }
-                ></Image>
+                />
                 <Image
                   src={item.largeImage}
                   alt=""
                   width={420}
                   height={595}
+                  layout="intrinsic"
                   className="w-[420px] h-[595px] rounded-t-full"
                   onClick={() =>
                     handleNavigateProductDetail(item.id.toString())
