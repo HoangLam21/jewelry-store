@@ -1004,6 +1004,95 @@ export const contract = c.router({
                 productId: z.string(),
             }),
         },
+
+        addProductVariantToCart: {
+            method: "POST",
+            path: "/api/cart/add/product/variant",
+            body: z.object({
+                userId: z.string(),
+                productId: z.string(),
+                material: z.string(),
+                size: z.string(),
+                quantity: z.number(),
+            }),
+            responses: {
+                201: z.object({
+                    userId: z.string(),
+                    products: z.record(z.number()),
+                }),
+                400: z.object({ error: z.string() }),
+                500: z.object({ error: z.string() }),
+            },
+        },
+
+        removeProductVariantFromCart: {
+            method: "DELETE",
+            path: "/api/cart/remove/product/variant",
+            responses: {
+                200: z.object({
+                    userId: z.string(),
+                    products: z.record(z.number()),
+                }),
+                400: z.object({ error: z.string() }),
+                500: z.object({ error: z.string() }),
+            },
+            query: z.object({
+                userId: z.string(),
+                productId: z.string(),
+                material: z.string(),
+                size: z.string(),
+            }),
+        },
+
+        editProductVariantQuantityInCart: {
+            method: "PUT",
+            path: "/api/cart/update/product/variant",
+            body: z.object({
+                material: z.string(),
+                size: z.string(),
+                quantity: z.number(),
+            }),
+            responses: {
+                200: z.object({
+                    userId: z.string(),
+                    products: z.record(z.number()),
+                }),
+                400: z.object({ error: z.string() }),
+                500: z.object({ error: z.string() }),
+            },
+            query: z.object({
+                userId: z.string(),
+                productId: z.string(),
+            }),
+        },
+
+        getCartInformationWithVariants: {
+            method: "GET",
+            path: "/api/cart/variants",
+            query: z.object({
+                userId: z.string(),
+            }),
+            responses: {
+                200: z.object({
+                    userId: z.string(),
+                    products: z.array(
+                        z.object({
+                            product: z.object({
+                                id: z.string(),
+                                name: z.string(),
+                            }),
+                            variant: z.object({
+                                material: z.string(),
+                                size: z.string(),
+                            }),
+                            quantity: z.number(),
+                        })
+                    ),
+                }),
+                400: z.object({ error: z.string() }),
+                500: z.object({ error: z.string() }),
+            },
+        },
     }),
     category: c.router({
         createCategory: {
