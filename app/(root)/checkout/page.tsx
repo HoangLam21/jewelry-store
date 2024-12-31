@@ -17,12 +17,34 @@ export default function Page() {
   const [shippingFee, setShippingFee] = useState(0);
 
   useEffect(() => {
-    const originalPrice = state.items.reduce(
-      (sum, item) => sum + item.cost * item.quantity,
-      0
+    const { originalPrice, discount, finalPrice } = state.items.reduce(
+      (totals, item) => {
+        const selectedVariant = item.variants.find(
+          (variant) => variant.material === item.selectedMaterial
+        );
+
+        const sizeStock = selectedVariant?.sizes.find(
+          (size: any) => size.size === item.selectedSize
+        );
+
+        const basePrice = item.cost * item.quantity;
+
+        const addOnPrice = (selectedVariant?.addOn || 0) * item.quantity;
+
+        const voucher = item.vouchers?.[0];
+        const voucherDiscount = voucher
+          ? (basePrice + addOnPrice) * (voucher.discount / 100)
+          : 0;
+
+        return {
+          originalPrice: totals.originalPrice + basePrice + addOnPrice,
+          discount: totals.discount + voucherDiscount,
+          finalPrice:
+            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount),
+        };
+      },
+      { originalPrice: 0, discount: 0, finalPrice: 0 }
     );
-    const discount = originalPrice * 0.1;
-    const finalPrice = originalPrice - discount;
 
     setTotalOriginalPrice(originalPrice);
     setTotalDiscount(discount);
@@ -63,7 +85,7 @@ export default function Page() {
         </div>
       </div>
       <div className="flex text-dark100_light500 flex-col lg:flex-row justify-between w-full px-10 pb-5">
-        <div className="lg:w-[45%] w-full bg-white dark:bg-dark-300 p-5 rounded-lg mt-8 lg:mt-0">
+        <div className="lg:w-[45%] w-full p-5 rounded-lg mt-8 lg:mt-0">
           <h2 className="text-[30px] font-normal jost mb-5">
             SHIPPING INFOMATION
           </h2>
@@ -81,13 +103,13 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-10">
             ORDER INFOMATION
           </h2>
-          {state.items.map((item) => (
+          {state.items.map((item: any) => (
             <div
               key={item._id}
               className="flex items-center justify-between mb-4 border-b pb-4"
             >
               <Image
-                src={item.images}
+                src={item.files[0].url}
                 alt={item.name}
                 width={100}
                 height={120}
@@ -100,7 +122,7 @@ export default function Page() {
                 </span>
               </div>
               <span className="text-[18px] font-semibold text-primary-100">
-                ${item.cost * item.quantity}
+                {item.cost * item.quantity}
               </span>
             </div>
           ))}
