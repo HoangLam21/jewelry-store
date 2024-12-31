@@ -48,7 +48,7 @@ const stockInfTitle = "font-medium text-[16px] ";
 
 const EditOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { id } = useParams<{ id: string }>(); // Ensure id is a string
+  const { id } = useParams() as { id: string };
 
   const cleanId = typeof id === "string" ? id.replace("edit-", "") : "";
 

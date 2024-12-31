@@ -38,7 +38,7 @@ const columns = [
 ];
 
 const OrderDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams() as { id: string };
   const [isImport, setIsImport] = useState<Import | null>(null);
 
   useEffect(() => {

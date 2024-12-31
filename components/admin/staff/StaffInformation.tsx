@@ -12,6 +12,7 @@ import TableSearch from "@/components/shared/table/TableSearch";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import LabelStatus from "@/components/shared/label/LabelStatus";
+import { getStaffById } from "@/lib/service/staff.service";
 
 interface SaleInvoice {
   id: string;
@@ -86,6 +87,21 @@ const StaffInformation = () => {
       }
     }
   }, [id]);
+
+  // useEffect(() => {
+  //   const fetchStaffData = async () => {
+  //     try {
+  //       if (id) {
+  //         const foundItem = await getStaffById(id);
+  //         setStaff(foundItem);
+  //       }
+  //     } catch (error) {
+  //       console.error("Lỗi khi lấy thông tin nhân viên:", error);
+  //     }
+  //   };
+
+  //   fetchStaffData()
+  // },[])
 
   // Render nothing if staff is not loaded yet
   if (!staff) {
