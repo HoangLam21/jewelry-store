@@ -13,39 +13,36 @@ import Voucher from "@/database/voucher.model";
 export const getOrders = async () => {
     try {
         connectToDatabase();
-        const orders = await Order.find();
+        const orders = await Order.find()
+            .populate("customer")
+            .populate("staff");
+
         const orderResponse = [];
         for (const order of orders) {
-            const customer = await Customer.findById(order.customer);
-            const staff = await Staff.findById(order.staff);
-            const orderDetails = order.details;
             const products = [];
-            for (const [productId, quantity] of orderDetails) {
-                const product = await Product.findById(productId.toString());
+            for (const [productId, quantity] of order.details) {
+                const product = await Product.findById(productId.toString())
+                    .populate("vouchers")
+                    .populate("provider")
+                    .populate("files");
+
                 if (!product) {
                     throw new Error("Product not found");
                 }
-                const vouchers = await Voucher.find({
-                    _id: { $in: product.vouchers },
-                });
-                const provider = await ProductProvider.findById(
-                    product.provider
-                );
-                const files = await File.find({ _id: { $in: product.files } });
                 products.push({
                     product: {
                         ...product.toObject(),
-                        vouchers: vouchers,
-                        provider: provider,
-                        files: files,
+                        vouchers: product.vouchers,
+                        provider: product.provider,
+                        files: product.files,
                     },
                     quantity: quantity,
                 });
             }
             orderResponse.push({
                 ...order.toObject(),
-                customer: customer,
-                staff: staff,
+                customer: order.customer,
+                staff: order.staff,
                 products: products,
             });
         }
@@ -169,7 +166,6 @@ export const updateOrderStatus = async (id: string, status: string) => {
         throw new Error("Failed to update order status");
     }
 };
-
 export const getOrderById = async (id: string) => {
     try {
         connectToDatabase();
@@ -184,7 +180,7 @@ export const getOrderById = async (id: string) => {
             if (!product) {
                 throw new Error("Product not found");
             }
-            const vouchers = await Product.find({
+            const vouchers = await Voucher.find({
                 _id: { $in: product.vouchers },
             });
             const provider = await ProductProvider.findById(product.provider);
