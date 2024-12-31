@@ -4,6 +4,10 @@ import Import from "@/database/import.model";
 import { connectToDatabase } from "../mongoose";
 import Product from "@/database/product.model";
 import { ObjectId } from "mongodb";
+import ProductProvider from "@/database/provider.model";
+import Staff from "@/database/staff.model";
+import File from "@/database/file.model";
+import Voucher from "@/database/voucher.model";
 
 // Tạo nhập hàng mới
 export const createImport = async (data: {
@@ -116,7 +120,45 @@ export const getImports = async () => {
     try {
         connectToDatabase();
         const imports = await Import.find();
-        return imports;
+        const populatedImports = await Promise.all(
+            imports.map(async (importData) => {
+                const importDetails = importData.details;
+                const products = await Promise.all(
+                    Object.keys(importDetails).map(async (productId) => {
+                        const product = await Product.findById(productId);
+                        if (!product) {
+                            throw new Error("Product not found");
+                        }
+                        const vouchers = await Product.find({
+                            _id: { $in: product.vouchers },
+                        });
+                        const provider = await ProductProvider.findById(
+                            product.provider
+                        );
+                        const files = await File.find({
+                            _id: { $in: product.files },
+                        });
+                        return {
+                            product: {
+                                ...product.toObject(),
+                                vouchers: vouchers,
+                                provider: provider,
+                                files: files,
+                            },
+                            quantity: importDetails[productId],
+                        };
+                    })
+                );
+                return {
+                    import: {
+                        ...importData.toObject(),
+                        staff: await Staff.findById(importData.staff),
+                    },
+                    products: products,
+                };
+            })
+        );
+        return populatedImports;
     } catch (error) {
         console.log("Error fetching Imports: ", error);
         throw new Error("Failed to fetch imports");
@@ -131,7 +173,39 @@ export const getImportById = async (id: string) => {
         if (!importData) {
             throw new Error("Import not found");
         }
-        return importData;
+        const importDetails = importData.details;
+        const products = await Promise.all(
+            Object.keys(importDetails).map(async (productId) => {
+                const product = await Product.findById(productId);
+                if (!product) {
+                    throw new Error("Product not found");
+                }
+                const vouchers = await Voucher.find({
+                    _id: { $in: product.vouchers },
+                });
+                const provider = await ProductProvider.findById(
+                    product.provider
+                );
+                const files = await File.find({ _id: { $in: product.files } });
+                return {
+                    product: {
+                        ...product.toObject(),
+                        vouchers: vouchers,
+                        provider: provider,
+                        files: files,
+                    },
+                    quantity: importDetails[productId],
+                };
+            })
+        );
+        const staff = await Staff.findById(importData.staff);
+        return {
+            import: {
+                ...importData.toObject(),
+                staff: staff,
+            },
+            products: products,
+        };
     } catch (error) {
         console.log("Error fetching Import: ", error);
         throw new Error("Failed to fetch import");

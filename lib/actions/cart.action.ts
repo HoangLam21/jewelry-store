@@ -3,6 +3,7 @@
 import Cart from "@/database/cart.model";
 import { connectToDatabase } from "../mongoose";
 import mongoose from "mongoose";
+import Product from "@/database/product.model";
 
 // Add a product to a cart
 export const addProductToCart = async (
@@ -135,5 +136,202 @@ export const getCartInformation = async (userId: string) => {
         console.log("Error getting cart information: ", error);
         await mongoose.connection.close();
         throw new Error("Failed to get cart information");
+    }
+};
+
+// Add a product variant to a cart
+export const addProductVariantToCart = async (
+    userId: string,
+    productId: string,
+    quantity: number,
+    material: string,
+    size: string
+) => {
+    try {
+        await connectToDatabase();
+        const product = await Product.findById(productId);
+        if (!product) {
+            throw new Error("Product not found");
+        }
+        const variant = product.variants.find(
+            (variant: any) =>
+                variant.material === material &&
+                variant.sizes.some((sizeObj: any) => sizeObj.size === size)
+        );
+        if (!variant) {
+            throw new Error("Product variant not found");
+        }
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart) {
+            throw new Error("Cart not found");
+        }
+        const newDetails = new Map(cart.details);
+        if (newDetails.has(productId)) {
+            const currentQuantity = newDetails.get(productId);
+            newDetails.set(productId, (currentQuantity as any) + quantity);
+        } else {
+            newDetails.set(productId, quantity);
+        }
+        const updatedCart = await Cart.findByIdAndUpdate(
+            cart._id,
+            {
+                details: newDetails,
+                totalCost: cart.totalCost + quantity,
+            },
+            { new: true }
+        );
+        if (!updatedCart) {
+            throw new Error("Failed to update cart");
+        }
+        await mongoose.connection.close();
+        return updatedCart;
+    } catch (error) {
+        console.log("Error adding product variant to cart: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to add product variant to cart");
+    }
+};
+
+// Remove a product variant from a cart
+export const removeProductVariantFromCart = async (
+    userId: string,
+    productId: string,
+    material: string,
+    size: string
+) => {
+    try {
+        await connectToDatabase();
+        const product = await Product.findById(productId);
+        if (!product) {
+            throw new Error("Product not found");
+        }
+        const variant = product.variants.find(
+            (variant: any) =>
+                variant.material === material &&
+                variant.sizes.some((sizeObj: any) => sizeObj.size === size)
+        );
+        if (!variant) {
+            throw new Error("Product variant not found");
+        }
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart) {
+            throw new Error("Cart not found");
+        }
+        const newDetails = new Map(cart.details);
+        const currentQuantity = newDetails.get(productId);
+        if (currentQuantity === 1) {
+            newDetails.delete(productId);
+        } else {
+            newDetails.set(productId, (currentQuantity as any) - 1);
+        }
+        const updatedCart = await Cart.findByIdAndUpdate(
+            cart._id,
+            {
+                details: newDetails,
+                totalCost: cart.totalCost - 1,
+            },
+            { new: true }
+        );
+        if (!updatedCart) {
+            throw new Error("Failed to update cart");
+        }
+        await mongoose.connection.close();
+        return updatedCart;
+    } catch (error) {
+        console.log("Error removing product variant from cart: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to remove product variant from cart");
+    }
+};
+
+// Edit the quantity of a product variant in a cart
+export const editProductVariantQuantityInCart = async (
+    userId: string,
+    productId: string,
+    material: string,
+    size: string,
+    newQuantity: number
+) => {
+    try {
+        await connectToDatabase();
+        const product = await Product.findById(productId);
+        if (!product) {
+            throw new Error("Product not found");
+        }
+        const variant = product.variants.find(
+            (variant: any) =>
+                variant.material === material &&
+                variant.sizes.some((sizeObj: any) => sizeObj.size === size)
+        );
+        if (!variant) {
+            throw new Error("Product variant not found");
+        }
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart) {
+            throw new Error("Cart not found");
+        }
+        const newDetails = new Map(cart.details);
+        if (newQuantity === 0) {
+            newDetails.delete(productId);
+        } else {
+            newDetails.set(productId, newQuantity);
+        }
+        const updatedCart = await Cart.findByIdAndUpdate(
+            cart._id,
+            {
+                details: newDetails,
+                totalCost: newQuantity,
+            },
+            { new: true }
+        );
+        if (!updatedCart) {
+            throw new Error("Failed to update cart");
+        }
+        await mongoose.connection.close();
+        return updatedCart;
+    } catch (error) {
+        console.log("Error editing product variant quantity in cart: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to edit product variant quantity in cart");
+    }
+};
+
+// Get all information of a cart with product variants
+export const getCartInformationWithVariants = async (userId: string) => {
+    try {
+        await connectToDatabase();
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart) {
+            throw new Error("Cart not found");
+        }
+        const products = [];
+        for (const [productId, quantity] of cart.details) {
+            const product = await Product.findById(productId);
+            if (!product) {
+                throw new Error("Product not found");
+            }
+            const variants = product.variants.map((variant: any) => {
+                return {
+                    material: variant.material,
+                    sizes: variant.sizes,
+                };
+            });
+            products.push({
+                product: product,
+                variants: variants,
+                quantity: quantity,
+            });
+        }
+        const cartInformation = {
+            userId: cart.user,
+            totalCost: cart.totalCost,
+            products: products,
+        };
+        await mongoose.connection.close();
+        return cartInformation;
+    } catch (error) {
+        console.log("Error getting cart information with variants: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to get cart information with variants");
     }
 };
