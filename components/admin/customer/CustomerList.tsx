@@ -3,11 +3,12 @@ import TableSearch from "@/components/shared/table/TableSearch";
 import { CustomerData } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import Format from "@/components/shared/card/ConfirmCard";
+import { fetchCustomer } from "@/lib/service/customer.service";
 
 interface OrderCustomer {
   id: string;
@@ -15,7 +16,6 @@ interface OrderCustomer {
   createBy: string;
   cost: number;
 }
-
 interface Customer {
   id: string;
   fullName: string;
@@ -65,7 +65,49 @@ const CustomerList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [onDelete, setOnDelete] = useState(false);
   const [filterOption, setFilterOption] = useState("");
-  const [displayedList, setDisplayedList] = useState<Customer[]>(CustomerData);
+  const [displayedList, setDisplayedList] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result: CustomerResponse[] = await fetchCustomer();
+        console.log(result, "check");
+        if (result) {
+          const data: Customer[] = result.map((item) => {
+            const totalCost = item.orders.reduce(
+              (total, order) => total + order.cost,
+              0
+            );
+            return {
+              id: item._id,
+              fullName: item.fullName,
+              phoneNumber: item.phoneNumber,
+              email: item.email,
+              address: item.address,
+              avatar: "",
+              point: item.point,
+              sales: totalCost,
+              orders: item.orders.map((order) => ({
+                id: order._id,
+                createAt: order.createAt,
+                createBy: order.staff,
+                cost: order.cost
+              }))
+            };
+          });
+
+          setDisplayedList(data);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   //SEARCH
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
