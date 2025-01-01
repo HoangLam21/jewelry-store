@@ -5,7 +5,7 @@ import sortIcon from "@iconify/icons-mi/sort";
 const TableImport = ({
   columns,
   renderRow,
-  data,
+  data
 }: {
   columns: { header: string; accessor: string; className?: string }[];
   renderRow: (item: any) => React.ReactNode;
