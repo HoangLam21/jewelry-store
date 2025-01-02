@@ -12,7 +12,7 @@ export const formatPrice = (price: string | number): string => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
-    currencyDisplay: "code",
+    currencyDisplay: "code"
   }).format(numericPrice);
 };
 
@@ -61,4 +61,14 @@ export const formatDate = (date: Date | string): string => {
   return parsedDate instanceof Date && !isNaN(parsedDate.getTime()) // Check for a valid date
     ? parsedDate.toISOString()
     : ""; // Return empty string if invalid date
+};
+
+export const generateRandomID = (length: number) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
 };

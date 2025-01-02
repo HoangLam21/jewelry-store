@@ -137,7 +137,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 1000000,
-        status: 0,
+        status: 0
       },
       {
         id: "2",
@@ -145,7 +145,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 2000000,
-        status: 1,
+        status: 1
       },
       {
         id: "3",
@@ -153,9 +153,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-24"),
         note: "aaaaaaaaaa",
         total: 2500000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "2",
@@ -181,7 +181,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-20"),
         note: "good service",
         total: 1500000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -189,9 +189,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-20"),
         note: "excellent product",
         total: 3000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "3",
@@ -217,7 +217,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-15"),
         note: "Fast delivery",
         total: 1200000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -225,9 +225,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-16"),
         note: "Great quality",
         total: 1800000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "4",
@@ -254,9 +254,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-30"),
         note: "Happy with the service",
         total: 4000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "5",
@@ -283,7 +283,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-05"),
         note: "Very satisfied",
         total: 2200000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -291,9 +291,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-06"),
         note: "Good experience",
         total: 2000000,
-        status: 2,
-      },
-    ],
+        status: 2
+      }
+    ]
   },
   {
     id: "6",
@@ -320,9 +320,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-09-25"),
         note: "Good product",
         total: 1000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "7",
@@ -349,9 +349,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-01"),
         note: "Excellent service",
         total: 6000000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     id: "8",
@@ -377,9 +377,9 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-07-10"),
         note: "Very helpful",
         total: 1100000,
-        status: 1,
-      },
-    ],
+        status: 1
+      }
+    ]
   },
   {
     id: "9",
@@ -406,7 +406,7 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-15"),
         note: "Good product quality",
         total: 3500000,
-        status: 1,
+        status: 1
       },
       {
         id: "2",
@@ -414,10 +414,10 @@ export const StaffData: Staff[] = [
         createDate: new Date("2024-08-16"),
         note: "Great support",
         total: 4000000,
-        status: 2,
-      },
-    ],
-  },
+        status: 2
+      }
+    ]
+  }
 ];
 
 export const ImportData: Import[] = [
@@ -427,7 +427,7 @@ export const ImportData: Import[] = [
       id: "SUP001",
       phoneNumber: "  +84 348775966",
       fullname: "Kim Hyuk-kyu",
-      address: "123 Main Street, New York, USA",
+      address: "123 Main Street, New York, USA"
     },
     invoice: [
       {
@@ -438,7 +438,7 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
+        discount: 10
       },
       {
         id: "INV002",
@@ -448,7 +448,7 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
+        discount: 10
       },
       {
         id: "INV003",
@@ -458,12 +458,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 1000,
         quantity: 5,
-        discount: 10,
-      },
+        discount: 10
+      }
     ],
     status: true,
     createAt: new Date("2024-12-01"),
-    createBy: "Admin001",
+    createBy: "Admin001"
   },
   {
     id: "2",
@@ -471,7 +471,7 @@ export const ImportData: Import[] = [
       id: "SUP002",
       phoneNumber: "  +84 348775966",
       fullname: "DEFT VIPPRO",
-      address: "456 Oak Avenue, London, UK",
+      address: "456 Oak Avenue, London, UK"
     },
     invoice: [
       {
@@ -482,12 +482,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 500,
         quantity: 10,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-02"),
-    createBy: "Admin002",
+    createBy: "Admin002"
   },
   {
     id: "3",
@@ -495,7 +495,7 @@ export const ImportData: Import[] = [
       id: "SUP003",
       phoneNumber: "  +84 348775966",
       fullname: "8386 MÃI ĐỈNH MÃI ĐỈNH ĐỈNH",
-      address: "789 Pine Street, Sydney, Australia",
+      address: "789 Pine Street, Sydney, Australia"
     },
     invoice: [
       {
@@ -506,12 +506,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 50,
         quantity: 20,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-03"),
-    createBy: "Admin003",
+    createBy: "Admin003"
   },
   {
     id: "4",
@@ -519,7 +519,7 @@ export const ImportData: Import[] = [
       id: "SUP004",
       phoneNumber: "  +84 348775966",
       fullname: "TONY TONY CHOPPER",
-      address: "234 Elm Road, Berlin, Germany",
+      address: "234 Elm Road, Berlin, Germany"
     },
     invoice: [
       {
@@ -530,12 +530,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 150,
         quantity: 8,
-        discount: 15,
-      },
+        discount: 15
+      }
     ],
     status: true,
     createAt: new Date("2024-12-04"),
-    createBy: "Admin004",
+    createBy: "Admin004"
   },
   {
     id: "5",
@@ -543,7 +543,7 @@ export const ImportData: Import[] = [
       id: "SUP005",
       phoneNumber: "  +84 348775966",
       fullname: "Global Gadgets",
-      address: "567 Maple Boulevard, Toronto, Canada",
+      address: "567 Maple Boulevard, Toronto, Canada"
     },
     invoice: [
       {
@@ -554,12 +554,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 25,
         quantity: 50,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-05"),
-    createBy: "Admin005",
+    createBy: "Admin005"
   },
   {
     id: "6",
@@ -567,7 +567,7 @@ export const ImportData: Import[] = [
       id: "SUP006",
       phoneNumber: "  +84 348775966",
       fullname: "Gadget Store",
-      address: "901 Birch Lane, Paris, France",
+      address: "901 Birch Lane, Paris, France"
     },
     invoice: [
       {
@@ -578,12 +578,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 300,
         quantity: 12,
-        discount: 8,
-      },
+        discount: 8
+      }
     ],
     status: true,
     createAt: new Date("2024-12-06"),
-    createBy: "Admin006",
+    createBy: "Admin006"
   },
   {
     id: "7",
@@ -591,7 +591,7 @@ export const ImportData: Import[] = [
       id: "SUP007",
       phoneNumber: "  +84 348775966",
       fullname: "Mega Distributors",
-      address: "321 Aspen Road, Dubai, UAE",
+      address: "321 Aspen Road, Dubai, UAE"
     },
     invoice: [
       {
@@ -602,12 +602,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 75,
         quantity: 30,
-        discount: 10,
-      },
+        discount: 10
+      }
     ],
     status: false,
     createAt: new Date("2024-12-07"),
-    createBy: "Admin007",
+    createBy: "Admin007"
   },
   {
     id: "8",
@@ -615,7 +615,7 @@ export const ImportData: Import[] = [
       id: "SUP008",
       phoneNumber: "  +84 348775966",
       fullname: "Tech World",
-      address: "876 Spruce Avenue, Tokyo, Japan",
+      address: "876 Spruce Avenue, Tokyo, Japan"
     },
     invoice: [
       {
@@ -626,12 +626,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 40,
         quantity: 25,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-08"),
-    createBy: "Admin008",
+    createBy: "Admin008"
   },
   {
     id: "9",
@@ -639,7 +639,7 @@ export const ImportData: Import[] = [
       id: "SUP009",
       phoneNumber: "  +84 348775966",
       fullname: "Electronic Mart",
-      address: "654 Cedar Street, Mexico City, Mexico",
+      address: "654 Cedar Street, Mexico City, Mexico"
     },
     invoice: [
       {
@@ -650,12 +650,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 60,
         quantity: 15,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-09"),
-    createBy: "Admin009",
+    createBy: "Admin009"
   },
   {
     id: "10",
@@ -663,7 +663,7 @@ export const ImportData: Import[] = [
       id: "SUP010",
       phoneNumber: "  +84 348775966",
       fullname: "Alpha Electronics",
-      address: "345 Willow Drive, Moscow, Russia",
+      address: "345 Willow Drive, Moscow, Russia"
     },
     invoice: [
       {
@@ -674,12 +674,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 30,
         quantity: 40,
-        discount: 7,
-      },
+        discount: 7
+      }
     ],
     status: true,
     createAt: new Date("2024-12-10"),
-    createBy: "Admin010",
+    createBy: "Admin010"
   },
   {
     id: "11",
@@ -687,7 +687,7 @@ export const ImportData: Import[] = [
       id: "SUP011",
       phoneNumber: "  +84 348775966",
       fullname: "Techie Supplies",
-      address: "678 Poplar Lane, Singapore",
+      address: "678 Poplar Lane, Singapore"
     },
     invoice: [
       {
@@ -698,12 +698,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 15,
         quantity: 100,
-        discount: 0,
-      },
+        discount: 0
+      }
     ],
     status: true,
     createAt: new Date("2024-12-11"),
-    createBy: "Admin011",
+    createBy: "Admin011"
   },
   {
     id: "12",
@@ -711,7 +711,7 @@ export const ImportData: Import[] = [
       id: "SUP012",
       phoneNumber: "  +84 348775966",
       fullname: "Smart Solutions",
-      address: "987 Chestnut Road, Seoul, South Korea",
+      address: "987 Chestnut Road, Seoul, South Korea"
     },
     invoice: [
       {
@@ -722,12 +722,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 20,
         quantity: 60,
-        discount: 5,
-      },
+        discount: 5
+      }
     ],
     status: false,
     createAt: new Date("2024-12-12"),
-    createBy: "Admin012",
+    createBy: "Admin012"
   },
   {
     id: "13",
@@ -735,7 +735,7 @@ export const ImportData: Import[] = [
       id: "SUP013",
       phoneNumber: "  +84 348775966",
       fullname: "NextGen Supplies",
-      address: "432 Pineapple Street, Cape Town, South Africa",
+      address: "432 Pineapple Street, Cape Town, South Africa"
     },
     invoice: [
       {
@@ -746,12 +746,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 120,
         quantity: 10,
-        discount: 12,
-      },
+        discount: 12
+      }
     ],
     status: true,
     createAt: new Date("2024-12-13"),
-    createBy: "Admin013",
+    createBy: "Admin013"
   },
   {
     id: "14",
@@ -759,7 +759,7 @@ export const ImportData: Import[] = [
       id: "SUP014",
       phoneNumber: "  +84 348775966",
       fullname: "Global Tech",
-      address: "210 Banana Avenue, Rio de Janeiro, Brazil",
+      address: "210 Banana Avenue, Rio de Janeiro, Brazil"
     },
     invoice: [
       {
@@ -770,12 +770,12 @@ export const ImportData: Import[] = [
 
         unitPrice: 10,
         quantity: 200,
-        discount: 2,
-      },
+        discount: 2
+      }
     ],
     status: true,
     createAt: new Date("2024-12-14"),
-    createBy: "Admin014",
+    createBy: "Admin014"
   },
   {
     id: "15",
@@ -783,7 +783,7 @@ export const ImportData: Import[] = [
       id: "SUP015",
       phoneNumber: "  +84 348775966",
       fullname: "Prime Tech",
-      address: "765 Orange Blvd, Rome, Italy",
+      address: "765 Orange Blvd, Rome, Italy"
     },
     invoice: [
       {
@@ -794,13 +794,13 @@ export const ImportData: Import[] = [
 
         unitPrice: 500,
         quantity: 2,
-        discount: 20,
-      },
+        discount: 20
+      }
     ],
     status: false,
     createAt: new Date("2024-12-15"),
-    createBy: "Admin015",
-  },
+    createBy: "Admin015"
+  }
 ];
 
 export const ProductsData: Product[] = [
@@ -811,16 +811,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "leather_wallet_main.jpg",
+        fileName: "leather_wallet_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "leather_wallet_1.jpg",
+        fileName: "leather_wallet_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "leather_wallet_2.jpg",
-      },
+        fileName: "leather_wallet_2.jpg"
+      }
     ],
     productName: "Leather Wallet",
     price: "$25.99",
@@ -831,7 +831,7 @@ export const ProductsData: Product[] = [
     category: "1",
     size: "12",
     color: "White",
-    quantity: 2,
+    quantity: 2
   },
   {
     id: "2",
@@ -840,16 +840,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "cotton_tshirt_main.jpg",
+        fileName: "cotton_tshirt_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "cotton_tshirt_1.jpg",
+        fileName: "cotton_tshirt_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "cotton_tshirt_2.jpg",
-      },
+        fileName: "cotton_tshirt_2.jpg"
+      }
     ],
     productName: "Cotton T-Shirt",
     price: "$15.99",
@@ -860,7 +860,7 @@ export const ProductsData: Product[] = [
     category: "1",
     size: "M",
     color: "White",
-    quantity: 5,
+    quantity: 5
   },
   {
     id: "3",
@@ -869,16 +869,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "stainless_steel_watch_main.jpg",
+        fileName: "stainless_steel_watch_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "stainless_steel_watch_1.jpg",
+        fileName: "stainless_steel_watch_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "stainless_steel_watch_2.jpg",
-      },
+        fileName: "stainless_steel_watch_2.jpg"
+      }
     ],
     productName: "Stainless Steel Watch",
     price: "$199.99",
@@ -889,7 +889,7 @@ export const ProductsData: Product[] = [
     category: "1",
     size: "One Size",
     color: "Silver",
-    quantity: 4,
+    quantity: 4
   },
   {
     id: "4",
@@ -898,16 +898,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "sports_shoes_main.jpg",
+        fileName: "sports_shoes_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "sports_shoes_1.jpg",
+        fileName: "sports_shoes_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "sports_shoes_2.jpg",
-      },
+        fileName: "sports_shoes_2.jpg"
+      }
     ],
     productName: "Sports Shoes",
     price: "$49.99",
@@ -918,7 +918,7 @@ export const ProductsData: Product[] = [
     category: "2",
     size: "8",
     color: "Black",
-    quantity: 3,
+    quantity: 3
   },
   {
     id: "5",
@@ -927,16 +927,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "wooden_chair_main.jpg",
+        fileName: "wooden_chair_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "wooden_chair_1.jpg",
+        fileName: "wooden_chair_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "wooden_chair_2.jpg",
-      },
+        fileName: "wooden_chair_2.jpg"
+      }
     ],
     productName: "Wooden Chair",
     price: "$89.99",
@@ -947,7 +947,7 @@ export const ProductsData: Product[] = [
     category: "3",
     size: "One Size",
     color: "Brown",
-    quantity: 5,
+    quantity: 5
   },
   {
     id: "6",
@@ -956,16 +956,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "silk_scarf_main.jpg",
+        fileName: "silk_scarf_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "silk_scarf_1.jpg",
+        fileName: "silk_scarf_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "silk_scarf_2.jpg",
-      },
+        fileName: "silk_scarf_2.jpg"
+      }
     ],
     productName: "Silk Scarf",
     price: "$35.00",
@@ -976,7 +976,7 @@ export const ProductsData: Product[] = [
     category: "4",
     size: "One Size",
     color: "Red",
-    quantity: 6,
+    quantity: 6
   },
   {
     id: "7",
@@ -985,16 +985,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smartphone_case_main.jpg",
+        fileName: "smartphone_case_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smartphone_case_1.jpg",
+        fileName: "smartphone_case_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smartphone_case_2.jpg",
-      },
+        fileName: "smartphone_case_2.jpg"
+      }
     ],
     productName: "Smartphone Case",
     price: "$9.99",
@@ -1005,7 +1005,7 @@ export const ProductsData: Product[] = [
     category: "5",
     size: "One Size",
     color: "Black",
-    quantity: 10,
+    quantity: 10
   },
   {
     id: "8",
@@ -1014,16 +1014,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "leather_bag_main.jpg",
+        fileName: "leather_bag_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "leather_bag_1.jpg",
+        fileName: "leather_bag_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "leather_bag_2.jpg",
-      },
+        fileName: "leather_bag_2.jpg"
+      }
     ],
     productName: "Leather Bag",
     price: "$79.99",
@@ -1034,7 +1034,7 @@ export const ProductsData: Product[] = [
     category: "2",
     size: "One Size",
     color: "Brown",
-    quantity: 4,
+    quantity: 4
   },
   {
     id: "9",
@@ -1043,16 +1043,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "kitchen_knife_main.jpg",
+        fileName: "kitchen_knife_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "kitchen_knife_1.jpg",
+        fileName: "kitchen_knife_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "kitchen_knife_2.jpg",
-      },
+        fileName: "kitchen_knife_2.jpg"
+      }
     ],
     productName: "Kitchen Knife",
     price: "$35.00",
@@ -1063,7 +1063,7 @@ export const ProductsData: Product[] = [
     category: "6",
     size: "One Size",
     color: "Silver",
-    quantity: 3,
+    quantity: 3
   },
   {
     id: "10",
@@ -1072,16 +1072,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "stainless_pot_main.jpg",
+        fileName: "stainless_pot_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "stainless_pot_1.jpg",
+        fileName: "stainless_pot_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "stainless_pot_2.jpg",
-      },
+        fileName: "stainless_pot_2.jpg"
+      }
     ],
     productName: "Stainless Steel Pot",
     price: "$59.99",
@@ -1092,7 +1092,7 @@ export const ProductsData: Product[] = [
     category: "6",
     size: "Medium",
     color: "Silver",
-    quantity: 7,
+    quantity: 7
   },
   {
     id: "11",
@@ -1101,16 +1101,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "cotton_shirt_main.jpg",
+        fileName: "cotton_shirt_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "cotton_shirt_1.jpg",
+        fileName: "cotton_shirt_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "cotton_shirt_2.jpg",
-      },
+        fileName: "cotton_shirt_2.jpg"
+      }
     ],
     productName: "Cotton Shirt",
     price: "$24.99",
@@ -1121,7 +1121,7 @@ export const ProductsData: Product[] = [
     category: "1",
     size: "L",
     color: "Blue",
-    quantity: 15,
+    quantity: 15
   },
   {
     id: "12",
@@ -1130,16 +1130,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smart_watch_main.jpg",
+        fileName: "smart_watch_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smart_watch_1.jpg",
+        fileName: "smart_watch_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smart_watch_2.jpg",
-      },
+        fileName: "smart_watch_2.jpg"
+      }
     ],
     productName: "Smart Watch",
     price: "$199.99",
@@ -1150,7 +1150,7 @@ export const ProductsData: Product[] = [
     category: "3",
     size: "One Size",
     color: "Black",
-    quantity: 10,
+    quantity: 10
   },
   {
     id: "13",
@@ -1159,16 +1159,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "headphones_main.jpg",
+        fileName: "headphones_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "headphones_1.jpg",
+        fileName: "headphones_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "headphones_2.jpg",
-      },
+        fileName: "headphones_2.jpg"
+      }
     ],
     productName: "Wireless Headphones",
     price: "$79.99",
@@ -1179,7 +1179,7 @@ export const ProductsData: Product[] = [
     category: "3",
     size: "One Size",
     color: "Black",
-    quantity: 8,
+    quantity: 8
   },
   {
     id: "14",
@@ -1188,16 +1188,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "pillow_main.jpg",
+        fileName: "pillow_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "pillow_1.jpg",
+        fileName: "pillow_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "pillow_2.jpg",
-      },
+        fileName: "pillow_2.jpg"
+      }
     ],
     productName: "Memory Foam Pillow",
     price: "$29.99",
@@ -1208,7 +1208,7 @@ export const ProductsData: Product[] = [
     category: "5",
     size: "Standard",
     color: "White",
-    quantity: 25,
+    quantity: 25
   },
   {
     id: "15",
@@ -1217,16 +1217,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "air_conditioner_main.jpg",
+        fileName: "air_conditioner_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "air_conditioner_1.jpg",
+        fileName: "air_conditioner_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "air_conditioner_2.jpg",
-      },
+        fileName: "air_conditioner_2.jpg"
+      }
     ],
     productName: "Air Conditioner",
     price: "$499.99",
@@ -1237,7 +1237,7 @@ export const ProductsData: Product[] = [
     category: "4",
     size: "Medium",
     color: "White",
-    quantity: 12,
+    quantity: 12
   },
   {
     id: "16",
@@ -1246,16 +1246,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "coffee_machine_main.jpg",
+        fileName: "coffee_machine_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "coffee_machine_1.jpg",
+        fileName: "coffee_machine_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "coffee_machine_2.jpg",
-      },
+        fileName: "coffee_machine_2.jpg"
+      }
     ],
     productName: "Coffee Machine",
     price: "$120.00",
@@ -1266,7 +1266,7 @@ export const ProductsData: Product[] = [
     category: "6",
     size: "One Size",
     color: "Black",
-    quantity: 5,
+    quantity: 5
   },
   {
     id: "17",
@@ -1275,16 +1275,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smartphone_main.jpg",
+        fileName: "smartphone_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smartphone_1.jpg",
+        fileName: "smartphone_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "smartphone_2.jpg",
-      },
+        fileName: "smartphone_2.jpg"
+      }
     ],
     productName: "Smartphone",
     price: "$799.99",
@@ -1295,7 +1295,7 @@ export const ProductsData: Product[] = [
     category: "3",
     size: "One Size",
     color: "Silver",
-    quantity: 20,
+    quantity: 20
   },
   {
     id: "18",
@@ -1304,16 +1304,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "vacuum_cleaner_main.jpg",
+        fileName: "vacuum_cleaner_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "vacuum_cleaner_1.jpg",
+        fileName: "vacuum_cleaner_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "vacuum_cleaner_2.jpg",
-      },
+        fileName: "vacuum_cleaner_2.jpg"
+      }
     ],
     productName: "Vacuum Cleaner",
     price: "$89.99",
@@ -1324,7 +1324,7 @@ export const ProductsData: Product[] = [
     category: "6",
     size: "One Size",
     color: "Red",
-    quantity: 10,
+    quantity: 10
   },
   {
     id: "19",
@@ -1333,16 +1333,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "speaker_main.jpg",
+        fileName: "speaker_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "speaker_1.jpg",
+        fileName: "speaker_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "speaker_2.jpg",
-      },
+        fileName: "speaker_2.jpg"
+      }
     ],
     productName: "Bluetooth Speaker",
     price: "$49.99",
@@ -1353,7 +1353,7 @@ export const ProductsData: Product[] = [
     category: "3",
     size: "One Size",
     color: "Black",
-    quantity: 30,
+    quantity: 30
   },
   {
     id: "20",
@@ -1362,16 +1362,16 @@ export const ProductsData: Product[] = [
     imageInfo: [
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "desk_lamp_main.jpg",
+        fileName: "desk_lamp_main.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "desk_lamp_1.jpg",
+        fileName: "desk_lamp_1.jpg"
       },
       {
         url: "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-        fileName: "desk_lamp_2.jpg",
-      },
+        fileName: "desk_lamp_2.jpg"
+      }
     ],
     productName: "Desk Lamp",
     price: "$29.99",
@@ -1382,8 +1382,8 @@ export const ProductsData: Product[] = [
     category: "5",
     size: "One Size",
     color: "White",
-    quantity: 12,
-  },
+    quantity: 12
+  }
 ];
 
 export const Vouchers: Voucher[] = [
@@ -1391,122 +1391,122 @@ export const Vouchers: Voucher[] = [
     id: "1",
     name: "Discount 10%",
     discount: 10,
-    expDate: new Date("2025-01-01"),
+    expDate: new Date("2025-01-01")
   },
   {
     id: "2",
     name: "Flash Sale 20%",
     discount: 20,
-    expDate: new Date("2025-01-02"),
+    expDate: new Date("2025-01-02")
   },
   {
     id: "3",
     name: "Holiday Special 15%",
     discount: 15,
-    expDate: new Date("2025-02-14"),
+    expDate: new Date("2025-02-14")
   },
   {
     id: "4",
     name: "Free Shipping",
     discount: 10,
-    expDate: new Date("2025-03-01"),
+    expDate: new Date("2025-03-01")
   },
   {
     id: "5",
     name: "Black Friday 25%",
     discount: 25,
-    expDate: new Date("2025-11-29"),
+    expDate: new Date("2025-11-29")
   },
   {
     id: "6",
     name: "Cyber Monday 30%",
     discount: 30,
-    expDate: new Date("2025-12-02"),
+    expDate: new Date("2025-12-02")
   },
   {
     id: "7",
     name: "New Year 20%",
     discount: 20,
-    expDate: new Date("2025-01-01"),
+    expDate: new Date("2025-01-01")
   },
   {
     id: "8",
     name: "Valentine's Day 15%",
     discount: 15,
-    expDate: new Date("2025-02-14"),
+    expDate: new Date("2025-02-14")
   },
   {
     id: "9",
     name: "Summer Sale 10%",
     discount: 10,
-    expDate: new Date("2025-07-01"),
+    expDate: new Date("2025-07-01")
   },
   {
     id: "10",
     name: "Spring Special 12%",
     discount: 12,
-    expDate: new Date("2025-04-01"),
+    expDate: new Date("2025-04-01")
   },
   {
     id: "11",
     name: "Easter Special 18%",
     discount: 18,
-    expDate: new Date("2025-04-20"),
+    expDate: new Date("2025-04-20")
   },
   {
     id: "12",
     name: "Back to School 5%",
     discount: 5,
-    expDate: new Date("2025-08-15"),
+    expDate: new Date("2025-08-15")
   },
   {
     id: "13",
     name: "Birthday Bash 25%",
     discount: 25,
-    expDate: new Date("2025-09-01"),
+    expDate: new Date("2025-09-01")
   },
   {
     id: "14",
     name: "Shopping Festival 35%",
     discount: 35,
-    expDate: new Date("2025-10-15"),
+    expDate: new Date("2025-10-15")
   },
   {
     id: "15",
     name: "Anniversary 50%",
     discount: 50,
-    expDate: new Date("2025-12-01"),
+    expDate: new Date("2025-12-01")
   },
   {
     id: "16",
     name: "Lucky Day 22%",
     discount: 22,
-    expDate: new Date("2025-05-13"),
+    expDate: new Date("2025-05-13")
   },
   {
     id: "17",
     name: "Weekend Special 11%",
     discount: 11,
-    expDate: new Date("2025-06-07"),
+    expDate: new Date("2025-06-07")
   },
   {
     id: "18",
     name: "Winter Warm-Up 14%",
     discount: 14,
-    expDate: new Date("2025-12-15"),
+    expDate: new Date("2025-12-15")
   },
   {
     id: "19",
     name: "Festival of Lights 20%",
     discount: 20,
-    expDate: new Date("2025-11-10"),
+    expDate: new Date("2025-11-10")
   },
   {
     id: "20",
     name: "Year-End Clearance 40%",
     discount: 40,
-    expDate: new Date("2025-12-31"),
-  },
+    expDate: new Date("2025-12-31")
+  }
 ];
 
 export const Comments: Comment[] = [
@@ -1523,8 +1523,8 @@ export const Comments: Comment[] = [
     comment: "Absolutely stunning piece! Highly recommend.",
     image: [
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    ],
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
   },
   {
     id: "2",
@@ -1538,8 +1538,8 @@ export const Comments: Comment[] = [
     material: "Silver",
     comment: "Great quality, but delivery was a bit late.",
     image: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    ],
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
   },
   {
     id: "3",
@@ -1552,7 +1552,7 @@ export const Comments: Comment[] = [
     size: "S",
     material: "Gold",
     comment: "Looks good but smaller than expected.",
-    image: [],
+    image: []
   },
   {
     id: "4",
@@ -1567,8 +1567,8 @@ export const Comments: Comment[] = [
     comment: "Beautiful and well-made. Perfect gift!",
     image: [
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    ],
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
   },
   {
     id: "5",
@@ -1581,7 +1581,7 @@ export const Comments: Comment[] = [
     size: "L",
     material: "Platinum",
     comment: "Too expensive for the quality provided.",
-    image: [],
+    image: []
   },
   {
     id: "6",
@@ -1595,8 +1595,8 @@ export const Comments: Comment[] = [
     material: "Titanium",
     comment: "Looks stylish and durable.",
     image: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    ],
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
   },
   {
     id: "7",
@@ -1610,8 +1610,8 @@ export const Comments: Comment[] = [
     material: "Gold",
     comment: "Exactly what I was looking for. Perfect size!",
     image: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    ],
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
   },
   {
     id: "8",
@@ -1624,7 +1624,7 @@ export const Comments: Comment[] = [
     size: "M",
     material: "Silver",
     comment: "Color not as vibrant as in the pictures.",
-    image: [],
+    image: []
   },
   {
     id: "9",
@@ -1639,8 +1639,8 @@ export const Comments: Comment[] = [
     comment: "Very elegant. Got many compliments!",
     image: [
       "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    ],
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
   },
   {
     id: "10",
@@ -1654,9 +1654,9 @@ export const Comments: Comment[] = [
     material: "Silver",
     comment: "Simple and classy. Good for daily wear.",
     image: [
-      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg",
-    ],
-  },
+      "https://i.pinimg.com/736x/40/64/d4/4064d49b6a79f57ee49f452655c895d3.jpg"
+    ]
+  }
 ];
 
 export const Providers: Provider[] = [
@@ -1676,16 +1676,16 @@ export const Providers: Provider[] = [
         createAt: "2023-03-01",
         createBy: "John Doe",
         total: 5000,
-        status: 1,
+        status: 1
       },
       {
         id: "i2",
         createAt: "2023-04-10",
         createBy: "Alice Johnson",
         total: 3000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     _id: "2",
@@ -1703,9 +1703,9 @@ export const Providers: Provider[] = [
         createAt: "2023-05-05",
         createBy: "Bob Carter",
         total: 12000,
-        status: 1,
-      },
-    ],
+        status: 1
+      }
+    ]
   },
   {
     _id: "3",
@@ -1723,9 +1723,9 @@ export const Providers: Provider[] = [
         createAt: "2023-06-15",
         createBy: "Sophia Lewis",
         total: 8000,
-        status: 1,
-      },
-    ],
+        status: 1
+      }
+    ]
   },
   {
     _id: "4",
@@ -1737,7 +1737,7 @@ export const Providers: Provider[] = [
     city: "Berlin",
     country: "Germany",
     email: "hello@organicgoods.de",
-    numberImportInvoice: [],
+    numberImportInvoice: []
   },
   {
     _id: "5",
@@ -1755,16 +1755,16 @@ export const Providers: Provider[] = [
         createAt: "2023-07-10",
         createBy: "Lin Zhang",
         total: 20000,
-        status: 1,
+        status: 1
       },
       {
         id: "i6",
         createAt: "2023-07-20",
         createBy: "Huang Li",
         total: 18000,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     _id: "6",
@@ -1782,9 +1782,9 @@ export const Providers: Provider[] = [
         createAt: "2023-08-01",
         createBy: "Claire Dubois",
         total: 30000,
-        status: 1,
-      },
-    ],
+        status: 1
+      }
+    ]
   },
   {
     _id: "7",
@@ -1796,7 +1796,7 @@ export const Providers: Provider[] = [
     city: "Rio de Janeiro",
     country: "Brazil",
     email: "info@sacoffee.com.br",
-    numberImportInvoice: [],
+    numberImportInvoice: []
   },
   {
     _id: "8",
@@ -1814,9 +1814,9 @@ export const Providers: Provider[] = [
         createAt: "2023-09-10",
         createBy: "Sarah Thompson",
         total: 7000,
-        status: 1,
-      },
-    ],
+        status: 1
+      }
+    ]
   },
   {
     _id: "9",
@@ -1834,9 +1834,9 @@ export const Providers: Provider[] = [
         createAt: "2023-10-05",
         createBy: "Michael Brown",
         total: 2500,
-        status: 0,
-      },
-    ],
+        status: 0
+      }
+    ]
   },
   {
     _id: "10",
@@ -1854,8 +1854,8 @@ export const Providers: Provider[] = [
         createAt: "2023-11-01",
         createBy: "Emily Davis",
         total: 15000,
-        status: 1,
-      },
-    ],
-  },
+        status: 1
+      }
+    ]
+  }
 ];
