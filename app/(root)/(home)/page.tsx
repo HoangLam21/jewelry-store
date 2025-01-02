@@ -9,7 +9,6 @@ import Categories from "@/components/form/home/Categories";
 import Products from "@/components/form/home/Products";
 import Collections from "@/components/form/home/Collections";
 import Sale from "@/components/form/home/Sale";
-import Image from "next/image";
 
 export default function Page() {
   return (

@@ -7,7 +7,6 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
 import MyButton from "@/components/shared/button/MyButton";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import product from "@/pages/api/rating/product";
 
 const fakeData = [
   {
@@ -42,14 +41,14 @@ const swiper = () => {
     router.push(`/product/${id}`);
   };
   return (
-    <div className="w-full h-full">
+    <div>
       <Swiper
         cssMode={true}
         navigation={true}
         mousewheel={true}
         keyboard={true}
         modules={[Navigation, Pagination, Mousewheel, Keyboard]}
-        className="w-[95%] h-full p-2 "
+        className="w-[95%] h-auto p-2 overflow-hidden "
       >
         {fakeData.map((item, index) => (
           <SwiperSlide className="px-[3%]" key={index}>
@@ -72,29 +71,27 @@ const swiper = () => {
                       event={function (): void {
                         throw new Error("Function not implemented.");
                       }}
-                      width={""} // fontWeight="font-light"
+                      width={""}
                     ></MyButton>
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end w-full h-full">
+              <div className="flex justify-end">
                 <Image
                   src={item.smallImage}
                   alt=""
                   width={256}
                   height={256}
-                  layout="intrinsic"
-                  className="w-[256px] h-[256px] rounded-full absolute mt-[370px] mr-80"
+                  className="w-[256px] h-[256px] rounded-full absolute mt-[339px] mr-80"
                   onClick={() =>
                     handleNavigateProductDetail(item.id.toString())
                   }
-                />
+                ></Image>
                 <Image
                   src={item.largeImage}
                   alt=""
                   width={420}
                   height={595}
-                  layout="intrinsic"
                   className="w-[420px] h-[595px] rounded-t-full"
                   onClick={() =>
                     handleNavigateProductDetail(item.id.toString())

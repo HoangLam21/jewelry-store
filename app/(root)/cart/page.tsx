@@ -19,7 +19,6 @@ export default function Page() {
   });
 
   const totalOriginalPrice = state.items.reduce((acc, item) => {
-    // Tìm vật liệu đã chọn
     const selectedVariant = item.variants.find(
       (variant) => variant.material === item.selectedMaterial
     );
