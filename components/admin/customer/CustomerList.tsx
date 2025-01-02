@@ -8,7 +8,7 @@ import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import Format from "@/components/shared/card/ConfirmCard";
-import { fetchCustomer } from "@/lib/service/customer.service";
+import { deleteCustomer, fetchCustomer } from "@/lib/service/customer.service";
 
 export interface OrderCustomer {
   id: string;
@@ -189,9 +189,21 @@ const CustomerList = () => {
   };
 
   //DELETE
-  const handleDelete = (id: string) => {
-    setOnDelete(false);
-    setDisplayedList((prev) => prev.filter((item) => item.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      const result = await deleteCustomer(id);
+      if (result) {
+        setOnDelete(false);
+        setDisplayedList((prev) => prev.filter((item) => item.id !== id));
+        alert("Delete customer successfully.");
+      } else {
+        alert("Can't delete customer.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
   };
   const [detailItem, setDetailItem] = useState<Customer>(defaultDetail);
   const handleConfirmDelete = (id: string) => {
