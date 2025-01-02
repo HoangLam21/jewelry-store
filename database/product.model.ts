@@ -1,7 +1,5 @@
 import { Schema, model, models, Document } from "mongoose";
 import { AuditSchema, IAudit } from "./audit.model";
-import Voucher from "./voucher.model";
-import ProductProvider from "./provider.model";
 export interface IProduct extends Document, IAudit {
   name: string;
   cost: number;
