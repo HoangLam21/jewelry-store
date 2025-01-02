@@ -1,6 +1,6 @@
-// Create a new import
+// createImport API
 import { NextApiRequest, NextApiResponse } from "next";
-import { createImport } from "@/lib/actions/import.action"; // Đảm bảo đường dẫn chính xác
+import { createImport } from "@/lib/actions/import.action";
 
 export default async function handler(
     req: NextApiRequest,
