@@ -2,13 +2,10 @@
 import TitleSession from "@/components/shared/label/TitleSession";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { CustomerData } from "@/constants/data";
 import Image from "next/image";
 import LabelInformation from "@/components/shared/label/LabelInformation";
 import MyButton from "@/components/shared/button/MyButton";
 import InputEdit from "@/components/shared/input/InputEdit";
-import InputDate from "@/components/shared/input/InputDate";
-import InputSelection from "@/components/shared/input/InputSelection";
 import { Customer, defaultDetail } from "./CustomerList";
 import {
   getDetailCustomer,

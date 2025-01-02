@@ -1,6 +1,5 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { CustomerData } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState } from "react";
