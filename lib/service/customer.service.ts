@@ -76,7 +76,12 @@ export async function createCustomer(
         "Content-Type": "application/json"
         // Authorization: `${token}`,
       },
-      body: JSON.stringify(params)
+      body: JSON.stringify({
+        address: params.address,
+        email: params.email,
+        fullName: params.fullName,
+        phoneNumber: params.phoneNumber
+      })
     });
 
     if (!response.ok) {

@@ -181,7 +181,7 @@ const EditCustomerInformation = () => {
       </div>
 
       {/* Account Information */}
-      <TitleSession icon="codicon:account" title="Account Information" />
+      {/* <TitleSession icon="codicon:account" title="Account Information" />
 
       <div className="w-full p-6 flex flex-col gap-6">
         <div className="w-full grid grid-cols-2 gap-x-20 gap-y-4">
@@ -200,7 +200,7 @@ const EditCustomerInformation = () => {
             placeholder="Enter password"
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Footer */}
       <div className="w-full flex justify-end p-6 ">
