@@ -1,6 +1,5 @@
 import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import Image from "next/image";
 
 const jewelryCategories = [
   {
@@ -43,7 +42,8 @@ const jewelryCategories = [
 const Categories = () => {
   return (
     <div className="mt-[150px] w-[95%] mx-auto">
-      <div className="flex">
+      {/* Header */}
+      <div className="flex items-center mb-4">
         <p className="jost text-[30px] font-normal text-dark100_light500">
           CATEGORIES
         </p>
@@ -53,29 +53,46 @@ const Categories = () => {
           </p>
         </div>
       </div>
-      <Swiper
-        spaceBetween={20}
-        slidesPerView={5}
-        // navigation={true}
-        pagination={{ clickable: true }}
-        modules={[Navigation, Pagination]}
-        className="mt-[30px]"
+
+      <div
+        className="mt-[30px] flex overflow-x-auto gap-20 scrollbar-hide"
+        style={{
+          scrollbarWidth: "thin",
+          scrollbarColor: "#ffffff #f4ece3",
+        }}
       >
         {jewelryCategories.map((category) => (
-          <SwiperSlide key={category.id}>
-            <div className="category-card flex flex-col items-center">
-              <img
-                src={category.image}
-                alt={category.name}
-                className="w-[200px] h-[200px] object-cover rounded-full"
-              />
-              <p className=" text-lg jost capitalize font-nomal mt-2 text-dark100_light500">
-                {category.name.toUpperCase()}
-              </p>
-            </div>
-          </SwiperSlide>
+          <div
+            key={category.id}
+            className="flex-shrink-0 flex flex-col items-center"
+          >
+            <img
+              src={category.image}
+              alt={category.name}
+              width={150}
+              height={150}
+              className="w-[150px] h-[150px] object-cover rounded-full"
+            />
+            <p className="text-lg jost capitalize mt-2 text-dark100_light500">
+              {category.name.toUpperCase()}
+            </p>
+            <style jsx>{`
+              .scrollbar-hide::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+              }
+              .scrollbar-hide::-webkit-scrollbar-thumb {
+                background-color: #ffffff;
+                border-radius: 10px;
+              }
+              .scrollbar-hide::-webkit-scrollbar-track {
+                background-color: #f4ece3;
+                border-radius: 10px;
+              }
+            `}</style>
+          </div>
         ))}
-      </Swiper>
+      </div>
     </div>
   );
 };

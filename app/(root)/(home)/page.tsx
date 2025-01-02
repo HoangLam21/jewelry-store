@@ -18,6 +18,7 @@ export default function Page() {
         <FeaturesSession />
         <Categories />
       </div>
+
       <Sale />
       <div className="px-[2%]">
         <Products />
