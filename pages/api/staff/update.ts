@@ -3,8 +3,8 @@ import { updateStaff } from "@/lib/actions/staff.action";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "PUT") {
-    const { id } = req.query; // Lấy ID từ query params
-    const data = req.body; // Lấy dữ liệu từ body
+    const { id } = req.query;
+    const data = req.body; 
 
     if (!id || typeof id !== "string") {
       return res.status(400).json({ error: "Invalid or missing staff ID" });

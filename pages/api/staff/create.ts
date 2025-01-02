@@ -3,7 +3,7 @@ import { createStaff } from "@/lib/actions/staff.action";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
-    const data = req.body; // Lấy dữ liệu từ body
+    const data = req.body; 
 
     if (!data || typeof data !== "object") {
       return res.status(400).json({ error: "Invalid or missing data for staff creation" });

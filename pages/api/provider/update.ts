@@ -15,14 +15,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: "Provider ID is required" });
     }
 
-    const { name, address, contact } = req.body;
+    const { name, address, contact, representativeName, city, country  } = req.body;
     
     if (!name && !address && !contact) {
       return res.status(400).json({ error: "No update fields provided" });
     }
 
     try {
-      const updatedProvider = await updateProvider(id as string, { name, address, contact });
+      const updatedProvider = await updateProvider(id as string, { name, address, contact, representativeName, city, country  });
       return res.status(200).json(updatedProvider);
     } catch (error) {
       console.error("Error updating provider:", error);

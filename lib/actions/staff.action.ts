@@ -1,8 +1,24 @@
-"use server"
+"use server";
 import Staff from "@/database/staff.model";
 import { connectToDatabase } from "../mongoose";
 
-export const createStaff = async (data: { fullName: string, phoneNumber: string, email: string, address: string, avatar: string, enrolledDate: Date, salary: string, position: string }) => {
+export const createStaff = async (data: {
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  address: string;
+  avatar: string;
+  gender: boolean;
+  birthday: Date;
+  enrolledDate: Date;
+  salary: string;
+  position: string;
+  province: string;
+  district: string;
+  experience: string;
+  kindOfJob: string;
+  description: string;
+}) => {
   try {
     connectToDatabase();
     const newStaff = await Staff.create({
@@ -11,9 +27,16 @@ export const createStaff = async (data: { fullName: string, phoneNumber: string,
       email: data.email,
       address: data.address,
       avatar: data.avatar,
+      gender: data.gender,
+      birthday: data.birthday,
       enrolledDate: data.enrolledDate,
       salary: data.salary,
       position: data.position,
+      province: data.province,
+      district: data.district,
+      experience: data.experience,
+      kindOfJob: data.kindOfJob,
+      description: data.description,
       createdAt: new Date(),
     });
     return newStaff;
@@ -48,7 +71,26 @@ export const getStaffById = async (id: string) => {
   }
 };
 
-export const updateStaff = async (id: string, data: Partial<{ fullName: string, phoneNumber: string, email: string, address: string, avatar: string, enrolledDate: Date, salary: string, position: string }>) => {
+export const updateStaff = async (
+  id: string,
+  data: Partial<{
+    fullName: string;
+    phoneNumber: string;
+    email: string;
+    address: string;
+    avatar: string;
+    gender:boolean;
+    birthday:Date;
+    enrolledDate: Date;
+    salary: string;
+    position: string;
+    province: string;
+    district: string;
+    experience: string;
+    kindOfJob: string;
+    description: string;
+  }>
+) => {
   try {
     connectToDatabase();
     const updatedStaff = await Staff.findByIdAndUpdate(
