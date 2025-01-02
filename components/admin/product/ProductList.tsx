@@ -8,26 +8,33 @@ import React, { useEffect, useState } from "react";
 import ProductDetail from "./ProductDetail";
 import ProductEdit from "./ProductEdit";
 import Format from "@/components/shared/card/ConfirmCard";
-interface ImageInfo {
+export interface ImageInfo {
   url: string;
   fileName: string;
 }
-interface Product {
+export interface Sizes {
+  size: string;
+  stock: number;
+}
+export interface Variant {
+  material: string;
+  sizes: Sizes[];
+  addOn: number;
+}
+export interface Product {
   id: string;
   image: string;
   imageInfo: ImageInfo[];
   productName: string;
   price: string;
-  material: string;
   description: string;
   vouchers: string;
   provider: string;
-  size: string;
-  color: string;
   category: string;
-  quantity: number;
+  variants: Variant[];
 }
-const defaultDetail: Product = {
+
+export const defaultDetailProduct: Product = {
   id: "",
   image: "",
   imageInfo: [
@@ -38,21 +45,30 @@ const defaultDetail: Product = {
   ],
   productName: "Unknown Product",
   price: "0",
-  material: "Unknown",
   description: "No description available.",
   vouchers: "No vouchers",
   provider: "Unknown Provider",
   category: "Uncategorized",
-  size: "",
-  color: "",
-  quantity: 0
+  variants: [
+    {
+      material: "Unknown Material",
+      sizes: [
+        {
+          size: "Unknown Size",
+          stock: 0
+        }
+      ],
+      addOn: 0
+    }
+  ]
 };
+
 const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [onEdit, setOnEdit] = useState(false);
   const [onDelete, setOnDelete] = useState(false);
   const [onDetail, setOnDetail] = useState(false);
-  const [detailItem, setDetailItem] = useState<Product>(defaultDetail);
+  const [detailItem, setDetailItem] = useState<Product>(defaultDetailProduct);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterOption, setFilterOption] = useState("");
 
@@ -67,25 +83,11 @@ const ProductList = () => {
     return matchesSearch;
   });
 
-  const dataLength = filterData.length;
-  const itemsPerPage = 12;
-  const totalPages = Math.ceil(dataLength / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const paginationUI: PaginationProps = {
-    currentPage,
-    setCurrentPage,
-    indexOfLastItem,
-    indexOfFirstItem,
-    totalPages,
-    dataLength
-  };
-
   const [displayedProduct, setDisplayedProduct] =
     useState<Product[]>(filterData);
 
   const handleConfirmDelete = (id: string) => {
-    const detail = displayedProduct.find((item) => item.id === id);
+    const detail = filterData.find((item) => item.id === id);
     if (detail) setDetailItem(detail);
     setOnDelete(true);
   };

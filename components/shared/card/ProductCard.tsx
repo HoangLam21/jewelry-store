@@ -1,24 +1,13 @@
+import { Product } from "@/components/admin/product/ProductList";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import React from "react";
 
-interface Product {
-  id: string;
-  image: string;
-  productName: string;
-  price: string;
-  material: string;
-  description: string;
-  vouchers: string;
-  provider: string;
-  category: string;
-  quantity: number;
-}
 const ProductFrame = ({
   param,
   onDelete,
   onEdit,
-  onDetail,
+  onDetail
 }: {
   param: Product;
   onDelete: (id: string) => void;
