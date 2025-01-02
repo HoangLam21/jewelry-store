@@ -5,7 +5,7 @@ import { connectToDatabase } from "../mongoose";
 import Product from "@/database/product.model";
 import { ObjectId } from "mongodb";
 import ProductProvider from "@/database/provider.model";
-import User from "@/database/user.model"; // Changed to use User model instead of Staff model
+import Staff from "@/database/staff.model";
 import File from "@/database/file.model";
 import Voucher from "@/database/voucher.model";
 
@@ -140,7 +140,7 @@ export const getImports = async () => {
         const imports = await Import.find();
         const result = await Promise.all(
             imports.map(async (importData) => {
-                const staff = await User.findById(importData.staff);
+                const staff = await Staff.findById(importData.staff);
                 const provider = await ProductProvider.findById(
                     (
                         await Product.findById(importData.details[0].id)
@@ -192,7 +192,7 @@ export const getImportById = async (id: string) => {
         if (!importData) {
             throw new Error("Import not found");
         }
-        const staff = await User.findById(importData.staff);
+        const staff = await Staff.findById(importData.staff);
         const provider = await ProductProvider.findById(
             (
                 await Product.findById(importData.details[0].id)
@@ -240,7 +240,7 @@ export const getAllImportsOfProvider = async (providerId: string) => {
         const imports = await Import.find();
         const result = await Promise.all(
             imports.map(async (importData) => {
-                const staff = await User.findById(importData.staff);
+                const staff = await Staff.findById(importData.staff);
                 const provider = await ProductProvider.findById(
                     (
                         await Product.findById(importData.details[0].id)
@@ -295,7 +295,7 @@ export const getAllImportsOfStaff = async (staffId: string) => {
         const imports = await Import.find({ staff: new ObjectId(staffId) });
         const result = await Promise.all(
             imports.map(async (importData) => {
-                const staff = await User.findById(importData.staff);
+                const staff = await Staff.findById(importData.staff);
                 const provider = await ProductProvider.findById(
                     (
                         await Product.findById(importData.details[0].id)

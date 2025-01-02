@@ -683,11 +683,14 @@ export const contract = c.router({
             body: z.object({
                 cost: z.number(),
                 discount: z.number(),
-                details: z.record(
+                details: z.array(
                     z.object({
+                        id: z.string(),
                         material: z.string(),
                         size: z.string(),
+                        unitPrice: z.number(),
                         quantity: z.number(),
+                        discount: z.string(),
                     })
                 ),
                 status: z.string(),
@@ -700,11 +703,14 @@ export const contract = c.router({
                 201: z.object({
                     cost: z.number(),
                     discount: z.number(),
-                    details: z.record(
+                    details: z.array(
                         z.object({
+                            id: z.string(),
                             material: z.string(),
                             size: z.string(),
+                            unitPrice: z.number(),
                             quantity: z.number(),
+                            discount: z.string(),
                         })
                     ),
                     status: z.string(),
@@ -724,20 +730,26 @@ export const contract = c.router({
             responses: {
                 200: z.array(
                     z.object({
-                        cost: z.number(),
-                        discount: z.number(),
-                        details: z.record(
+                        id: z.string(),
+                        suplier: z.object({
+                            id: z.string(),
+                            phoneNumber: z.string(),
+                            fullname: z.string(),
+                            address: z.string(),
+                        }),
+                        invoice: z.array(
                             z.object({
-                                material: z.string(),
-                                size: z.string(),
+                                id: z.string(),
+                                productName: z.string(),
+                                productImage: z.string(),
+                                unitPrice: z.number(),
                                 quantity: z.number(),
+                                discount: z.number(),
                             })
                         ),
                         status: z.string(),
-                        shippingMethod: z.string(),
-                        ETD: z.date(),
-                        customer: z.string(),
-                        staff: z.string(),
+                        createAt: z.date(),
+                        createBy: z.string(),
                     })
                 ),
                 500: z.object({ error: z.string() }),
@@ -752,20 +764,26 @@ export const contract = c.router({
             }),
             responses: {
                 200: z.object({
-                    cost: z.number(),
-                    discount: z.number(),
-                    details: z.record(
+                    id: z.string(),
+                    suplier: z.object({
+                        id: z.string(),
+                        phoneNumber: z.string(),
+                        fullname: z.string(),
+                        address: z.string(),
+                    }),
+                    invoice: z.array(
                         z.object({
-                            material: z.string(),
-                            size: z.string(),
+                            id: z.string(),
+                            productName: z.string(),
+                            productImage: z.string(),
+                            unitPrice: z.number(),
                             quantity: z.number(),
+                            discount: z.number(),
                         })
                     ),
                     status: z.string(),
-                    shippingMethod: z.string(),
-                    ETD: z.date(),
-                    customer: z.string(),
-                    staff: z.string(),
+                    createAt: z.date(),
+                    createBy: z.string(),
                 }),
                 400: z.object({ error: z.string() }),
                 500: z.object({ error: z.string() }),
@@ -779,11 +797,14 @@ export const contract = c.router({
                 cost: z.number().optional(),
                 discount: z.number().optional(),
                 details: z
-                    .record(
+                    .array(
                         z.object({
+                            id: z.string(),
                             material: z.string(),
                             size: z.string(),
+                            unitPrice: z.number(),
                             quantity: z.number(),
+                            discount: z.string(),
                         })
                     )
                     .optional(),
@@ -797,11 +818,14 @@ export const contract = c.router({
                 200: z.object({
                     cost: z.number(),
                     discount: z.number(),
-                    details: z.record(
+                    details: z.array(
                         z.object({
+                            id: z.string(),
                             material: z.string(),
                             size: z.string(),
+                            unitPrice: z.number(),
                             quantity: z.number(),
+                            discount: z.string(),
                         })
                     ),
                     status: z.string(),
@@ -821,6 +845,19 @@ export const contract = c.router({
         deleteOrder: {
             method: "DELETE",
             path: "/api/order/delete",
+            responses: {
+                200: z.object({ message: z.string() }),
+                400: z.object({ error: z.string() }),
+                500: z.object({ error: z.string() }),
+            },
+            query: z.object({
+                id: z.string(),
+            }),
+        },
+        cancelOrder: {
+            method: "PATCH",
+            path: "/api/order/cancel",
+            body: z.object({}),
             responses: {
                 200: z.object({ message: z.string() }),
                 400: z.object({ error: z.string() }),
