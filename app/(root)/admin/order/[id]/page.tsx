@@ -9,7 +9,7 @@ import React from "react";
 
 const Page = () => {
   const router = useRouter();
-  const { id } = useParams();
+  const { id } = useParams() as { id: string };
 
   const handleBack = () => {
     router.back();

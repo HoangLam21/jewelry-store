@@ -3,15 +3,16 @@ import { ObjectId } from "mongodb";
 import { AuditSchema, IAudit } from "./audit.model";
 
 export interface Import extends Document, IAudit {
-  staff: ObjectId;
-  totalCost: number;
-  details: Map<ObjectId, number>;
+    staff: ObjectId;
+    totalCost: number;
+    details: Map<ObjectId, number>;
+    status: boolean;
 }
 
 const ImportSchema = new Schema<Import>({
-  staff: { type: Schema.Types.ObjectId, ref: "Staff", required: true },
-  totalCost: { type: Number, required: true },
-  details: { type: Map, of: Number, required: true },
+    staff: { type: Schema.Types.ObjectId, ref: "Staff", required: true },
+    totalCost: { type: Number, required: true },
+    details: { type: Map, of: Number, required: true },
 });
 
 ImportSchema.add(AuditSchema);

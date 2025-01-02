@@ -4,7 +4,6 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
-import { StaffData } from "@/constants/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 import { PaginationProps } from "@/types/pagination";
@@ -12,62 +11,59 @@ import TableSearch from "@/components/shared/table/TableSearch";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import LabelStatus from "@/components/shared/label/LabelStatus";
-
-interface SaleInvoice {
-  id: string;
-  customer: string;
-  createDate: Date;
-  note: string;
-  total: number;
-  status: number;
-}
-
-interface Staff {
-  id: string;
-  gender: string;
-  position: string;
-  earning: number;
-  phone: string;
-  fullname: string;
-  dob: Date;
-  email: string;
-  address: string;
-  city: string;
-  country: string;
-  experience: string; // Experience as string, adjust if it's an object
-  kindOfJob: string;
-  description: string;
-  dow: Date;
-  numberSaleInvoice: SaleInvoice[];
-}
+import { getProviderById } from "@/lib/service/provider.service";
+import { ImportInvoice, Provider } from "@/dto/ProviderDTO";
+import { Providers } from "@/constants/data";
 
 const columns = [
-  { header: "Customer", accessor: "customer" },
+  { header: "ID", accessor: "id" },
   {
-    header: "ID",
-    accessor: "id",
+    header: "CreateAt",
+    accessor: "createAt",
     className: "hidden md:table-cell",
   },
   {
-    header: "Create Date",
-    accessor: "createDate",
+    header: "CreateBy",
+    accessor: "createBy",
     className: "hidden md:table-cell",
   },
   {
-    header: "Note",
-    accessor: "note",
+    header: "Total",
+    accessor: "invoice",
     className: "hidden lg:table-cell",
   },
-  { header: "Total", accessor: "total", className: "hidden lg:table-cell" },
-  { header: "Status", accessor: "status" },
+  {
+    header: "Status",
+    accessor: "status",
+    className: "hidden md:table-cell",
+  },
 ];
 
 const ProviderInformation = () => {
-  const { id } = useParams<{ id: string }>(); // Ensure id is typed
-  const [staff, setStaff] = useState<Staff | null>(null); // Store staff data safely
+  const { id } = useParams<{ id: string }>() as { id: string };
+  const [provider, setProvider] = useState<Provider | null>(null); // Store Provider data safely
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
+
+  // useEffect(() => {
+  //   const fetchStaffData = async () => {
+  //     try {
+  //       if (id) {
+  //         const foundItem = await getProviderById(id);
+  //         setProvider(foundItem);
+  //       }
+  //     } catch (error) {
+  //       console.error("Lỗi khi lấy thông tin nhân viên:", error);
+  //     }
+  //   };
+
+  //   fetchStaffData();
+  // }, []);
+
+  // if (!provider) {
+  //   return <p>Loading staff information...</p>;
+  // }
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -76,53 +72,39 @@ const ProviderInformation = () => {
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "customer" | "createDate" | "total" | "status";
+  type SortableKeys = "id" | "fullname" | "total" | "status" | "number";
 
-  useEffect(() => {
-    if (id) {
-      const foundItem = StaffData.find((item) => item.id === id);
-      if (foundItem) {
-        setStaff(foundItem);
-      }
-    }
-  }, [id]);
-
-  // Render nothing if staff is not loaded yet
-  if (!staff) {
-    return <p>Loading provider information...</p>;
-  }
-
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
-  };
-
-  const getValueByKey = (item: (typeof StaffData)[0], key: SortableKeys) => {
+  const getValueByKey = (item: ImportInvoice, key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
-      case "customer":
-        return item.fullname;
-      case "createDate":
-        return item.position;
+      case "fullname":
+        return item.createBy;
       case "status":
-        return item.earning;
+        return item.status;
+      case "total":
+        return item.total;
       default:
         return "";
     }
   };
 
-  const sorted = [...StaffData].sort((a, b) => {
-    const aValue = getValueByKey(a, sortConfig.key);
-    const bValue = getValueByKey(b, sortConfig.key);
+  useEffect(() => {
+    if (id) {
+      const foundItem = Providers.find((item) => item._id === id);
+      if (foundItem) {
+        setProvider(foundItem);
+      }
+    }
+  }, [id]);
 
-    if (aValue < bValue) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
+  if (!provider) {
+    return <p>Loading staff information...</p>;
+  }
+
+  const formatCurrency = (value: number): string => {
+    return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
+  };
 
   const requestSort = (key: SortableKeys) => {
     let direction: "ascending" | "descending" = "ascending";
@@ -132,12 +114,12 @@ const ProviderInformation = () => {
     setSortConfig({ key, direction });
   };
 
-  const filteredInvoices = staff.numberSaleInvoice.filter((invoice) => {
+  const filteredInvoices = provider.numberImportInvoice.filter((invoice) => {
     const query = searchQuery.toLowerCase();
     return (
-      invoice.customer.toLowerCase().includes(query) ||
-      invoice.note.toLowerCase().includes(query) ||
-      invoice.total.toString().includes(query)
+      invoice.createBy.toLowerCase().includes(query) ||
+      invoice.createAt.toLowerCase().includes(query) ||
+      invoice.id.toString().includes(query)
     );
   });
 
@@ -165,17 +147,16 @@ const ProviderInformation = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (invoice: SaleInvoice) => (
+  const renderRow = (invoice: ImportInvoice) => (
     <tr
       key={invoice.id}
       className="border-t border-gray-300 text-sm dark:text-dark-360"
     >
-      <td className="px-4 py-2">{invoice.customer}</td>
       <td className="px-4 py-2 hidden md:table-cell">{invoice.id}</td>
       <td className="hidden px-4 py-2 md:table-cell">
-        {format(new Date(invoice.createDate), "PPP")}
+        {format(new Date(invoice.createAt), "PPP")}
       </td>
-      <td className="hidden px-4 py-2 lg:table-cell">{invoice.note}</td>
+      <td className="px-4 py-2">{invoice.createBy}</td>
       <td className="hidden px-4 py-2 lg:table-cell">
         {formatCurrency(invoice.total)}
       </td>
@@ -226,27 +207,29 @@ const ProviderInformation = () => {
 
           <div className="w-full grid grid-cols-2 gap-5">
             <div className="flex flex-col gap-5">
-              <LabelInformation content={staff.fullname} title="Fullname" />
-              <LabelInformation
-                content={format(new Date(staff.dob), "PPP")}
-                title="Date of Birth"
-              />
-              <LabelInformation content={staff.gender} title="Gender" />
+              <LabelInformation content={provider._id} title="ID" />
+              <LabelInformation content={provider.name} title="Fullname" />
+              <LabelInformation content={provider.email} title="Email" />
             </div>
             <div className="flex flex-col gap-5">
-              <LabelInformation content={staff.id} title="ID" />
-              <LabelInformation content={staff.email} title="Email" />
-              <LabelInformation content={staff.phone} title="Phone Number" />
+              <LabelInformation
+                content={provider.representativeName}
+                title="Representative"
+              />
+              <LabelInformation
+                content={provider.contact}
+                title="Phone Number"
+              />
             </div>
           </div>
         </div>
 
         <div className="w-full grid grid-cols-3 gap-4">
-          <LabelInformation content={staff.address} title="Address" />
-          <LabelInformation content={staff.city} title="City" />
-          <LabelInformation content={staff.country} title="Country" />
+          <LabelInformation content={provider.address} title="Address" />
+          <LabelInformation content={provider.city} title="City" />
+          <LabelInformation content={provider.country} title="Country" />
         </div>
-        {/* <LabelInformation content={staff.experience} title="Experience" /> */}
+        {/* <LabelInformation content={Provider.experience} title="Experience" /> */}
       </div>
 
       {/* Number of sales invoices */}

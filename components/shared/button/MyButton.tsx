@@ -4,7 +4,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import classNames from "classnames";
 
 type MyButtonProps = {
-  event: () => void; // onClick event handler
+  event?: () => void; // onClick event handler
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   title?: string; // Button title text
   icon?: string; // Icon to display with the button
   text_color?: string; // Text color
@@ -16,10 +17,12 @@ type MyButtonProps = {
   px?: string;
   py?: string;
   text?: string;
+  rounded?: string;
 };
 
 const MyButton: React.FC<MyButtonProps> = ({
   event,
+  onClick,
   title,
   icon,
   text_color = "text-primary-100",
@@ -31,6 +34,7 @@ const MyButton: React.FC<MyButtonProps> = ({
   px = "px-4",
   py = "py-[8px]",
   text = "text-[14px]",
+  rounded = "none",
 }) => {
   return (
     <div
@@ -42,7 +46,8 @@ const MyButton: React.FC<MyButtonProps> = ({
         width,
         height,
         px,
-        py // Padding
+        py, // Padding
+        rounded
       )}
       style={{
         borderWidth: "0.5px", // Set border width if necessary
@@ -54,7 +59,7 @@ const MyButton: React.FC<MyButtonProps> = ({
           text,
           text_color // Apply dynamic text color class
         )}
-        onClick={event}
+        onClick={event || onClick}
         fdprocessedid="8jupze"
       >
         {/* Conditionally render icon if it's provided */}

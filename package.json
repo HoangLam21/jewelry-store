@@ -16,7 +16,7 @@
     "@iconify/react": "^5.1.0",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-menubar": "^1.1.2",
-    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-slot": "^1.1.1",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.15",
     "@ts-rest/core": "^3.51.0",
@@ -41,6 +41,7 @@
     "swiper": "^11.1.15",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
+    "xlsx": "^0.18.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {

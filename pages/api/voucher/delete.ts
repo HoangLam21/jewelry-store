@@ -10,7 +10,7 @@ export default async function handler(
   if (!id || typeof id !== "string") {
     return res.status(400).json({ error: "Invalid Voucher ID" });
   }
-
+  console.log(`Deleting voucher with ID: ${id}`); // Log ID đang được xử lý
   try {
     if (req.method === "DELETE") {
       const deletedVoucher = await deleteVoucher(id);
