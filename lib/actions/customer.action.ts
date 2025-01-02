@@ -71,7 +71,7 @@ export const updateCustomer = async (
       id,
       {
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       { new: true }
     );

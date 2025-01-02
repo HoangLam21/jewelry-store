@@ -1,7 +1,7 @@
 "use server";
 import Product from "@/database/product.model";
 import { connectToDatabase } from "../mongoose";
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import formidable from "formidable";
 import { createFile, deleteFile } from "./file.action";
 import Voucher from "@/database/voucher.model";

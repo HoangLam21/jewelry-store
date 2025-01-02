@@ -1,22 +1,21 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { CustomerData } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import Format from "@/components/shared/card/ConfirmCard";
+import { deleteCustomer, fetchCustomer } from "@/lib/service/customer.service";
 
-interface OrderCustomer {
+export interface OrderCustomer {
   id: string;
   createAt: string;
   createBy: string;
   cost: number;
 }
-
-interface Customer {
+export interface Customer {
   id: string;
   fullName: string;
   phoneNumber: string;
@@ -27,7 +26,7 @@ interface Customer {
   sales: number;
   orders: OrderCustomer[];
 }
-const defaultDetail: Customer = {
+export const defaultDetail: Customer = {
   id: "",
   fullName: "",
   phoneNumber: "",
@@ -65,7 +64,49 @@ const CustomerList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [onDelete, setOnDelete] = useState(false);
   const [filterOption, setFilterOption] = useState("");
-  const [displayedList, setDisplayedList] = useState<Customer[]>(CustomerData);
+  const [displayedList, setDisplayedList] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result: CustomerResponse[] = await fetchCustomer();
+        console.log(result, "check");
+        if (result) {
+          const data: Customer[] = result.map((item) => {
+            const totalCost = item.orders.reduce(
+              (total, order) => total + order.cost,
+              0
+            );
+            return {
+              id: item._id,
+              fullName: item.fullName,
+              phoneNumber: item.phoneNumber,
+              email: item.email,
+              address: item.address,
+              avatar: "",
+              point: item.point,
+              sales: totalCost,
+              orders: item.orders.map((order) => ({
+                id: order._id,
+                createAt: order.createAt,
+                createBy: order.staff,
+                cost: order.cost
+              }))
+            };
+          });
+
+          setDisplayedList(data);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   //SEARCH
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -147,9 +188,21 @@ const CustomerList = () => {
   };
 
   //DELETE
-  const handleDelete = (id: string) => {
-    setOnDelete(false);
-    setDisplayedList((prev) => prev.filter((item) => item.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      const result = await deleteCustomer(id);
+      if (result) {
+        setOnDelete(false);
+        setDisplayedList((prev) => prev.filter((item) => item.id !== id));
+        alert("Delete customer successfully.");
+      } else {
+        alert("Can't delete customer.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
   };
   const [detailItem, setDetailItem] = useState<Customer>(defaultDetail);
   const handleConfirmDelete = (id: string) => {
