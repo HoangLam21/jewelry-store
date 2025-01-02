@@ -4,7 +4,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import classNames from "classnames";
 
 type MyButtonProps = {
-  event: () => void; // onClick event handler
+  event?: () => void; // onClick event handler
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   title?: string; // Button title text
   icon?: string; // Icon to display with the button
   text_color?: string; // Text color
@@ -21,6 +22,7 @@ type MyButtonProps = {
 
 const MyButton: React.FC<MyButtonProps> = ({
   event,
+  onClick,
   title,
   icon,
   text_color = "text-primary-100",
@@ -57,7 +59,7 @@ const MyButton: React.FC<MyButtonProps> = ({
           text,
           text_color // Apply dynamic text color class
         )}
-        onClick={event}
+        onClick={event || onClick}
         fdprocessedid="8jupze"
       >
         {/* Conditionally render icon if it's provided */}

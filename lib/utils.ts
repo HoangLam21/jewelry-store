@@ -55,3 +55,10 @@ export const filterData = <T>(
     )
   );
 };
+
+export const formatDate = (date: Date | string): string => {
+  const parsedDate = new Date(date);
+  return parsedDate instanceof Date && !isNaN(parsedDate.getTime()) // Check for a valid date
+    ? parsedDate.toISOString()
+    : ""; // Return empty string if invalid date
+};
