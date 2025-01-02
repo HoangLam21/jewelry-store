@@ -12,6 +12,8 @@ export const contract = c.router({
         phoneNumber: z.string(),
         email: z.string().email(),
         address: z.string(),
+        gender:z.string().optional(),
+        birthday:z.string().optional()
       }),
       responses: {},
     },
@@ -36,6 +38,8 @@ export const contract = c.router({
         phoneNumber: z.string().optional(),
         email: z.string().email().optional(),
         address: z.string().optional(),
+        gender:z.string().optional(),
+        birthday:z.string().optional()
       }),
       responses: {},
       query: z.object({
@@ -61,65 +65,29 @@ export const contract = c.router({
         email: z.string().email(),
         address: z.string(),
         avatar: z.string(),
+        gender:z.string().optional(),
+        birthday:z.string().optional(),
         enrolledDate: z.date(),
         salary: z.string(),
         position: z.string(),
+        province: z.string(),
+        district: z.string(),
+        experience: z.string(),
+        kindOfJob: z.string(),
+        description: z.string(),
       }),
       responses: {
-        201: z.object({
-          fullName: z.string(),
-          phoneNumber: z.string(),
-          email: z.string().email(),
-          address: z.string(),
-          avatar: z.string(),
-          enrolledDate: z.date(),
-          salary: z.string(),
-          position: z.string(),
-          createdAt: z.date(),
-        }),
-        400: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
       },
     },
     getStaffs: {
       method: "GET",
       path: "/api/staff/all",
-      responses: {
-        200: z.array(
-          z.object({
-            fullName: z.string(),
-            phoneNumber: z.string(),
-            email: z.string().email(),
-            address: z.string(),
-            avatar: z.string(),
-            enrolledDate: z.date(),
-            salary: z.string(),
-            position: z.string(),
-            createdAt: z.date(),
-          })
-        ),
-        500: z.object({ error: z.string() }),
-      },
+      responses: {},
     },
     getStaffById: {
       method: "GET",
       path: "/api/staff/id",
-      responses: {
-        200: z.object({
-          fullName: z.string(),
-          phoneNumber: z.string(),
-          email: z.string().email(),
-          address: z.string(),
-          avatar: z.string(),
-          enrolledDate: z.date(),
-          salary: z.string(),
-          position: z.string(),
-          createdAt: z.date(),
-        }),
-        400: z.object({ error: z.string() }),
-        404: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
-      },
+      responses: {},
       query: z.object({
         id: z.string(),
       }),
@@ -133,26 +101,18 @@ export const contract = c.router({
         email: z.string().email().optional(),
         address: z.string().optional(),
         avatar: z.string().optional(),
+        gender:z.string().optional(),
+        birthday:z.string().optional(),
         enrolledDate: z.date().optional(),
         salary: z.string().optional(),
         position: z.string().optional(),
+        province: z.string().optional(),
+        district: z.string().optional(),
+        experience: z.string().optional(),
+        kindOfJob: z.string().optional(),
+        description: z.string().optional(),
       }),
       responses: {
-        200: z.object({
-          fullName: z.string(),
-          phoneNumber: z.string(),
-          email: z.string().email(),
-          address: z.string(),
-          avatar: z.string(),
-          enrolledDate: z.date(),
-          salary: z.string(),
-          position: z.string(),
-          createdAt: z.date(),
-        }),
-
-        400: z.object({ error: z.string() }),
-        404: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
       },
       query: z.object({
         id: z.string(),
@@ -162,10 +122,6 @@ export const contract = c.router({
       method: "DELETE",
       path: "/api/staff/delete",
       responses: {
-        200: z.object({ message: z.string() }),
-        400: z.object({ error: z.string() }),
-        404: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
       },
       query: z.object({
         id: z.string(),
@@ -290,13 +246,6 @@ export const contract = c.router({
       method: "GET",
       path: "/api/provider/id",
       responses: {
-        200: z.object({
-          name: z.string(),
-          address: z.string(),
-          contact: z.string(),
-        }),
-        400: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
       },
       query: z.object({
         id: z.string(),
@@ -306,21 +255,15 @@ export const contract = c.router({
       method: "PUT",
       path: "/api/provider/update",
       body: z.object({
-        name: z.string().optional(),
-        address: z.string().optional(),
-        contact: z.string().optional(),
+        name: z.string(),
+        address: z.string(),
+        contact: z.string(),
+        representativeName: z.string(),
+        city: z.string(),
+        country: z.string(),
       }),
       responses: {
-        200: z.object({
-          name: z.string(),
-          address: z.string(),
-          contact: z.string(),
-          representativeName: z.string(),
-          city: z.string(),
-          country: z.string(),
-        }),
-        400: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
+    
       },
       query: z.object({
         id: z.string(),
@@ -330,9 +273,7 @@ export const contract = c.router({
       method: "DELETE",
       path: "/api/provider/delete",
       responses: {
-        200: z.object({ message: z.string() }),
-        400: z.object({ error: z.string() }),
-        500: z.object({ error: z.string() }),
+    
       },
       query: z.object({
         id: z.string(),

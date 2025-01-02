@@ -8,6 +8,8 @@ export interface IUser extends Document, IAudit {
   email: string;
   address: string;
   avatar:string;
+  birthday:string;
+  gender:string;
 }
 
 export const UserSchema = new Schema<IUser>({
@@ -16,6 +18,8 @@ export const UserSchema = new Schema<IUser>({
   email: { type: String, required: true },
   address: { type: String, required: true },
   avatar:{type:String},
+  birthday:{type:String},
+  gender:{type:String},
 });
 
 UserSchema.add(AuditSchema);
