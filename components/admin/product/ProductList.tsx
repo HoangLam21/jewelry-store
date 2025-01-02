@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import ProductDetail from "./ProductDetail";
 import ProductEdit from "./ProductEdit";
 import Format from "@/components/shared/card/ConfirmCard";
+import { fetchProduct } from "@/lib/service/product.service";
 export interface ImageInfo {
   url: string;
   fileName: string;
@@ -27,6 +28,7 @@ export interface Product {
   imageInfo: ImageInfo[];
   productName: string;
   price: string;
+  collection: string;
   description: string;
   vouchers: string;
   provider: string;
@@ -45,6 +47,7 @@ export const defaultDetailProduct: Product = {
   ],
   productName: "Unknown Product",
   price: "0",
+  collection: "",
   description: "No description available.",
   vouchers: "No vouchers",
   provider: "Unknown Provider",
@@ -71,6 +74,47 @@ const ProductList = () => {
   const [detailItem, setDetailItem] = useState<Product>(defaultDetailProduct);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterOption, setFilterOption] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchProduct();
+        console.log(result, "check");
+        // if (result) {
+        //   const data: Customer[] = result.map((item) => {
+        //     const totalCost = item.orders.reduce(
+        //       (total, order) => total + order.cost,
+        //       0
+        //     );
+        //     return {
+        //       id: item._id,
+        //       fullName: item.fullName,
+        //       phoneNumber: item.phoneNumber,
+        //       email: item.email,
+        //       address: item.address,
+        //       avatar: "",
+        //       point: item.point,
+        //       sales: totalCost,
+        //       orders: item.orders.map((order) => ({
+        //         id: order._id,
+        //         createAt: order.createAt,
+        //         createBy: order.staff,
+        //         cost: order.cost
+        //       }))
+        //     };
+        //   });
+
+        //   setDisplayedList(data);
+        // }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const filterData = ProductsData.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();

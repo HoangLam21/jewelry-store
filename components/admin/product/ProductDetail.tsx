@@ -6,31 +6,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-
-interface ImageInfo {
-  url: string;
-  fileName: string;
-}
-interface Sizes {
-  size: string;
-  stock: number;
-}
-interface Variant {
-  material: string;
-  sizes: Sizes[];
-}
-interface Product {
-  id: string;
-  image: string;
-  imageInfo: ImageInfo[];
-  productName: string;
-  price: string;
-  description: string;
-  vouchers: string;
-  provider: string;
-  category: string;
-  variants: Variant[];
-}
+import { Product, Variant } from "./ProductList";
 
 interface Props {
   detailProduct: Product;
@@ -164,8 +140,8 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
                 </div>
                 <div className="w-1/2 h-fit gap-4 flex flex-col">
                   <InputUnEdit
-                    titleInput="Voucher"
-                    value={detailProduct.vouchers}
+                    titleInput="Collection"
+                    value={detailProduct.collection}
                     width="w-full"
                   />
                   <InputUnEdit
@@ -174,6 +150,13 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
                     width="w-full"
                   />
                 </div>
+              </div>
+              <div className="flex w-full h-fit">
+                <InputUnEdit
+                  titleInput="Voucher"
+                  value={detailProduct.vouchers}
+                  width="w-full"
+                />
               </div>
               <div className="flex w-full h-fit">
                 <InputUnEdit

@@ -67,6 +67,7 @@ interface Product {
   imageInfo: ImageInfo[];
   productName: string;
   price: string;
+  collection: string;
   description: string;
   vouchers: string;
   provider: string;
@@ -829,6 +830,7 @@ export const ProductsData: Product[] = [
     ],
     productName: "Gold Ring",
     price: "$120.99",
+    collection: "",
     description: "Luxurious gold ring for all occasions.",
     vouchers: "5%",
     provider: "1",
@@ -883,6 +885,7 @@ export const ProductsData: Product[] = [
     ],
     productName: "Bronze Necklace",
     price: "$75.50",
+    collection: "",
     description: "Elegant bronze necklace for stylish looks.",
     vouchers: "10%",
     provider: "2",
