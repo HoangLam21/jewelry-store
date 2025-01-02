@@ -7,7 +7,6 @@ import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
 import MyButton from "@/components/shared/button/MyButton";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import product from "@/pages/api/rating/product";
 
 const fakeData = [
   {
@@ -65,11 +64,14 @@ const swiper = () => {
                   <div className="w-44 mt-5">
                     <MyButton
                       title="SHOP NOW"
-                      backgroundColor="background-light500_dark100"
+                      background="background-light500_dark100"
                       rounded="none"
-                      color="text-dark500_light100"
-                      fontSize="text-sm"
-                      fontWeight="font-light"
+                      text_color="text-dark500_light100"
+                      text="text-sm"
+                      event={function (): void {
+                        throw new Error("Function not implemented.");
+                      }}
+                      width={""}
                     ></MyButton>
                   </div>
                 </div>
