@@ -330,7 +330,20 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                     />
                   </div>
                 </div>
-
+                <div className="flex w-full h-fit">
+                  <InputSelection
+                    width="w-full"
+                    titleInput="Provider"
+                    options={["Rings", "Bracelets"]}
+                    value={item?.provider ?? "None"}
+                    onChange={(value) => {
+                      setItem((prev) => ({
+                        ...prev!,
+                        provider: value
+                      }));
+                    }}
+                  />
+                </div>
                 <div className="flex w-full h-fit">
                   <InputEdit
                     titleInput="Description"
@@ -344,6 +357,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                     placeholder={detailProduct.description}
                   />
                 </div>
+
                 <div className="flex flex-col gap-4 w-full h-fit">
                   <div className="w-full h-fit flex justify-end items-end">
                     <Button

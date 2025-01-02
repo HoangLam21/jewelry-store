@@ -175,7 +175,13 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
                   />
                 </div>
               </div>
-
+              <div className="flex w-full h-fit">
+                <InputUnEdit
+                  titleInput="Provider"
+                  value={detailProduct.provider}
+                  width="w-full"
+                />
+              </div>
               <div className="flex w-full h-fit">
                 <InputUnEdit
                   titleInput="Description"
@@ -183,6 +189,7 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
                   width="w-full"
                 />
               </div>
+
               <div className="flex flex-row gap-4 w-full h-fit">
                 <div className="flex border border-border-color rounded-lg w-full h-fit">
                   <TableImport
