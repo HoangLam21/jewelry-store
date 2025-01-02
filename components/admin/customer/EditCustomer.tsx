@@ -9,50 +9,52 @@ import MyButton from "@/components/shared/button/MyButton";
 import InputEdit from "@/components/shared/input/InputEdit";
 import InputDate from "@/components/shared/input/InputDate";
 import InputSelection from "@/components/shared/input/InputSelection";
-
-interface OrderCustomer {
-  id: string;
-  createAt: string;
-  createBy: string;
-  cost: number;
-}
-
-interface Customer {
-  id: string;
-  fullName: string;
-  phoneNumber: string;
-  email: string;
-  address: string;
-  avatar: string;
-  point: number;
-  sales: number;
-  orders: OrderCustomer[];
-}
-const defaultDetail: Customer = {
-  id: "",
-  fullName: "",
-  phoneNumber: "",
-  email: "",
-  address: "",
-  avatar: "",
-  point: 0,
-  sales: 0,
-  orders: []
-};
+import { Customer, defaultDetail } from "./CustomerList";
+import {
+  getDetailCustomer,
+  updateInfoCustomer
+} from "@/lib/service/customer.service";
 
 const EditCustomerInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
-  const [customer, setCustomer] = useState<Customer | null>(null);
-  const [updateCustomer, setUpdateCustomer] = useState<Customer | null>(null);
+  const [detail, setDetail] = useState<Customer>(defaultDetail);
+  const [updateCustomer, setUpdateCustomer] = useState<Customer>(defaultDetail);
 
   useEffect(() => {
-    if (id) {
-      const foundCustomer = CustomerData.find((item) => item.id === id);
-      setCustomer(foundCustomer || null);
-      setUpdateCustomer(foundCustomer || null);
-    }
+    const fetchData = async () => {
+      try {
+        const result = await getDetailCustomer(id);
+        if (result) {
+          const totalCost = result.orders.reduce(
+            (total, order) => total + order.cost,
+            0
+          );
+          const data: Customer = {
+            id: result._id,
+            fullName: result.fullName,
+            phoneNumber: result.phoneNumber,
+            email: result.email,
+            address: result.address,
+            avatar: "",
+            point: result.point,
+            sales: totalCost,
+            orders: result.orders.map((order) => ({
+              id: order._id,
+              createAt: order.createAt,
+              createBy: order.staff,
+              cost: order.cost
+            }))
+          };
+          setDetail(data);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+    fetchData();
   }, [id]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (updateCustomer) {
       setUpdateCustomer({
@@ -62,40 +64,31 @@ const EditCustomerInformation = () => {
     }
   };
 
-  const handleDateChange = (date: string) => {
+  const handleUpdate = async () => {
     if (updateCustomer) {
-      const updatedOrders = updateCustomer.orders.map((order) => ({
-        ...order,
-        createDate: new Date(date).toISOString()
-      }));
-      setUpdateCustomer({
-        ...updateCustomer,
-        orders: updatedOrders
-      });
-    }
-  };
+      const data: CreateCustomer = {
+        fullName: updateCustomer.fullName,
+        phoneNumber: updateCustomer.phoneNumber,
+        email: updateCustomer.email,
+        address: updateCustomer.address
+      };
 
-  const formatDate = (date: Date | string): string => {
-    const parsedDate = new Date(date);
-    return parsedDate instanceof Date && !isNaN(parsedDate.getTime()) // Check for a valid date
-      ? parsedDate.toISOString()
-      : ""; // Return empty string if invalid date
-  };
-
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
-  };
-
-  const handleUploadFile = () => {
-    console.log("handle upload");
-  };
-
-  const handleDeleteFile = () => {
-    console.log("handle delete file");
-  };
-
-  const handleUpdate = () => {
-    console.log("update");
+      const result = await updateInfoCustomer(id, data);
+      if (result) {
+        setDetail((prev) => {
+          if (prev) {
+            return {
+              ...prev,
+              ...data
+            };
+          }
+          return prev;
+        });
+        alert("Update information of customer");
+      } else {
+        alert("Can't update information of customer");
+      }
+    } else alert("No information of customer to update");
   };
 
   return (
@@ -108,26 +101,26 @@ const EditCustomerInformation = () => {
 
       <div className="w-full p-6 flex flex-col gap-6">
         <div className="flex w-full">
-          <div className="w-1/5">
+          {/* <div className="w-1/5">
             <Image
               alt="avatar"
               src={
-                customer && customer.avatar
-                  ? customer.avatar
+                detail && detail.avatar
+                  ? detail.avatar
                   : "/assets/images/avatar.jpg"
               }
               width={115}
               height={115}
               className="rounded-full"
             />
-          </div>
+          </div> */}
         </div>
         <div className="flex-1 flex flex-col justify-between">
           <LabelInformation
-            content={customer ? `#${customer.id}` : ""}
+            content={detail ? `#${detail.id}` : ""}
             title="ID"
           />
-          <div className="flex gap-8 ">
+          {/* <div className="flex gap-8 ">
             <MyButton
               event={handleUploadFile}
               width="w-40"
@@ -142,7 +135,7 @@ const EditCustomerInformation = () => {
               px="px-4"
               height="h-9"
             />
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="w-full grid grid-cols-2 gap-x-20 gap-y-4">
@@ -151,8 +144,7 @@ const EditCustomerInformation = () => {
           width="w-full"
           name="fullName"
           onChange={handleChange}
-          placeholder="Enter Fullname"
-          value={updateCustomer?.fullName ?? ""}
+          placeholder={detail.fullName ? detail.fullName : "Enter Fullname"}
         />
         <InputEdit
           titleInput="Phone"
@@ -160,15 +152,13 @@ const EditCustomerInformation = () => {
           name="phoneNumber"
           onChange={handleChange}
           placeholder="Enter Phone"
-          value={updateCustomer?.phoneNumber ?? ""}
         />
         <InputEdit
           titleInput="Email"
           width="w-full"
           name="email"
           onChange={handleChange}
-          placeholder="Enter Email"
-          value={updateCustomer?.email ?? ""}
+          placeholder={detail.email ? detail.email : "Enter Email"}
         />
       </div>
 
@@ -185,8 +175,7 @@ const EditCustomerInformation = () => {
             width="w-full"
             name="address"
             onChange={handleChange}
-            placeholder="Enter Address"
-            value={updateCustomer?.address ?? ""}
+            placeholder={detail.address ? detail.address : "Enter Address"}
           />
         </div>
       </div>
@@ -199,18 +188,16 @@ const EditCustomerInformation = () => {
           <InputEdit
             titleInput="Username"
             width="w-full"
-            name="email"
+            name="username"
             onChange={handleChange}
             placeholder="Enter Username"
-            value={updateCustomer?.email ?? ""}
           />
           <InputEdit
             titleInput="Password"
             width="w-full"
-            name="phoneNumber"
+            name="password"
             onChange={handleChange}
-            placeholder="Enter Phonenumber"
-            value={updateCustomer?.phoneNumber ?? ""}
+            placeholder="Enter password"
           />
         </div>
       </div>

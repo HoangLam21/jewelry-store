@@ -32,7 +32,7 @@ const MyButton: React.FC<MyButtonProps> = ({
   height = "h-35px",
   px = "px-4",
   py = "py-[8px]",
-  text = "text-[14px]",
+  text = "text-[14px]"
 }) => {
   return (
     <div
@@ -47,7 +47,7 @@ const MyButton: React.FC<MyButtonProps> = ({
         py // Padding
       )}
       style={{
-        borderWidth: "0.5px", // Set border width if necessary
+        borderWidth: "0.5px" // Set border width if necessary
       }}
     >
       <button
@@ -57,7 +57,7 @@ const MyButton: React.FC<MyButtonProps> = ({
           text_color // Apply dynamic text color class
         )}
         onClick={event || onClick}
-        fdprocessedid="8jupze"
+        //fdprocessedid="8jupze"
       >
         {/* Conditionally render icon if it's provided */}
         {icon && <Icon icon={icon} className="text-[18px]" />}

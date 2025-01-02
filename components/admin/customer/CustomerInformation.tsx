@@ -5,32 +5,13 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
-import { CustomerData } from "@/constants/data";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import Link from "next/link";
 import { PaginationProps } from "@/types/pagination";
 import TableSearch from "@/components/shared/table/TableSearch";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
-
-interface OrderCustomer {
-  id: string;
-  createAt: string;
-  createBy: string;
-  cost: number;
-}
-
-interface Customer {
-  id: string;
-  fullName: string;
-  phoneNumber: string;
-  email: string;
-  address: string;
-  avatar: string;
-  point: number;
-  sales: number;
-  orders: OrderCustomer[];
-}
+import { Customer, defaultDetail, OrderCustomer } from "./CustomerList";
+import { getCustomerById } from "@/lib/actions/customer.action";
+import { getDetailCustomer } from "@/lib/service/customer.service";
 
 const columns = [
   {
@@ -53,7 +34,7 @@ const columns = [
 
 const CustomerInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string }; // Ensure id is typed
-  const [Customer, setCustomer] = useState<Customer | null>(null);
+  const [detail, setDetail] = useState<Customer>(defaultDetail);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{
@@ -66,16 +47,43 @@ const CustomerInformation = () => {
   type SortableKeys = "id" | "cost" | "createBy" | "createAt";
 
   useEffect(() => {
-    if (id) {
-      const foundItem = CustomerData.find((item) => item.id === id);
-      if (foundItem) {
-        setCustomer(foundItem);
+    const fetchData = async () => {
+      try {
+        const result = await getDetailCustomer(id);
+        if (result) {
+          const totalCost = result.orders.reduce(
+            (total, order) => total + order.cost,
+            0
+          );
+          const data: Customer = {
+            id: result._id,
+            fullName: result.fullName,
+            phoneNumber: result.phoneNumber,
+            email: result.email,
+            address: result.address,
+            avatar: "",
+            point: result.point,
+            sales: totalCost,
+            orders: result.orders.map((order) => ({
+              id: order._id,
+              createAt: order.createAt,
+              createBy: order.staff,
+              cost: order.cost
+            }))
+          };
+          setDetail(data);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
       }
-    }
+    };
+    fetchData();
   }, [id]);
 
   // Render nothing if Customer is not loaded yet
-  if (!Customer) {
+  if (!detail) {
     return <p>Loading Customer information...</p>;
   }
 
@@ -98,7 +106,7 @@ const CustomerInformation = () => {
     }
   };
 
-  const sorted = [...Customer.orders].sort((a, b) => {
+  const sorted = [...detail.orders].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -180,7 +188,7 @@ const CustomerInformation = () => {
           <div className="w-1/5">
             <Image
               alt="avatar"
-              src={Customer.avatar || "/assets/images/avatar.jpg"}
+              src={detail.avatar || "/assets/images/avatar.jpg"}
               width={115}
               height={130}
               className="rounded-md"
@@ -189,21 +197,21 @@ const CustomerInformation = () => {
 
           <div className="w-full grid grid-cols-2 gap-5">
             <div className="flex flex-col gap-5">
-              <LabelInformation content={Customer.fullName} title="Fullname" />
+              <LabelInformation content={detail.fullName} title="Fullname" />
               <LabelInformation
-                content={Customer.point.toString()}
+                content={detail.point.toString()}
                 title="Point"
               />
               <LabelInformation
-                content={formatCurrency(Customer.sales)}
+                content={formatCurrency(detail.sales)}
                 title="Sales"
               />
             </div>
             <div className="flex flex-col gap-5">
-              <LabelInformation content={Customer.id} title="ID" />
-              <LabelInformation content={Customer.email} title="Email" />
+              <LabelInformation content={detail.id} title="ID" />
+              <LabelInformation content={detail.email} title="Email" />
               <LabelInformation
-                content={Customer.phoneNumber}
+                content={detail.phoneNumber}
                 title="Phone Number"
               />
             </div>
@@ -211,7 +219,7 @@ const CustomerInformation = () => {
         </div>
 
         <div className="w-full ">
-          <LabelInformation content={Customer.address} title="Address" />
+          <LabelInformation content={detail.address} title="Address" />
         </div>
       </div>
       {/* Number of sales orderss */}

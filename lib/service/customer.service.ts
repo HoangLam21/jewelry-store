@@ -13,22 +13,22 @@ export async function fetchCustomer(): Promise<[]> {
   }
 }
 
-export async function getCustomerById(
+export async function getDetailCustomer(
   customerId: string
 ): Promise<CustomerResponse | null> {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.error("Không tìm thấy token");
-    throw new Error("Thiếu token xác thực.");
-  }
+  // const token = localStorage.getItem("token");
+  // if (!token) {
+  //   console.error("Không tìm thấy token");
+  //   throw new Error("Thiếu token xác thực.");
+  // }
 
   try {
-    const response = await fetch(`/api/customer/${customerId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
+    // const response = await fetch(`/api/customer/${customerId}`, {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`
+    //   }
+    // });
+    const response = await fetch(`/api/customer/id?id=${customerId}`);
     if (!response.ok) {
       throw new Error("Không thể lấy thông tin khach hang.");
     }
@@ -92,7 +92,7 @@ export async function createCustomer(
   }
 }
 
-export async function updateCustomerAPI(
+export async function updateInfoCustomer(
   id: string,
   data: CreateCustomer
 ): Promise<any> {

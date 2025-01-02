@@ -10,13 +10,13 @@ import PaginationUI from "@/types/pagination/Pagination";
 import Format from "@/components/shared/card/ConfirmCard";
 import { fetchCustomer } from "@/lib/service/customer.service";
 
-interface OrderCustomer {
+export interface OrderCustomer {
   id: string;
   createAt: string;
   createBy: string;
   cost: number;
 }
-interface Customer {
+export interface Customer {
   id: string;
   fullName: string;
   phoneNumber: string;
@@ -27,7 +27,7 @@ interface Customer {
   sales: number;
   orders: OrderCustomer[];
 }
-const defaultDetail: Customer = {
+export const defaultDetail: Customer = {
   id: "",
   fullName: "",
   phoneNumber: "",
