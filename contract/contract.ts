@@ -12,8 +12,8 @@ export const contract = c.router({
         phoneNumber: z.string(),
         email: z.string().email(),
         address: z.string(),
-        gender:z.string().optional(),
-        birthday:z.string().optional()
+        gender: z.string().optional(),
+        birthday: z.string().optional(),
       }),
       responses: {},
     },
@@ -38,8 +38,8 @@ export const contract = c.router({
         phoneNumber: z.string().optional(),
         email: z.string().email().optional(),
         address: z.string().optional(),
-        gender:z.string().optional(),
-        birthday:z.string().optional()
+        gender: z.string().optional(),
+        birthday: z.string().optional(),
       }),
       responses: {},
       query: z.object({
@@ -50,6 +50,16 @@ export const contract = c.router({
       method: "DELETE",
       path: "/api/customer/delete",
       responses: {},
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+    uploadAvatar: {
+      method: "POST",
+      path: "/api/customer/upload-avatar",
+      responses: {},
+      contentType: "multipart/form-data", // <- Only difference
+      body: c.type<{ image: File }>(),
       query: z.object({
         id: z.string(),
       }),
@@ -65,8 +75,8 @@ export const contract = c.router({
         email: z.string().email(),
         address: z.string(),
         avatar: z.string(),
-        gender:z.string().optional(),
-        birthday:z.string().optional(),
+        gender: z.string().optional(),
+        birthday: z.string().optional(),
         enrolledDate: z.date(),
         salary: z.string(),
         position: z.string(),
@@ -76,8 +86,7 @@ export const contract = c.router({
         kindOfJob: z.string(),
         description: z.string(),
       }),
-      responses: {
-      },
+      responses: {},
     },
     getStaffs: {
       method: "GET",
@@ -101,8 +110,8 @@ export const contract = c.router({
         email: z.string().email().optional(),
         address: z.string().optional(),
         avatar: z.string().optional(),
-        gender:z.string().optional(),
-        birthday:z.string().optional(),
+        gender: z.string().optional(),
+        birthday: z.string().optional(),
         enrolledDate: z.date().optional(),
         salary: z.string().optional(),
         position: z.string().optional(),
@@ -112,8 +121,7 @@ export const contract = c.router({
         kindOfJob: z.string().optional(),
         description: z.string().optional(),
       }),
-      responses: {
-      },
+      responses: {},
       query: z.object({
         id: z.string(),
       }),
@@ -121,8 +129,17 @@ export const contract = c.router({
     deleteStaff: {
       method: "DELETE",
       path: "/api/staff/delete",
-      responses: {
-      },
+      responses: {},
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+    uploadAvatar: {
+      method: "POST",
+      path: "/api/staff/upload-avatar",
+      responses: {},
+      contentType: "multipart/form-data",
+      body: c.type<{ image: File }>(),
       query: z.object({
         id: z.string(),
       }),
@@ -245,8 +262,7 @@ export const contract = c.router({
     getProviderById: {
       method: "GET",
       path: "/api/provider/id",
-      responses: {
-      },
+      responses: {},
       query: z.object({
         id: z.string(),
       }),
@@ -262,9 +278,7 @@ export const contract = c.router({
         city: z.string(),
         country: z.string(),
       }),
-      responses: {
-    
-      },
+      responses: {},
       query: z.object({
         id: z.string(),
       }),
@@ -272,9 +286,7 @@ export const contract = c.router({
     deleteProvider: {
       method: "DELETE",
       path: "/api/provider/delete",
-      responses: {
-    
-      },
+      responses: {},
       query: z.object({
         id: z.string(),
       }),
