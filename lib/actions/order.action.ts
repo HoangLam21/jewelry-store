@@ -56,39 +56,41 @@ export const getOrders = async () => {
 };
 
 export const createOrder = async (data: {
-  cost: number;
-  discount: number;
-  details: {
-    id: string;
-    material: string;
-    size: string;
-    unitPrice: number;
-    quantity: number;
-    discount: string;
-  }[];
-  status: string;
-  shippingMethod: string;
-  ETD: Date;
-  customer: string;
-  staff: string;
+    cost: number;
+    discount: number;
+    details: {
+        id: string;
+        material: string;
+        size: string;
+        unitPrice: number;
+        quantity: number;
+        discount: string;
+    }[];
+    status: string;
+    shippingMethod: string;
+    ETD: Date;
+    customer?: string;
+    phoneNumber?:string;
+    staff: string;
 }) => {
-  try {
-    connectToDatabase();
-    const newOrder = await Order.create({
-      cost: data.cost,
-      discount: data.discount,
-      details: data.details,
-      status: data.status,
-      shippingMethod: data.shippingMethod,
-      ETD: data.ETD,
-      customer: new ObjectId(data.customer),
-      staff: new ObjectId(data.staff),
-    });
-    return newOrder;
-  } catch (error) {
-    console.log("Error creating Order: ", error);
-    throw new Error("Failed to create order");
-  }
+    try {
+        connectToDatabase();
+        const newOrder = await Order.create({
+            cost: data.cost,
+            discount: data.discount,
+            details: data.details,
+            status: data.status,
+            shippingMethod: data.shippingMethod,
+            ETD: data.ETD,
+            customer: new ObjectId(data.customer),
+            phoneNumber:data.phoneNumber,
+            staff: new ObjectId(data.staff),
+        });
+        return newOrder;
+    } catch (error) {
+        console.log("Error creating Order: ", error);
+        throw new Error("Failed to create order");
+    }
 };
 
 // Hủy đơn hàng

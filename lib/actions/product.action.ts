@@ -23,19 +23,6 @@ export const createProduct = async (data: {
     sizes: { size: string; stock: number }[];
     addOn: number;
   }[];
-  name: string;
-  cost: number;
-  images: formidable.File[];
-  description: string;
-  vouchers?: string[];
-  provider: string;
-  category?: string;
-  collections?: string;
-  variants: {
-    material: string;
-    sizes: { size: string; stock: number }[];
-    addOn: number;
-  }[];
 }) => {
   try {
     connectToDatabase();
@@ -93,9 +80,6 @@ export const getProductById = async (id: string) => {
   try {
     connectToDatabase();
     const product = await Product.findById(id);
-  try {
-    connectToDatabase();
-    const product = await Product.findById(id);
 
     if (!product) {
       throw new Error("Product not found");
@@ -121,23 +105,7 @@ export const updateProduct = async (
   data: Partial<{
     name: string;
     cost: number;
-    files: formidable.File[];
-    description: string;
-    vouchers: string[];
-    provider: string;
-    category: string;
-    collections?: string;
-    variants: {
-      material: string;
-      sizes: { size: string; stock: number }[];
-      addOn: number;
-    }[];
-  }>
-  id: string,
-  data: Partial<{
-    name: string;
-    cost: number;
-    files: formidable.File[];
+    images: formidable.File[];
     description: string;
     vouchers: string[];
     provider: string;
@@ -157,17 +125,18 @@ export const updateProduct = async (
     for (const id of existProduct.files) {
       await deleteFile(id);
     }
-    if (data.files) {
-      for (const image of data.files) {
+    if (data.images) {
+      for (const image of data.images) {
         const createdImage = await createFile(image);
         updateImageIds.push(createdImage._id);
       }
     }
+    console.log("createdImage: ",updateImageIds);
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
         ...data,
-        images: updateImageIds,
+        files: updateImageIds
       },
       { new: true }
     );
