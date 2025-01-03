@@ -1,11 +1,12 @@
 "use client";
 import AddProduct from "@/components/admin/product/AddProduct";
-import ProductList from "@/components/admin/product/ProductList";
+import ProductList, { Product } from "@/components/admin/product/ProductList";
 import Headers from "@/components/shared/header/Headers";
 import React, { useState } from "react";
 
 const Page = () => {
   const [openAddProduct, setOpenAddProduct] = useState(false);
+  const [list, setList] = useState<Product[]>([]);
   const handleExport = () => {};
 
   const handleAddProduct = () => {
@@ -28,10 +29,10 @@ const Page = () => {
           onClickSecondButton={handleAddProduct}
           type={2}
         ></Headers>
-        <ProductList />
+        <ProductList list={list} setList={setList} />
       </div>
 
-      {openAddProduct && <AddProduct onBack={handleBack} />}
+      {openAddProduct && <AddProduct onBack={handleBack} setList={setList} />}
     </>
   );
 };

@@ -5,8 +5,8 @@ import { IncomingForm } from "formidable";
 
 export const config = {
   api: {
-    bodyParser: false,
-  },
+    bodyParser: false
+  }
 };
 
 export default async function handler(
@@ -30,7 +30,7 @@ export default async function handler(
         provider,
         category,
         collections,
-        variants,
+        variants
       } = fields;
 
       const images = files.images
@@ -56,7 +56,7 @@ export default async function handler(
           sizes: { size: string; stock: number }[];
           addOn: number;
         }[] = [];
-        
+
         if (variants) {
           parsedVariants = JSON.parse(variants[0]);
           if (!Array.isArray(parsedVariants)) {
@@ -84,9 +84,9 @@ export default async function handler(
             : undefined,
           collections:
             typeof collections === "string" ? collections : collections[0],
-          variants: parsedVariants,
+          variants: parsedVariants
         };
-
+        console.log(productData, "fields");
         const newProduct = await createProduct(productData);
         return res.status(201).json(newProduct);
       } catch (error) {

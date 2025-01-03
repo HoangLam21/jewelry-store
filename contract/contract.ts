@@ -1020,9 +1020,10 @@ export const contract = c.router({
                 500: z.object({ error: z.string() }),
             },
         },
+
         getCategories: {
             method: "GET",
-            path: "/api/category/all",
+            path: "/api/category/all-category",
             responses: {
                 200: z.array(
                     z.object({
@@ -1034,9 +1035,10 @@ export const contract = c.router({
                 500: z.object({ error: z.string() }),
             },
         },
+
         getCategoryById: {
             method: "GET",
-            path: "/api/category/id",
+            path: "/api/category/get",
             responses: {
                 200: z.object({
                     name: z.string(),
@@ -1044,12 +1046,14 @@ export const contract = c.router({
                     createdAt: z.date(),
                 }),
                 400: z.object({ error: z.string() }),
+                404: z.object({ error: z.string() }),
                 500: z.object({ error: z.string() }),
             },
             query: z.object({
                 id: z.string(),
             }),
         },
+
         updateCategory: {
             method: "PUT",
             path: "/api/category/update",
@@ -1064,24 +1068,28 @@ export const contract = c.router({
                     createdAt: z.date(),
                 }),
                 400: z.object({ error: z.string() }),
+                404: z.object({ error: z.string() }),
                 500: z.object({ error: z.string() }),
             },
             query: z.object({
                 id: z.string(),
             }),
         },
+
         deleteCategory: {
             method: "DELETE",
             path: "/api/category/delete",
             responses: {
                 200: z.object({ message: z.string() }),
                 400: z.object({ error: z.string() }),
+                404: z.object({ error: z.string() }),
                 500: z.object({ error: z.string() }),
             },
             query: z.object({
                 id: z.string(),
             }),
         },
+
         addProductToCategory: {
             method: "POST",
             path: "/api/category/add-product",
@@ -1103,9 +1111,11 @@ export const contract = c.router({
                     }),
                 }),
                 400: z.object({ error: z.string() }),
+                404: z.object({ error: z.string() }),
                 500: z.object({ error: z.string() }),
             },
         },
+
         removeProductFromCategory: {
             method: "DELETE",
             path: "/api/category/remove-product",
@@ -1123,6 +1133,7 @@ export const contract = c.router({
                     }),
                 }),
                 400: z.object({ error: z.string() }),
+                404: z.object({ error: z.string() }),
                 500: z.object({ error: z.string() }),
             },
             query: z.object({
@@ -1130,6 +1141,7 @@ export const contract = c.router({
                 productId: z.string(),
             }),
         },
+
         editProductCategory: {
             method: "PUT",
             path: "/api/category/edit-product",
@@ -1151,9 +1163,11 @@ export const contract = c.router({
                     }),
                 }),
                 400: z.object({ error: z.string() }),
+                404: z.object({ error: z.string() }),
                 500: z.object({ error: z.string() }),
             },
         },
+
         getProductsOfCategory: {
             method: "GET",
             path: "/api/category/get-products",

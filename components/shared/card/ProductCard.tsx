@@ -1,24 +1,13 @@
+import { Product } from "@/components/admin/product/ProductList";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import React from "react";
 
-interface Product {
-  id: string;
-  image: string;
-  productName: string;
-  price: string;
-  material: string;
-  description: string;
-  vouchers: string;
-  provider: string;
-  category: string;
-  quantity: number;
-}
 const ProductFrame = ({
   param,
   onDelete,
   onEdit,
-  onDetail,
+  onDetail
 }: {
   param: Product;
   onDelete: (id: string) => void;
@@ -27,7 +16,7 @@ const ProductFrame = ({
 }) => {
   return (
     <div className="flex flex-col w-[152px] h-[276px] bg-import-bg-blue rounded-md px-4 py-2 gap-2 shadow-lg">
-      <p className="">#{param.id}</p>
+      <p className="truncate overflow-hidden whitespace-nowrap">#{param.id}</p>
       <div className="flex items-center justify-center pb-2">
         <div
           className="w-[120px] h-[120px] relative  hover:cursor-pointer"
@@ -45,7 +34,7 @@ const ProductFrame = ({
         {param.productName}
       </p>
       <p className="font-semibold text-[14px] text-light-500 truncate overflow-hidden whitespace-nowrap">
-        {param.price} VND
+        {param.price}
       </p>
       <div className="flex justify-end items-center">
         <Icon

@@ -23,6 +23,19 @@ export const createProduct = async (data: {
     sizes: { size: string; stock: number }[];
     addOn: number;
   }[];
+  name: string;
+  cost: number;
+  images: formidable.File[];
+  description: string;
+  vouchers?: string[];
+  provider: string;
+  category?: string;
+  collections?: string;
+  variants: {
+    material: string;
+    sizes: { size: string; stock: number }[];
+    addOn: number;
+  }[];
 }) => {
   try {
     connectToDatabase();
@@ -80,6 +93,9 @@ export const getProductById = async (id: string) => {
   try {
     connectToDatabase();
     const product = await Product.findById(id);
+  try {
+    connectToDatabase();
+    const product = await Product.findById(id);
 
     if (!product) {
       throw new Error("Product not found");
@@ -101,6 +117,22 @@ export const getProductById = async (id: string) => {
 };
 
 export const updateProduct = async (
+  id: string,
+  data: Partial<{
+    name: string;
+    cost: number;
+    files: formidable.File[];
+    description: string;
+    vouchers: string[];
+    provider: string;
+    category: string;
+    collections?: string;
+    variants: {
+      material: string;
+      sizes: { size: string; stock: number }[];
+      addOn: number;
+    }[];
+  }>
   id: string,
   data: Partial<{
     name: string;
@@ -160,6 +192,17 @@ export const updateProduct = async (
 };
 
 export const deleteProduct = async (id: string) => {
+  try {
+    connectToDatabase();
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    if (!deletedProduct) {
+      throw new Error("Product not found");
+    }
+    return true;
+  } catch (error) {
+    console.log("Error deleting Product: ", error);
+    throw new Error("Failed to delete product");
+  }
   try {
     connectToDatabase();
     const deletedProduct = await Product.findByIdAndDelete(id);

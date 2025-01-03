@@ -25,6 +25,32 @@ export const createCategory = async (data: {
     }
 };
 
+// Modified getProductsOfCategory function
+export const getProductsOfCategory = async (categoryId: string) => {
+    try {
+        await connectToDatabase();
+        const category = await Category.findById(categoryId);
+        if (!category) {
+            throw new Error("Category not found");
+        }
+        // Populate necessary fields
+        const products = await Product.find({
+            _id: { $in: category.products },
+        })
+            .populate("files")
+            .populate("vouchers")
+            .populate("provider")
+            .populate("category");
+
+        await mongoose.connection.close();
+        return products;
+    } catch (error) {
+        console.log("Error getting products of category: ", error);
+        await mongoose.connection.close();
+        throw new Error("Failed to get products of category");
+    }
+};
+
 // Get all categories
 export const getCategories = async () => {
     try {
@@ -196,25 +222,5 @@ export const editProductCategory = async (
         console.log("Error editing product category: ", error);
         await mongoose.connection.close();
         throw new Error("Failed to edit product category");
-    }
-};
-
-// Get all products of a category
-export const getProductsOfCategory = async (categoryId: string) => {
-    try {
-        await connectToDatabase();
-        const category = await Category.findById(categoryId);
-        if (!category) {
-            throw new Error("Category not found");
-        }
-        const products = await Product.find({
-            _id: { $in: category.products },
-        });
-        await mongoose.connection.close();
-        return products;
-    } catch (error) {
-        console.log("Error getting products of category: ", error);
-        await mongoose.connection.close();
-        throw new Error("Failed to get products of category");
     }
 };

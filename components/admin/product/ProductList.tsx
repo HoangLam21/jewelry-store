@@ -8,55 +8,101 @@ import React, { useEffect, useState } from "react";
 import ProductDetail from "./ProductDetail";
 import ProductEdit from "./ProductEdit";
 import Format from "@/components/shared/card/ConfirmCard";
-interface ImageInfo {
-  url: string;
-  fileName: string;
+import { deleteProductById, fetchProduct } from "@/lib/service/product.service";
+import { FileContent, ProductResponse } from "@/dto/ProductDTO";
+import { formatCurrency } from "@/lib/utils";
+export interface Sizes {
+  size: string;
+  stock: number;
 }
-interface Product {
+export interface Variant {
+  material: string;
+  sizes: Sizes[];
+  addOn: number;
+}
+export interface Product {
   id: string;
   image: string;
-  imageInfo: ImageInfo[];
+  imageInfo: FileContent[];
   productName: string;
   price: string;
-  material: string;
+  collection: string;
   description: string;
   vouchers: string;
   provider: string;
-  size: string;
-  color: string;
   category: string;
-  quantity: number;
+  variants: Variant[];
 }
-const defaultDetail: Product = {
+
+export const defaultDetailProduct: Product = {
   id: "",
   image: "",
-  imageInfo: [
-    {
-      url: "",
-      fileName: ""
-    }
-  ],
+  imageInfo: [],
   productName: "Unknown Product",
   price: "0",
-  material: "Unknown",
+  collection: "",
   description: "No description available.",
   vouchers: "No vouchers",
   provider: "Unknown Provider",
   category: "Uncategorized",
-  size: "",
-  color: "",
-  quantity: 0
+  variants: [
+    {
+      material: "Unknown Material",
+      sizes: [
+        {
+          size: "Unknown Size",
+          stock: 0
+        }
+      ],
+      addOn: 0
+    }
+  ]
 };
-const ProductList = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [onEdit, setOnEdit] = useState(false);
-  const [onDelete, setOnDelete] = useState(false);
-  const [onDetail, setOnDetail] = useState(false);
-  const [detailItem, setDetailItem] = useState<Product>(defaultDetail);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filterOption, setFilterOption] = useState("");
 
-  const filterData = ProductsData.filter((item) => {
+interface props {
+  list: Product[];
+  setList: React.Dispatch<React.SetStateAction<Product[]>>;
+}
+
+const ProductList = ({ list, setList }: props) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterOption, setFilterOption] = useState("");
+  const [onDelete, setOnDelete] = useState(false);
+  const [onEdit, setOnEdit] = useState(false);
+
+  const [onDetail, setOnDetail] = useState(false);
+  const [detailItem, setDetailItem] = useState<Product>(defaultDetailProduct);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result: ProductResponse[] = await fetchProduct();
+        if (result) {
+          const data: Product[] = result.map((item) => ({
+            id: item._id,
+            image: item.files[0].url,
+            imageInfo: item.files,
+            productName: item.name,
+            price: formatCurrency(item.cost),
+            collection: item.collections,
+            description: item.description,
+            vouchers: item.vouchers?.[item.vouchers.length - 1]?._id || "",
+            provider: item.provider ? item.provider._id : "",
+            category: item.category,
+            variants: item.variants
+          }));
+
+          setList(data);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const filterData = list.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
@@ -67,25 +113,8 @@ const ProductList = () => {
     return matchesSearch;
   });
 
-  const dataLength = filterData.length;
-  const itemsPerPage = 12;
-  const totalPages = Math.ceil(dataLength / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const paginationUI: PaginationProps = {
-    currentPage,
-    setCurrentPage,
-    indexOfLastItem,
-    indexOfFirstItem,
-    totalPages,
-    dataLength
-  };
-
-  const [displayedProduct, setDisplayedProduct] =
-    useState<Product[]>(filterData);
-
   const handleConfirmDelete = (id: string) => {
-    const detail = displayedProduct.find((item) => item.id === id);
+    const detail = filterData.find((item) => item.id === id);
     if (detail) setDetailItem(detail);
     setOnDelete(true);
   };
@@ -93,14 +122,23 @@ const ProductList = () => {
     setOnDelete(false);
   };
 
-  const handleDelete = (id: string) => {
-    const detail = filterData.find((item) => item.id === id);
-    if (detail)
-      setDisplayedProduct((prev) =>
-        prev.filter((item) => item.id !== detail.id)
-      );
-    setOnDelete(false);
-    console.log("delete");
+  const handleDelete = async (id: string) => {
+    try {
+      const result = await deleteProductById(id);
+      if (result) {
+        const detail = filterData.find((item) => item.id === id);
+        if (detail)
+          setList((prev) => prev.filter((item) => item.id !== detail.id));
+        setOnDelete(false);
+        alert("Delete product successfully.");
+      } else {
+        alert("Can't delete product.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
   };
 
   const handleEdit = (id: string) => {
@@ -127,7 +165,7 @@ const ProductList = () => {
       <div className="flex w-full flex-col p-4 rounded-md shadow-sm">
         <TableSearch onSearch={setSearchQuery} onSort={() => {}} />
         <div className="flex flex-row flex-wrap items-start justify-items-stretch gap-7 mt-6 max-h-[550px] h-[550px] overflow-x-auto container">
-          {displayedProduct.map((item) => (
+          {filterData.map((item) => (
             <ProductFrame
               key={item.id}
               param={item}
@@ -150,6 +188,7 @@ const ProductList = () => {
       {onEdit && (
         <ProductEdit
           detailProduct={detailItem}
+          setList={setList}
           onBack={(value: boolean) => handleBack(value)}
         />
       )}

@@ -17,23 +17,37 @@ interface ImageInfo {
   url: string;
   fileName: string;
 }
-
+interface Sizes {
+  size: string;
+  stock: number;
+}
+interface Variant {
+  material: string;
+  sizes: Sizes[];
+  addOn: number;
+}
 interface Product {
   id: string;
   image: string;
   imageInfo: ImageInfo[];
   productName: string;
   price: string;
-  material: string;
+  collection: string;
   description: string;
   vouchers: string;
   provider: string;
-  size: string;
-  color: string;
   category: string;
-  quantity: number;
+  variants: Variant[];
 }
-
+const calculateTotalStock = (product: Product): number => {
+  return product.variants.reduce((variantTotal, variant) => {
+    const sizeTotal = variant.sizes.reduce(
+      (sizeTotal, size) => sizeTotal + size.stock,
+      0
+    );
+    return variantTotal + sizeTotal;
+  }, 0);
+};
 const page = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [product, setProduct] = useState<any>(null);
@@ -160,7 +174,9 @@ const page = () => {
           <div className="flex w-2/5 gap-2">
             <button
               onClick={() =>
-                handleQuantityChange((product.quantity - 1).toString())
+                handleQuantityChange(
+                  (calculateTotalStock(product) - 1).toString()
+                )
               }
               className="w-11 h-11 border border-gray-300 rounded-md self-center text-[16px] focus:outline-none text-center"
             >
@@ -168,14 +184,16 @@ const page = () => {
             </button>
             <input
               type="text"
-              value={product.quantity}
+              value={calculateTotalStock(product)}
               onChange={(e) => handleQuantityChange(e.target.value)}
               min={1}
               className="w-20 h-11 border border-gray-300 rounded-md self-center text-[16px] focus:outline-none text-center"
             />
             <button
               onClick={() =>
-                handleQuantityChange((product.quantity + 1).toString())
+                handleQuantityChange(
+                  (calculateTotalStock(product) + 1).toString()
+                )
               }
               className="w-11 h-11 border border-gray-300 rounded-md self-center text-[16px] focus:outline-none text-center"
             >
