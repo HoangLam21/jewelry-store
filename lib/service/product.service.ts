@@ -72,22 +72,52 @@ export async function createProduct(
 ): Promise<ProductResponse> {
   try {
     console.log(params, "param");
-    const response = await fetch(`/api/customer/create`, {
+    const formData = new FormData();
+    formData.append("name", params.name);
+    formData.append("cost", params.cost.toString());
+    formData.append("description", params.description);
+    formData.append("provider", params.provider);
+    formData.append("category", params.category || "");
+    formData.append("collections", params.collections);
+
+    // Thêm các tệp vào FormData
+    if (params.images && params.images.length > 0) {
+      params.images.forEach(async (image: FileContent) => {
+        if (image.url && image.fileName) {
+          try {
+            const response = await fetch(image.url);
+            if (response.ok) {
+              const blob = await response.blob();
+              formData.append("images", blob, image.fileName);
+            } else {
+              console.error("Failed to fetch image from URL", image.url);
+            }
+          } catch (error) {
+            console.error("Error fetching image", error);
+          }
+        } else {
+          console.error("FileContent is missing necessary fields");
+        }
+      });
+    }
+
+    // Thêm các vouchers và variants vào FormData (có thể là mảng, cần xử lý trước khi append)
+    if (params.vouchers) {
+      if (Array.isArray(params.vouchers)) {
+        params.vouchers.forEach((voucher) => {
+          formData.append("vouchers", voucher);
+        });
+      } else {
+        formData.append("vouchers", params.vouchers);
+      }
+    }
+
+    if (params.variants && Array.isArray(params.variants)) {
+      formData.append("variants", JSON.stringify(params.variants));
+    }
+    const response = await fetch(`/api/product/create`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-        // Authorization: `${token}`,
-      },
-      body: JSON.stringify({
-        name: params.name,
-        cost: params.cost,
-        description: params.description,
-        vouchers: params.vouchers,
-        provider: params.provider,
-        category: params.category,
-        collections: params.collections,
-        variants: params.variants
-      })
+      body: formData
     });
 
     if (!response.ok) {
@@ -154,7 +184,6 @@ export async function updateInfoProduct(
     if (params.variants && Array.isArray(params.variants)) {
       formData.append("variants", JSON.stringify(params.variants));
     }
-
     const response = await fetch(`/api/product/update?id=${id}`, {
       method: "PUT",
       body: formData // Gửi FormData thay vì JSON
@@ -162,7 +191,6 @@ export async function updateInfoProduct(
 
     // Đảm bảo phản hồi được đọc đúng cách chỉ một lần
     const responseData = await response.json();
-
     if (!response.ok) {
       throw new Error(responseData.error || "Error updating product");
     }

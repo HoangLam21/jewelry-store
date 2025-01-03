@@ -1,17 +1,13 @@
 "use client";
-import Format from "@/components/shared/card/ConfirmCard";
 import InputEdit from "@/components/shared/input/InputEdit";
 import InputSelection from "@/components/shared/input/InputSelection";
 import InputUnEdit from "@/components/shared/input/InputUnEdit";
-import SwiperProduct from "@/components/shared/swiper/SwiperImage";
 import TableImport from "@/components/shared/table/TableImport";
 import { Button } from "@/components/ui/button";
-import { ProductsData } from "@/constants/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { defaultDetailProduct, Product, Sizes, Variant } from "./ProductList";
+import { Product, Variant } from "./ProductList";
 import { formatCurrency, parseCurrency } from "@/lib/utils";
 import ConfirmModal, { ConfirmModalProps } from "./ConfirmModal";
 import AddVariant from "./AddVariant";
@@ -303,7 +299,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                   image: item.image,
                   imageInfo: imageList,
                   productName: item.productName,
-                  price: formatCurrency(Number(item.price)),
+                  price: formatCurrency(parseCurrency(item.price)),
                   collection: item.collection,
                   description: item.description,
                   vouchers: item.vouchers,
@@ -321,6 +317,15 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
       }
     } else alert("No information of customer to update");
     console.log("save");
+  };
+  const handleConfirmSave = () => {
+    setIsConfirm(true);
+    setConfirm({
+      setConfirm: setIsConfirm,
+      handleAction: handleSave,
+      name: " this product",
+      action: "update"
+    });
   };
   return (
     <>
@@ -456,7 +461,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
               <div className="flex justify-end w-full items-center pr-4 pb-2">
                 <Button
                   className="bg-green-600 hover:bg-green-600 text-dark-100 paragraph-regular py-2 px-3 rounded-lg w-fit"
-                  onClick={handleSave}
+                  onClick={handleConfirmSave}
                 >
                   Save
                 </Button>

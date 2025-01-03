@@ -6,26 +6,81 @@ import SwiperProduct from "@/components/shared/swiper/SwiperImage";
 import TableImport from "@/components/shared/table/TableImport";
 import { Button } from "@/components/ui/button";
 import { ProductsData } from "@/constants/data";
-import { formatCurrency, generateRandomID } from "@/lib/utils";
+import { formatCurrency, generateRandomID, parseCurrency } from "@/lib/utils";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { defaultDetailProduct, Product } from "./ProductList";
-import { CombinedVariant } from "./ProductEdit";
+import { CombinedVariant, groupVariants } from "./ProductEdit";
 import ConfirmModal, { ConfirmModalProps } from "./ConfirmModal";
 import AddVariant from "./AddVariant";
+import { fetchProvider } from "@/lib/service/provider.service";
+import { fetchVoucher } from "@/lib/service/voucher.service";
+import { CreateProduct, FileContent } from "@/dto/ProductDTO";
+import { createProduct } from "@/lib/service/product.service";
+
+const convertFilesToFileContent = (files: File[]): FileContent[] => {
+  return files.map((file) => ({
+    _id: "", // Tạo ID duy nhất
+    fileName: file.name, // Tên file
+    url: URL.createObjectURL(file), // Tạo URL tạm thời từ File
+    publicId: "", // Giá trị mặc định, có thể gán sau
+    bytes: file.size.toString(), // Kích thước file (dạng chuỗi)
+    width: "", // Giá trị mặc định, cần tính toán thêm nếu có
+    height: "", // Giá trị mặc định, cần tính toán thêm nếu có
+    format: file.type.split("/")[1] || "", // Định dạng file (phần sau `/` trong `type`)
+    type: file.type // MIME type
+  }));
+};
 
 interface Props {
   onBack: (value: boolean) => void;
+  setList: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
-const AddProduct = ({ onBack }: Props) => {
+const AddProduct = ({ onBack, setList }: Props) => {
   const [onAdd, setOnAdd] = useState(false);
   const [randomValue, setRandomValue] = useState<string>(generateRandomID(8));
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [providerList, setProviderList] = useState<string[]>([]);
+  const [voucherList, setVoucherList] = useState<string[]>([]);
   const [combinedData, setCombinedData] = useState<CombinedVariant[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const fetchDataProvider = async () => {
+      try {
+        const result = await fetchProvider();
+
+        if (result) {
+          const providerId: string[] = result.map((item: any) => item._id);
+          setProviderList(providerId);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+
+    const fetchDataVoucher = async () => {
+      try {
+        const result = await fetchVoucher();
+
+        if (result) {
+          const voucherId: string[] = result.map((item: any) => item._id);
+          setVoucherList(voucherId);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+    fetchDataProvider();
+    fetchDataVoucher();
+  }, []);
 
   //RENDER IMAGE
   const columns = [
@@ -182,8 +237,55 @@ const AddProduct = ({ onBack }: Props) => {
   };
 
   //SAVE
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (item) {
+      const data: CreateProduct = {
+        name: item.productName,
+        cost: parseCurrency(item.price),
+        description: item.description,
+        images: convertFilesToFileContent(selectedFiles),
+        vouchers: item.vouchers,
+        provider: item.provider,
+        category: item.category,
+        collections: item.collection,
+        variants: groupVariants(combinedData)
+      };
+      console.log(data);
+      const result = await createProduct(data);
+      console.log(result);
+      if (result) {
+        setList((prev) => [
+          ...prev,
+          {
+            id: item.id,
+            image: item.image,
+            imageInfo: convertFilesToFileContent(selectedFiles),
+            productName: item.productName,
+            price: formatCurrency(Number(item.price)),
+            collection: item.collection,
+            description: item.description,
+            vouchers: item.vouchers,
+            provider: item.provider,
+            category: item.category,
+            variants: groupVariants(combinedData)
+          }
+        ]);
+
+        alert("Update information of customer");
+      } else {
+        alert("Can't update information of customer");
+      }
+    } else alert("No information of customer to update");
     console.log("save");
+  };
+  const handleConfirmSave = () => {
+    setIsConfirm(true);
+    setConfirm({
+      setConfirm: setIsConfirm,
+      handleAction: handleSave,
+      name: " this variant",
+      action: "update"
+    });
   };
 
   return (
@@ -244,13 +346,13 @@ const AddProduct = ({ onBack }: Props) => {
                     />
                     <InputSelection
                       width="w-full"
-                      titleInput="Category"
-                      options={["Rings", "Bracelets"]}
-                      value={item?.category ?? "None"}
+                      titleInput="Provider"
+                      options={providerList}
+                      value={item?.provider ?? "None"}
                       onChange={(value) => {
                         setItem((prev) => ({
                           ...prev!,
-                          category: value
+                          provider: value
                         }));
                       }}
                     />
@@ -259,7 +361,7 @@ const AddProduct = ({ onBack }: Props) => {
                     <InputSelection
                       width="w-full"
                       titleInput="Voucher"
-                      options={["20%", "40%", "None"]}
+                      options={voucherList}
                       value={item?.vouchers ?? "None"}
                       onChange={(value) => {
                         setItem((prev) => ({
@@ -277,20 +379,6 @@ const AddProduct = ({ onBack }: Props) => {
                       placeholder="Enter price of product..."
                     />
                   </div>
-                </div>
-                <div className="flex w-full h-fit">
-                  <InputSelection
-                    width="w-full"
-                    titleInput="Provider"
-                    options={["Rings", "Bracelets"]}
-                    value={item?.provider ?? "None"}
-                    onChange={(value) => {
-                      setItem((prev) => ({
-                        ...prev!,
-                        provider: value
-                      }));
-                    }}
-                  />
                 </div>
                 <div className="flex w-full h-fit">
                   <InputEdit

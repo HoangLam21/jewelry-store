@@ -59,12 +59,17 @@ export const defaultDetailProduct: Product = {
   ]
 };
 
-const ProductList = () => {
+interface props {
+  list: Product[];
+  setList: React.Dispatch<React.SetStateAction<Product[]>>;
+}
+
+const ProductList = ({ list, setList }: props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState("");
   const [onDelete, setOnDelete] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
-  const [list, setList] = useState<Product[]>([]);
+
   const [onDetail, setOnDetail] = useState(false);
   const [detailItem, setDetailItem] = useState<Product>(defaultDetailProduct);
   useEffect(() => {
