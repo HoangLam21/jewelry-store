@@ -8,21 +8,27 @@ interface ImageInfo {
   url: string;
   fileName: string;
 }
-
+interface Sizes {
+  size: string;
+  stock: number;
+}
+interface Variant {
+  material: string;
+  sizes: Sizes[];
+  addOn: number;
+}
 interface Product {
   id: string;
   image: string;
   imageInfo: ImageInfo[];
   productName: string;
   price: string;
-  material: string;
+  collection: string;
   description: string;
   vouchers: string;
   provider: string;
-  size: string;
-  color: string;
   category: string;
-  quantity: number;
+  variants: Variant[];
 }
 
 const DetailProduct = ({ item }: { item: Product }) => {

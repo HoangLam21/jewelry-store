@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
@@ -8,9 +8,11 @@ import { navbarLinks } from "@/constants";
 import { usePathname } from "next/navigation";
 import Theme from "./Theme";
 import MobileNav from "./MobileNav";
+import UserModal from "@/components/form/user/UserModal";
 
 const Navbar = () => {
   const pathname = usePathname();
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
 
   return (
     <nav className="flex-between background-light700_dark300 fixed z-50 h-[79px] w-full gap-5 border-b p-6 dark:border-transparent sm:px-5 ">
@@ -54,6 +56,11 @@ const Navbar = () => {
         <Icon
           icon="solar:user-bold"
           className="text-dark100_light500 mr-5 text-[20px]"
+          onClick={() => setIsUserModalOpen(true)} // Mở modal khi nhấn
+        />
+        <UserModal
+          isOpen={isUserModalOpen}
+          onClose={() => setIsUserModalOpen(false)} // Đóng modal
         />
         <Link href="/cart">
           <Icon icon="mdi:cart" className="text-dark100_light500 text-[20px]" />

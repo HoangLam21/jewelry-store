@@ -1,9 +1,16 @@
-"use server"
+"use server";
 import Customer from "@/database/customer.model";
 import { ICustomer } from "@/database/customer.model";
 import { connectToDatabase } from "../mongoose";
 
-export const createCustomer = async (data: {fullName: string,  phoneNumber: string,   email: string,   address: string}) => {
+export const createCustomer = async (data: {
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  address: string;
+  gender?: boolean;
+  birthday?: Date;
+}) => {
   try {
     connectToDatabase();
     const newCustomer = await Customer.create({
@@ -11,7 +18,9 @@ export const createCustomer = async (data: {fullName: string,  phoneNumber: stri
       phoneNumber: data.phoneNumber,
       email: data.email,
       address: data.address,
-      createAt: new Date()
+      gender: data.gender,
+      birthday: data.birthday,
+      createAt: new Date(),
     });
     return newCustomer;
   } catch (error) {
@@ -45,14 +54,24 @@ export const getCustomerById = async (id: string) => {
   }
 };
 
-export const updateCustomer = async (id: string, data: Partial<{fullName:string, phoneNumber:string, email:string, address:string}>) => {
+export const updateCustomer = async (
+  id: string,
+  data: Partial<{
+    fullName: string;
+    phoneNumber: string;
+    email: string;
+    address: string;
+    gender?: boolean;
+    birthday?: Date;
+  }>
+) => {
   try {
     connectToDatabase();
     const updatedCustomer = await Customer.findByIdAndUpdate(
       id,
       {
         ...data,
-        updatedAt: new Date(),
+        updatedAt: new Date()
       },
       { new: true }
     );

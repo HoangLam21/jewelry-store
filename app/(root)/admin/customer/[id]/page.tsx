@@ -17,7 +17,7 @@ const Page = () => {
   return (
     <div className="w-full h-full p-4 flex flex-col gap-4">
       <Headers
-        title="Staff Detail"
+        title="Customer Detail"
         firstIcon="iconoir:cancel"
         titleFirstButton="Cancel"
         secondIcon="mingcute:add-line"

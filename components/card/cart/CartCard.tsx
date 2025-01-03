@@ -6,7 +6,22 @@ import { useCart } from "@/contexts/CartContext";
 const CartCard = ({ item }: any) => {
   const { dispatch } = useCart();
 
-  const discountedPrice = item.cost - (item.cost * (item.discount || 0)) / 100;
+  const selectedVariant = item.variants?.find(
+    (variant: { material: string }) =>
+      variant.material === item.selectedMaterial
+  );
+  const basePriceWithAddOn = item.cost + (selectedVariant?.addOn || 0);
+
+  const maxDiscount = item.vouchers?.reduce(
+    (max: number, voucher: { discount: number }) =>
+      voucher.discount > max ? voucher.discount : max,
+    0
+  );
+  const effectiveDiscount = maxDiscount || item.discount || 0;
+
+  const discountedPrice =
+    basePriceWithAddOn - (basePriceWithAddOn * effectiveDiscount) / 100;
+
   return (
     <>
       <hr className="mb-4"></hr>
@@ -14,7 +29,7 @@ const CartCard = ({ item }: any) => {
         <div className="w-[35%] flex items-center">
           <div>
             <Image
-              src={item.images}
+              src={item.files[0].url}
               alt={item.name}
               width={151}
               height={188}
@@ -25,11 +40,15 @@ const CartCard = ({ item }: any) => {
             <div className="ml-4">
               <span className="text-[20px] font-normal jost">{item.name}</span>
               <hr className="border-transparent" />
-              <span className="text-primary-100">
-                ${discountedPrice.toFixed(2)}
-              </span>
+              <span className="text-primary-100">{discountedPrice}</span>
               <br />
-              <span className="text-gray-500 line-through">${item.cost}</span>
+              <span className="text-gray-500 line-through">
+                {basePriceWithAddOn}
+              </span>
+              <hr className="border-none"></hr>
+              <span>
+                {item.selectedMaterial}, {item.selectedSize}
+              </span>
             </div>
           </div>
         </div>
@@ -56,7 +75,7 @@ const CartCard = ({ item }: any) => {
         </div>
         <div className="w-[25%] flex items-center justify-end">
           <span className="text-[28px] font-medium text-primary-100">
-            ${((discountedPrice || item.cost) * item.quantity).toFixed(2)}
+            {(discountedPrice || item.cost) * item.quantity}
           </span>
         </div>
         <div className="w-[5%] flex items-center justify-center">

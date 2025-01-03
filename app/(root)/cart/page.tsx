@@ -5,7 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 
 export default function Page() {
   const { state } = useCart();
@@ -13,16 +13,41 @@ export default function Page() {
   const handleCheckout = () => {
     router.push("/checkout");
   };
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    console.log(storedCart);
+  });
 
-  const totalOriginalPrice = state.items.reduce(
-    (acc, item) => acc + item.cost * item.quantity,
-    0
+  const totalOriginalPrice = state.items.reduce((acc, item) => {
+    const selectedVariant = item.variants.find(
+      (variant) => variant.material === item.selectedMaterial
+    );
+    const addOn = selectedVariant ? selectedVariant.addOn : 0;
+
+    return acc + (item.cost + addOn) * item.quantity;
+  }, 0);
+
+  const totalDiscount = state.items.reduce((acc, item) => {
+    const maxDiscount = item.vouchers.length
+      ? Math.max(...item.vouchers.map((voucher) => voucher.discount || 0))
+      : 0;
+
+    // Tìm vật liệu đã chọn
+    const selectedVariant = item.variants.find(
+      (variant) => variant.material === item.selectedMaterial
+    );
+    const addOn = selectedVariant ? selectedVariant.addOn : 0;
+
+    return acc + ((item.cost + addOn) * item.quantity * maxDiscount) / 100;
+  }, 0);
+
+  const appliedVouchers = state.items.flatMap((item) =>
+    item.vouchers.map((voucher) => ({
+      name: voucher.name,
+      discount: voucher.discount,
+    }))
   );
-  const totalDiscount = state.items.reduce(
-    (acc, item) =>
-      acc + (item.cost * item.quantity * (item.discount || 0)) / 100,
-    0
-  );
+
   const totalFinalPrice = totalOriginalPrice - totalDiscount;
   return (
     <div className="w-full text-dark100_light500">
@@ -65,35 +90,26 @@ export default function Page() {
               <span>Total Original Price: </span>
               <div className="text-end">
                 <span className="text-primary-100 text-end w-full">
-                  ${totalOriginalPrice.toFixed(2)}
+                  {totalOriginalPrice}
                 </span>
               </div>
             </div>
             <hr className="mt-2"></hr>
 
-            {/* Danh sách voucher */}
             <div className="text-[20px] font-normal jost mt-4">
               <span>Applied Vouchers:</span>
-              <ul className="mt-2">
-                {state.items
-                  .filter((item) => item.discount > 0)
-                  .map((item) => (
-                    <li key={item._id} className="text-[16px] font-light">
-                      <span className="text-primary-100">
-                        {item.voucherName}
-                      </span>
-                      <span>: {item.discount}% off</span>
-                    </li>
-                  ))}
-              </ul>
+              {appliedVouchers.map((voucher, index) => (
+                <li key={index} className="text-[16px] font-light">
+                  <span className="text-primary-100">{voucher.name}</span>
+                  <span>: {voucher.discount}% off</span>
+                </li>
+              ))}
             </div>
 
             <div className="text-[20px] font-normal jost mt-4">
               <span>Total Discount: </span>
               <div className="text-end">
-                <span className="text-red-500">
-                  -${totalDiscount.toFixed(2)}
-                </span>
+                <span className="text-red-500">-{totalDiscount}</span>
               </div>
             </div>
             <hr className="mt-2"></hr>
@@ -101,9 +117,7 @@ export default function Page() {
             <div className="text-[20px] font-medium jost mt-4">
               <span>Total Final Price: </span>
               <div className="text-end">
-                <span className="text-primary-100">
-                  ${totalFinalPrice.toFixed(2)}
-                </span>
+                <span className="text-primary-100">{totalFinalPrice}</span>
               </div>
             </div>
             <hr className="mt-2"></hr>

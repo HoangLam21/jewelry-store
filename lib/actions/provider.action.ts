@@ -1,11 +1,15 @@
 "use server";
 import ProductProvider from "@/database/provider.model";
 import { connectToDatabase } from "../mongoose";
+import { count } from "console";
 
 export const createProvider = async (data: {
     name: string;
     address: string;
     contact: string;
+    representativeName:string;
+    city:string;
+    country:string;
 }) => {
     try {
         connectToDatabase();
@@ -13,6 +17,9 @@ export const createProvider = async (data: {
             name: data.name,
             address: data.address,
             contact: data.contact,
+            representativeName:data.representativeName,
+            city:data.city,
+            country:data.country
         });
         return newProvider;
     } catch (error) {
@@ -52,6 +59,9 @@ export const updateProvider = async (
         name: string;
         address: string;
         contact: string;
+        representativeName:string;
+        city:string;
+        country:string;
     }>
 ) => {
     try {

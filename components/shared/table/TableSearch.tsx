@@ -8,13 +8,13 @@ import {
   MenubarTrigger,
   MenubarContent,
   MenubarItem,
-  MenubarSeparator,
+  MenubarSeparator
 } from "@radix-ui/react-menubar";
 import { Button } from "@/components/ui/button";
 
 const TableSearch = ({
   onSearch,
-  onSort,
+  onSort
 }: {
   onSearch: (searchQuery: string) => void;
   onSort?: (filterOption: string) => void;
@@ -41,7 +41,7 @@ const TableSearch = ({
           value={searchQuery}
           onChange={handleSearch}
           className="w-full p-2 bg-transparent outline-none"
-          fdprocessedid="rgnhgt"
+          //fdprocessedid="rgnhgt"
         />
       </div>
       <Menubar className="relative border-none bg-transparent shadow-none">
