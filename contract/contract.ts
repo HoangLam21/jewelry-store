@@ -672,6 +672,7 @@ export const contract = c.router({
           customer: z.string().optional(),
           phoneNumber: z.string().optional(),
           note: z.string().optional(),
+          address:z.string().optional(),
           staff: z.string(),
         }),
         400: z.object({ error: z.string() }),
