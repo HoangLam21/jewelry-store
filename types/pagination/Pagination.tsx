@@ -69,7 +69,7 @@ const PaginationUI: React.FC<pagination> = ({ paginationUI }) => {
       )}
       <div className="flex w-fit h-fit">
         <Pagination className="mx-auto flex w-full justify-end">
-          <PaginationContent className="flex flex-row items-center justify-end gap-3">
+          <PaginationContent className="flex flex-row items-center justify-end gap-6">
             <PaginationItem>
               <Button
                 onClick={() => setCurrentPage(currentPage - 1)}
