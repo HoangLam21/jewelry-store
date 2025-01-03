@@ -20,8 +20,8 @@ export const getOrders = async () => {
         const orderResponse = [];
         for (const order of orders) {
             const products = [];
-            for (const [productId, quantity] of order.details) {
-                const product = await Product.findById(productId.toString())
+            for (const detail of order.details) {
+                const product = await Product.findById(detail.id.toString())
                     .populate("vouchers")
                     .populate("provider")
                     .populate("files");
@@ -36,7 +36,11 @@ export const getOrders = async () => {
                         provider: product.provider,
                         files: product.files,
                     },
-                    quantity: quantity,
+                    material: detail.material,
+                    size: detail.size,
+                    quantity: detail.quantity,
+                    unitPrice: detail.unitPrice,
+                    discount: detail.discount,
                 });
             }
             orderResponse.push({
@@ -52,13 +56,19 @@ export const getOrders = async () => {
         throw new Error("Failed to fetch orders");
     }
 };
+
 // Tạo đơn hàng mới
 export const createOrder = async (data: {
     cost: number;
     discount: number;
     details: {
-        [key: string]: { material: string; size: string; quantity: number };
-    };
+        id: string;
+        material: string;
+        size: string;
+        unitPrice: number;
+        quantity: number;
+        discount: string;
+    }[];
     status: string;
     shippingMethod: string;
     ETD: Date;
@@ -67,17 +77,10 @@ export const createOrder = async (data: {
 }) => {
     try {
         connectToDatabase();
-        const detailsMap: Map<ObjectId, number> = new Map();
-        for (const productId in data.details) {
-            detailsMap.set(
-                new ObjectId(productId),
-                data.details[productId].quantity
-            );
-        }
         const newOrder = await Order.create({
             cost: data.cost,
             discount: data.discount,
-            details: detailsMap,
+            details: data.details,
             status: data.status,
             shippingMethod: data.shippingMethod,
             ETD: data.ETD,
@@ -143,19 +146,21 @@ export const updateOrderStatus = async (id: string, status: string) => {
         }
         if (status === "delivered") {
             const orderDetails = order.details;
-            for (const [productId, quantity] of orderDetails) {
-                const product = await Product.findById(productId.toString());
+            for (const detail of orderDetails) {
+                const product = await Product.findById(detail.id.toString());
                 if (!product) {
                     throw new Error("Product not found");
                 }
                 for (const variant of product.variants) {
-                    for (const size of variant.sizes) {
-                        if (size.size === "Unknown") {
-                            size.stock -= quantity;
+                    if (variant.material === detail.material) {
+                        for (const size of variant.sizes) {
+                            if (size.size === detail.size) {
+                                size.stock -= detail.quantity;
+                            }
                         }
                     }
                 }
-                product.sales += quantity;
+                product.sales += detail.quantity;
                 await product.save();
             }
         }
@@ -166,6 +171,7 @@ export const updateOrderStatus = async (id: string, status: string) => {
         throw new Error("Failed to update order status");
     }
 };
+
 export const getOrderById = async (id: string) => {
     try {
         connectToDatabase();
@@ -175,8 +181,8 @@ export const getOrderById = async (id: string) => {
         }
         const orderDetails = order.details;
         const products = [];
-        for (const [productId, quantity] of orderDetails) {
-            const product = await Product.findById(productId.toString());
+        for (const detail of orderDetails) {
+            const product = await Product.findById(detail.id.toString());
             if (!product) {
                 throw new Error("Product not found");
             }
@@ -192,7 +198,11 @@ export const getOrderById = async (id: string) => {
                     provider: provider,
                     files: files,
                 },
-                quantity: quantity,
+                material: detail.material,
+                size: detail.size,
+                quantity: detail.quantity,
+                unitPrice: detail.unitPrice,
+                discount: detail.discount,
             });
         }
         const customer = await Customer.findById(order.customer);

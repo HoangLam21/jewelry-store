@@ -12,14 +12,14 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { name, address, contact } = req.body;
+    const { name, address, contact, representativeName, city, country } = req.body;
 
     if (!name || !address || !contact) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
     try {
-      const newProvider = await createProvider({ name, address, contact });
+      const newProvider = await createProvider({ name, address, contact, representativeName, city, country });
       return res.status(201).json(newProvider);
     } catch (error) {
       console.error("Error creating provider:", error);

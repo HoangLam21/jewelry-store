@@ -8,6 +8,8 @@ export const createCustomer = async (data: {
   phoneNumber: string;
   email: string;
   address: string;
+  gender?: boolean;
+  birthday?: Date;
 }) => {
   try {
     connectToDatabase();
@@ -16,7 +18,9 @@ export const createCustomer = async (data: {
       phoneNumber: data.phoneNumber,
       email: data.email,
       address: data.address,
-      createAt: new Date()
+      gender: data.gender,
+      birthday: data.birthday,
+      createAt: new Date(),
     });
     return newCustomer;
   } catch (error) {
@@ -57,6 +61,8 @@ export const updateCustomer = async (
     phoneNumber: string;
     email: string;
     address: string;
+    gender?: boolean;
+    birthday?: Date;
   }>
 ) => {
   try {

@@ -1,6 +1,6 @@
-// Verify an import
+// verifyImport API
 import { NextApiRequest, NextApiResponse } from "next";
-import { verifyImport } from "@/lib/actions/import.action"; // Đảm bảo đường dẫn chính xác
+import { verifyImport } from "@/lib/actions/import.action";
 
 export default async function handler(
     req: NextApiRequest,
@@ -8,9 +8,11 @@ export default async function handler(
 ) {
     if (req.method === "PATCH") {
         try {
-            const importId = req.query.importId;
-            const result = await verifyImport(importId as string);
-            return res.status(200).json(result);
+            const id = req.query.id;
+            const result = await verifyImport(id as string);
+            return res
+                .status(200)
+                .json({ message: "Import verified successfully" });
         } catch (error) {
             console.error("Error verifying import: ", error);
             return res.status(500).json({ error: "Failed to verify import" });
