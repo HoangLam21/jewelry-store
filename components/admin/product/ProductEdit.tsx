@@ -134,7 +134,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
         format: file.type.split("/")[1] || "",
         type: file.type
       }));
-      setImageList((prevList) => [...prevList, ...newFiles]); // Kết hợp ảnh mới với ảnh cũ
+      setImageList((prevList) => [...prevList, ...newFiles]);
     }
   };
 

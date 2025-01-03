@@ -71,7 +71,8 @@ export async function createProduct(
   // token: string
 ): Promise<ProductResponse> {
   try {
-    console.log(params, "param");
+    console.log(params, "update params");
+
     const formData = new FormData();
     formData.append("name", params.name);
     formData.append("cost", params.cost.toString());
@@ -82,7 +83,8 @@ export async function createProduct(
 
     // Thêm các tệp vào FormData
     if (params.images && params.images.length > 0) {
-      params.images.forEach(async (image: FileContent) => {
+      // Sử dụng Promise.all để xử lý các tệp hình ảnh bất đồng bộ
+      const imagePromises = params.images.map(async (image: FileContent) => {
         if (image.url && image.fileName) {
           try {
             const response = await fetch(image.url);
@@ -99,9 +101,11 @@ export async function createProduct(
           console.error("FileContent is missing necessary fields");
         }
       });
+
+      // Đợi tất cả các Promise hoàn thành
+      await Promise.all(imagePromises);
     }
 
-    // Thêm các vouchers và variants vào FormData (có thể là mảng, cần xử lý trước khi append)
     if (params.vouchers) {
       if (Array.isArray(params.vouchers)) {
         params.vouchers.forEach((voucher) => {
@@ -115,6 +119,7 @@ export async function createProduct(
     if (params.variants && Array.isArray(params.variants)) {
       formData.append("variants", JSON.stringify(params.variants));
     }
+    console.log(formData, "check");
     const response = await fetch(`/api/product/create`, {
       method: "POST",
       body: formData
@@ -151,7 +156,8 @@ export async function updateInfoProduct(
 
     // Thêm các tệp vào FormData
     if (params.images && params.images.length > 0) {
-      params.images.forEach(async (image: FileContent) => {
+      // Sử dụng Promise.all để xử lý các tệp hình ảnh bất đồng bộ
+      const imagePromises = params.images.map(async (image: FileContent) => {
         if (image.url && image.fileName) {
           try {
             const response = await fetch(image.url);
@@ -168,9 +174,11 @@ export async function updateInfoProduct(
           console.error("FileContent is missing necessary fields");
         }
       });
+
+      // Đợi tất cả các Promise hoàn thành
+      await Promise.all(imagePromises);
     }
 
-    // Thêm các vouchers và variants vào FormData (có thể là mảng, cần xử lý trước khi append)
     if (params.vouchers) {
       if (Array.isArray(params.vouchers)) {
         params.vouchers.forEach((voucher) => {
@@ -184,6 +192,7 @@ export async function updateInfoProduct(
     if (params.variants && Array.isArray(params.variants)) {
       formData.append("variants", JSON.stringify(params.variants));
     }
+    console.log(formData, "check");
     const response = await fetch(`/api/product/update?id=${id}`, {
       method: "PUT",
       body: formData // Gửi FormData thay vì JSON

@@ -20,7 +20,7 @@ import { fetchVoucher } from "@/lib/service/voucher.service";
 import { CreateProduct, FileContent } from "@/dto/ProductDTO";
 import { createProduct } from "@/lib/service/product.service";
 
-const convertFilesToFileContent = (files: File[]): FileContent[] => {
+export const convertFilesToFileContent = (files: File[]): FileContent[] => {
   return files.map((file) => ({
     _id: "", // Tạo ID duy nhất
     fileName: file.name, // Tên file
@@ -42,7 +42,7 @@ interface Props {
 const AddProduct = ({ onBack, setList }: Props) => {
   const [onAdd, setOnAdd] = useState(false);
   const [randomValue, setRandomValue] = useState<string>(generateRandomID(8));
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<FileContent[]>([]);
   const [providerList, setProviderList] = useState<string[]>([]);
   const [voucherList, setVoucherList] = useState<string[]>([]);
   const [combinedData, setCombinedData] = useState<CombinedVariant[]>([]);
@@ -83,46 +83,8 @@ const AddProduct = ({ onBack, setList }: Props) => {
   }, []);
 
   //RENDER IMAGE
-  const columns = [
-    { header: "Image", accessor: "image" },
-    {
-      header: "Name",
-      accessor: "name"
-    }
-  ];
-  const renderRow = (img: File) => {
-    const imageUrl = URL.createObjectURL(img);
-    return (
-      <tr
-        key={img.name}
-        className="border-t border-gray-300 text-sm dark:text-dark-360"
-      >
-        <td className="px-4 py-2">
-          <Image
-            src={imageUrl}
-            alt="editImg"
-            width={40}
-            height={40}
-            className="rounded-lg object-cover w-10 h-10"
-          />
-        </td>
-        <td className="px-4 py-2">
-          <p className="text-sm dark:text-dark-360">{img.name}</p>
-        </td>
-        <td className="px-4 py-2">
-          <Icon
-            icon="gg:trash"
-            width={18}
-            height={18}
-            className="text-red-700 cursor-pointer"
-            onClick={() => handleRemoveFile(img.name)}
-          />
-        </td>
-      </tr>
-    );
-  };
-  const handleRemoveFile = (fileName: string) => {
-    const newFiles = selectedFiles.filter((file) => file.name !== fileName);
+  const handleRemoveFile = (url: string) => {
+    const newFiles = selectedFiles.filter((file) => file.url !== url);
     setSelectedFiles(newFiles);
   };
   const [item, setItem] = useState<Product>(defaultDetailProduct);
@@ -134,21 +96,56 @@ const AddProduct = ({ onBack, setList }: Props) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
+      // Chuyển đổi các file thành dạng FileContent trước
       const fileArray = Array.from(files);
-      setSelectedFiles((prevFiles) => [...prevFiles, ...fileArray]);
+      const convertedFiles = convertFilesToFileContent(fileArray);
+
+      // Cập nhật lại trạng thái với các file đã chuyển đổi
+      setSelectedFiles((prevFiles) => [...prevFiles, ...convertedFiles]);
     }
+  };
+  const columns = [
+    { header: "Image", accessor: "image" },
+    {
+      header: "Name",
+      accessor: "name"
+    }
+  ];
+  const renderRow = (img: FileContent) => {
+    return (
+      <tr
+        key={`${img.fileName}`}
+        className="border-t border-gray-300 text-sm dark:text-dark-360"
+      >
+        <td className="px-4 py-2">
+          <Image
+            src={img.url}
+            alt="editImg"
+            width={40}
+            height={40}
+            className="rounded-lg object-cover w-10 h-10"
+          />
+        </td>
+        <td className="px-4 py-2">
+          <p className="text-sm dark:text-dark-360">{img.fileName}</p>
+        </td>
+        <td className="px-4 py-2">
+          <Icon
+            icon="gg:trash"
+            width={18}
+            height={18}
+            className="text-red-700 cursor-pointer"
+            onClick={() => handleRemoveFile(img.url)}
+          />
+        </td>
+      </tr>
+    );
   };
 
   const handleChangeProductInputFields = (
     field: keyof Omit<
       Product,
-      | "id"
-      | "image"
-      | "subImage"
-      | "vouchers"
-      | "provider"
-      | "category"
-      | "quantity"
+      "id" | "vouchers" | "provider" | "category" | "quantity"
     >,
     value: string
   ) => {
@@ -243,7 +240,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
         name: item.productName,
         cost: parseCurrency(item.price),
         description: item.description,
-        images: convertFilesToFileContent(selectedFiles),
+        images: selectedFiles,
         vouchers: item.vouchers,
         provider: item.provider,
         category: item.category,
@@ -259,7 +256,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
           {
             id: item.id,
             image: item.image,
-            imageInfo: convertFilesToFileContent(selectedFiles),
+            imageInfo: selectedFiles,
             productName: item.productName,
             price: formatCurrency(Number(item.price)),
             collection: item.collection,
@@ -283,8 +280,8 @@ const AddProduct = ({ onBack, setList }: Props) => {
     setConfirm({
       setConfirm: setIsConfirm,
       handleAction: handleSave,
-      name: " this variant",
-      action: "update"
+      name: "new product",
+      action: "create"
     });
   };
 
@@ -335,7 +332,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
                 </Button>
               </div>
             </div>
-            <div className="flex flex-col flex-grow-0 w-[50%] h-full justify-between items-center">
+            <div className="flex flex-col flex-grow-0 w-[50%] h-full justify-start items-center gap-4">
               <div className="flex flex-col gap-4 items-start justify-start w-full h-fit ">
                 <div className="flex flex-row gap-4 w-full h-fit">
                   <div className="w-1/2 h-fit gap-4 flex flex-col">
@@ -416,7 +413,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
               <div className="flex justify-end w-full items-center pr-4 pb-2">
                 <Button
                   className="bg-green-600 hover:bg-green-600 text-dark-100 paragraph-regular py-2 px-3 rounded-lg w-fit"
-                  onClick={handleSave}
+                  onClick={handleConfirmSave}
                 >
                   Save
                 </Button>
