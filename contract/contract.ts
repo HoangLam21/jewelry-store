@@ -671,6 +671,7 @@ export const contract = c.router({
           ETD: z.date(),
           customer: z.string().optional(),
           phoneNumber: z.string().optional(),
+          note: z.string().optional(),
           staff: z.string(),
         }),
         400: z.object({ error: z.string() }),
