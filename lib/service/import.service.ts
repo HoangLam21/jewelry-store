@@ -23,7 +23,7 @@ export async function getImportById(importId: string): Promise<Import | null> {
   try {
     const response = await fetch(`/api/import/${importId}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `${token}`,
       },
     });
 

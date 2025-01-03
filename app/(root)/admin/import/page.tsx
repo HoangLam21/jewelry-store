@@ -1,12 +1,41 @@
 "use client";
 import ImportList from "@/components/admin/import/ImportList";
 import Headers from "@/components/shared/header/Headers";
+import { fetchImport } from "@/lib/service/import.service";
+import { fetchProvider } from "@/lib/service/provider.service";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { Provider, useEffect, useState } from "react";
 
 const Page = () => {
   const router = useRouter();
+  const [provider, setProvider] = useState<[] | null>([]);
 
+  useEffect(() => {
+    let isMounted = true;
+    const loadProvider = async () => {
+      try {
+        const data = await fetchImport();
+        if (isMounted) {
+          setProvider(data);
+        }
+      } catch (error) {
+        console.error("Error loading Provider:", error);
+      }
+    };
+    loadProvider();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!provider) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-white">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+  console.log(provider, "this is import");
   const handleExport = () => {
     console.log("Export clicked");
   };

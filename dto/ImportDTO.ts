@@ -30,3 +30,12 @@ interface Import {
     },
   },
 ];
+
+const defaultDetails = {
+  "gold-S": 0,
+  "gold-M": 0,
+  "gold-L": 0,
+  "silver-S": 0,
+  "silver-M": 0,
+  "silver-L": 0,
+};
