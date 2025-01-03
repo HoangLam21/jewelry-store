@@ -1,7 +1,13 @@
 export interface CategoryResponse {
+  _id: string;
   name: string;
   hot: boolean;
-  products: string[];
+  products: {
+    _id: string;
+    fullName: string;
+    cost: number;
+  }[];
+  createAt: string;
 }
 
 export interface CreateCategory {
