@@ -1,10 +1,12 @@
-export async function fetchProduct(): Promise<[]> {
+import { CreateProduct, ProductResponse } from "@/dto/ProductDTO";
+
+export async function fetchProduct(): Promise<ProductResponse[]> {
   try {
     const response = await fetch(`/api/product/all`);
     if (!response.ok) {
       throw new Error("Error fetching customer");
     }
-    const data = await response.json();
+    const data: ProductResponse[] = await response.json();
 
     return data;
   } catch (error) {
@@ -13,9 +15,9 @@ export async function fetchProduct(): Promise<[]> {
   }
 }
 
-export async function getDetailCustomer(
-  customerId: string
-): Promise<CustomerResponse | null> {
+export async function getDetailProduct(
+  productId: string
+): Promise<ProductResponse | null> {
   // const token = localStorage.getItem("token");
   // if (!token) {
   //   console.error("Không tìm thấy token");
@@ -28,7 +30,7 @@ export async function getDetailCustomer(
     //     Authorization: `Bearer ${token}`
     //   }
     // });
-    const response = await fetch(`/api/customer/id?id=${customerId}`);
+    const response = await fetch(`/api/product/id?id=${productId}`);
     if (!response.ok) {
       throw new Error("Không thể lấy thông tin khach hang.");
     }
@@ -36,15 +38,15 @@ export async function getDetailCustomer(
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Lỗi khi lấy thông tin khach hang:", error);
+    console.error("Lỗi khi lấy thông tin san pham:", error);
     throw error;
   }
 }
 
-export async function deleteCustomer(customerId: string) {
+export async function deleteProductById(productId: string) {
   try {
-    console.log(`/api/customer/delete?id=${customerId}`, "delete ");
-    const response = await fetch(`/api/customer/delete?id=${customerId}`, {
+    console.log(`/api/product/delete?id=${productId}`, "delete ");
+    const response = await fetch(`/api/product/delete?id=${productId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
@@ -53,21 +55,21 @@ export async function deleteCustomer(customerId: string) {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || "Error deleting customer");
+      throw new Error(errorData.message || "Error deleting product");
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Failed to delete customer:", error);
+    console.error("Failed to delete product:", error);
     throw error;
   }
 }
 
-export async function createCustomer(
-  params: CreateCustomer
+export async function createProduct(
+  params: CreateProduct
   // token: string
-): Promise<CustomerResponse> {
+): Promise<ProductResponse> {
   try {
     console.log(params, "param");
     const response = await fetch(`/api/customer/create`, {
@@ -77,10 +79,23 @@ export async function createCustomer(
         // Authorization: `${token}`,
       },
       body: JSON.stringify({
-        address: params.address,
-        email: params.email,
-        fullName: params.fullName,
-        phoneNumber: params.phoneNumber
+        name: params.name,
+        cost: params.cost,
+        description: params.description,
+        vouchers: params.vouchers,
+        provider: params.provider,
+        category: params.category,
+        collections: params.collections,
+        variants: params.variants.map((variant) => ({
+          _id: variant._id,
+          addOn: variant.addOn,
+          material: variant.material,
+          sizes: variant.sizes.map((size) => ({
+            _id: size._id,
+            size: size.size,
+            stock: size.stock
+          }))
+        }))
       })
     });
 
@@ -97,19 +112,37 @@ export async function createCustomer(
   }
 }
 
-export async function updateInfoCustomer(
+export async function updateInfoProduct(
   id: string,
-  data: CreateCustomer
+  params: CreateProduct
 ): Promise<any> {
   try {
-    console.log(id, data, "update params");
+    console.log(id, params, "update params");
 
-    const response = await fetch(`/api/customer/update?id=${id}`, {
+    const response = await fetch(`/api/product/update?id=${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        name: params.name,
+        cost: params.cost,
+        description: params.description,
+        vouchers: params.vouchers,
+        provider: params.provider,
+        category: params.category,
+        collections: params.collections,
+        variants: params.variants.map((variant) => ({
+          _id: variant._id,
+          addOn: variant.addOn,
+          material: variant.material,
+          sizes: variant.sizes.map((size) => ({
+            _id: size._id,
+            size: size.size,
+            stock: size.stock
+          }))
+        }))
+      })
     });
 
     if (!response.ok) {

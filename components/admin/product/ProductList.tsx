@@ -8,7 +8,9 @@ import React, { useEffect, useState } from "react";
 import ProductDetail from "./ProductDetail";
 import ProductEdit from "./ProductEdit";
 import Format from "@/components/shared/card/ConfirmCard";
-import { fetchProduct } from "@/lib/service/product.service";
+import { deleteProductById, fetchProduct } from "@/lib/service/product.service";
+import { ProductResponse } from "@/dto/ProductDTO";
+import { formatCurrency } from "@/lib/utils";
 export interface ImageInfo {
   url: string;
   fileName: string;
@@ -68,44 +70,38 @@ export const defaultDetailProduct: Product = {
 
 const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [onEdit, setOnEdit] = useState(false);
+  const [filterOption, setFilterOption] = useState("");
   const [onDelete, setOnDelete] = useState(false);
+  const [onEdit, setOnEdit] = useState(false);
+  const [list, setList] = useState<Product[]>([]);
   const [onDetail, setOnDetail] = useState(false);
   const [detailItem, setDetailItem] = useState<Product>(defaultDetailProduct);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filterOption, setFilterOption] = useState("");
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await fetchProduct();
+        const result: ProductResponse[] = await fetchProduct();
         console.log(result, "check");
-        // if (result) {
-        //   const data: Customer[] = result.map((item) => {
-        //     const totalCost = item.orders.reduce(
-        //       (total, order) => total + order.cost,
-        //       0
-        //     );
-        //     return {
-        //       id: item._id,
-        //       fullName: item.fullName,
-        //       phoneNumber: item.phoneNumber,
-        //       email: item.email,
-        //       address: item.address,
-        //       avatar: "",
-        //       point: item.point,
-        //       sales: totalCost,
-        //       orders: item.orders.map((order) => ({
-        //         id: order._id,
-        //         createAt: order.createAt,
-        //         createBy: order.staff,
-        //         cost: order.cost
-        //       }))
-        //     };
-        //   });
 
-        //   setDisplayedList(data);
-        // }
+        if (result) {
+          const data: Product[] = result.map((item) => ({
+            id: item._id,
+            image: item.files[0].url,
+            imageInfo: item.files.map((item) => ({
+              url: item.url,
+              fileName: item.fileName
+            })),
+            productName: item.name,
+            price: formatCurrency(item.cost),
+            collection: item.collections,
+            description: item.description,
+            vouchers: item.vouchers[item.vouchers.length - 1]._id,
+            provider: item.provider ? item.provider.name : "",
+            category: item.category,
+            variants: item.variants
+          }));
+
+          setList(data);
+        }
       } catch (err: any) {
         console.error("Error fetching data:", err);
         const errorMessage = err?.message || "An unexpected error occurred.";
@@ -116,7 +112,7 @@ const ProductList = () => {
     fetchData();
   }, []);
 
-  const filterData = ProductsData.filter((item) => {
+  const filterData = list.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
@@ -127,9 +123,6 @@ const ProductList = () => {
     return matchesSearch;
   });
 
-  const [displayedProduct, setDisplayedProduct] =
-    useState<Product[]>(filterData);
-
   const handleConfirmDelete = (id: string) => {
     const detail = filterData.find((item) => item.id === id);
     if (detail) setDetailItem(detail);
@@ -139,14 +132,23 @@ const ProductList = () => {
     setOnDelete(false);
   };
 
-  const handleDelete = (id: string) => {
-    const detail = filterData.find((item) => item.id === id);
-    if (detail)
-      setDisplayedProduct((prev) =>
-        prev.filter((item) => item.id !== detail.id)
-      );
-    setOnDelete(false);
-    console.log("delete");
+  const handleDelete = async (id: string) => {
+    try {
+      const result = await deleteProductById(id);
+      if (result) {
+        const detail = filterData.find((item) => item.id === id);
+        if (detail)
+          setList((prev) => prev.filter((item) => item.id !== detail.id));
+        setOnDelete(false);
+        alert("Delete product successfully.");
+      } else {
+        alert("Can't delete product.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
   };
 
   const handleEdit = (id: string) => {
@@ -173,7 +175,7 @@ const ProductList = () => {
       <div className="flex w-full flex-col p-4 rounded-md shadow-sm">
         <TableSearch onSearch={setSearchQuery} onSort={() => {}} />
         <div className="flex flex-row flex-wrap items-start justify-items-stretch gap-7 mt-6 max-h-[550px] h-[550px] overflow-x-auto container">
-          {displayedProduct.map((item) => (
+          {filterData.map((item) => (
             <ProductFrame
               key={item.id}
               param={item}
