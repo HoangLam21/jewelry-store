@@ -23,6 +23,19 @@ export const createProduct = async (data: {
     sizes: { size: string; stock: number }[];
     addOn: number;
   }[];
+  name: string;
+  cost: number;
+  images: formidable.File[];
+  description: string;
+  vouchers?: string[];
+  provider: string;
+  category?: string;
+  collections?: string;
+  variants: {
+    material: string;
+    sizes: { size: string; stock: number }[];
+    addOn: number;
+  }[];
 }) => {
   try {
     connectToDatabase();
@@ -42,7 +55,7 @@ export const createProduct = async (data: {
       provider: new mongoose.Types.ObjectId(data.provider),
       category: new mongoose.Types.ObjectId(data.category),
       variants: data.variants,
-      collections: data.collections
+      collections: data.collections,
     });
     return newProduct;
   } catch (error) {
@@ -59,14 +72,14 @@ export const getProducts = async () => {
     for (const product of products) {
       const files = await File.find({ _id: { $in: product.files } });
       const vouchers = await Voucher.find({
-        _id: { $in: product.vouchers }
+        _id: { $in: product.vouchers },
       });
       const provider = await ProductProvider.findById(product.provider);
       productResponse.push({
         ...product.toObject(),
         vouchers: vouchers,
         provider: provider,
-        files: files
+        files: files,
       });
     }
     return productResponse;
@@ -80,6 +93,9 @@ export const getProductById = async (id: string) => {
   try {
     connectToDatabase();
     const product = await Product.findById(id);
+  try {
+    connectToDatabase();
+    const product = await Product.findById(id);
 
     if (!product) {
       throw new Error("Product not found");
@@ -87,11 +103,12 @@ export const getProductById = async (id: string) => {
     const files = await File.find({ _id: { $in: product.files } });
     const vouchers = await Voucher.find({ _id: { $in: product.vouchers } });
     const provider = await ProductProvider.findById(product.provider);
+    const productObject = product.toObject();
     return {
-      ...product.toObject,
+      ...productObject,
       files: files,
       vouchers: vouchers,
-      provider: provider
+      provider: provider,
     };
   } catch (error) {
     console.log("Error fetching Product by ID: ", error);
@@ -100,6 +117,22 @@ export const getProductById = async (id: string) => {
 };
 
 export const updateProduct = async (
+  id: string,
+  data: Partial<{
+    name: string;
+    cost: number;
+    files: formidable.File[];
+    description: string;
+    vouchers: string[];
+    provider: string;
+    category: string;
+    collections?: string;
+    variants: {
+      material: string;
+      sizes: { size: string; stock: number }[];
+      addOn: number;
+    }[];
+  }>
   id: string,
   data: Partial<{
     name: string;
@@ -134,13 +167,13 @@ export const updateProduct = async (
       id,
       {
         ...data,
-        images: updateImageIds
+        images: updateImageIds,
       },
       { new: true }
     );
     const files = await File.find({ _id: { $in: updatedProduct.files } });
     const vouchers = await Voucher.find({
-      _id: { $in: updatedProduct.vouchers }
+      _id: { $in: updatedProduct.vouchers },
     });
     const provider = await ProductProvider.findById(updatedProduct.provider);
     if (!updatedProduct) {
@@ -150,7 +183,7 @@ export const updateProduct = async (
       ...updatedProduct.toObject(),
       files: files,
       vouchers: vouchers,
-      provider: provider
+      provider: provider,
     };
   } catch (error) {
     console.log("Error updating Product: ", error);
@@ -159,6 +192,17 @@ export const updateProduct = async (
 };
 
 export const deleteProduct = async (id: string) => {
+  try {
+    connectToDatabase();
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    if (!deletedProduct) {
+      throw new Error("Product not found");
+    }
+    return true;
+  } catch (error) {
+    console.log("Error deleting Product: ", error);
+    throw new Error("Failed to delete product");
+  }
   try {
     connectToDatabase();
     const deletedProduct = await Product.findByIdAndDelete(id);
