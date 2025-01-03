@@ -72,6 +72,7 @@ export const createOrder = async (data: {
     customer?: string;
     phoneNumber?:string;
     note?:string;
+    address?:string;
     staff: string;
 }) => {
     try {
@@ -86,6 +87,7 @@ export const createOrder = async (data: {
             customer: new ObjectId(data.customer),
             phoneNumber:data.phoneNumber,
             note:data.note,
+            address:data.address,
             staff: new ObjectId(data.staff),
         });
         return newOrder;
