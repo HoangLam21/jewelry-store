@@ -23,7 +23,6 @@ export const createOrderService = async (req: any, res: any) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    // Create the order
     const order = await createOrder({
       cost,
       discount,
@@ -35,7 +34,6 @@ export const createOrderService = async (req: any, res: any) => {
       staff,
     });
 
-    // Respond with the created order
     return res
       .status(201)
       .json({ message: "Order created successfully", order });

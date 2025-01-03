@@ -105,7 +105,7 @@ export const updateProduct = async (
   data: Partial<{
     name: string;
     cost: number;
-    files: formidable.File[];
+    images: formidable.File[];
     description: string;
     vouchers: string[];
     provider: string;
@@ -125,17 +125,18 @@ export const updateProduct = async (
     for (const id of existProduct.files) {
       await deleteFile(id);
     }
-    if (data.files) {
-      for (const image of data.files) {
+    if (data.images) {
+      for (const image of data.images) {
         const createdImage = await createFile(image);
         updateImageIds.push(createdImage._id);
       }
     }
+    console.log("createdImage: ", updateImageIds);
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
         ...data,
-        images: updateImageIds,
+        files: updateImageIds,
       },
       { new: true }
     );

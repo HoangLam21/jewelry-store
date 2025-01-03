@@ -18,7 +18,8 @@ export interface IOrder extends Document, IAudit {
     status: string;
     shippingMethod: string;
     ETD: Date;
-    customer: Schema.Types.ObjectId;
+    customer?: Schema.Types.ObjectId;
+    phoneNumber?:Schema.Types.ObjectId;
     staff: Schema.Types.ObjectId;
 }
 
@@ -40,7 +41,8 @@ const OrderSchema = new Schema<IOrder>({
     status: { type: String, required: true },
     shippingMethod: { type: String, required: true },
     ETD: { type: Date, required: true },
-    customer: { type: Schema.Types.ObjectId, required: true, ref: "Customer" },
+    customer: { type: Schema.Types.ObjectId, ref: "Customer" },
+    phoneNumber:{type:String},
     staff: { type: Schema.Types.ObjectId, required: true, ref: "Staff" },
 });
 
