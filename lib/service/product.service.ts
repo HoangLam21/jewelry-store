@@ -1,4 +1,4 @@
-import { CreateProduct, ProductResponse } from "@/dto/ProductDTO";
+import { CreateProduct, FileContent, ProductResponse } from "@/dto/ProductDTO";
 
 export async function fetchProduct(): Promise<ProductResponse[]> {
   try {
@@ -86,16 +86,7 @@ export async function createProduct(
         provider: params.provider,
         category: params.category,
         collections: params.collections,
-        variants: params.variants.map((variant) => ({
-          _id: variant._id,
-          addOn: variant.addOn,
-          material: variant.material,
-          sizes: variant.sizes.map((size) => ({
-            _id: size._id,
-            size: size.size,
-            stock: size.stock
-          }))
-        }))
+        variants: params.variants
       })
     });
 
@@ -119,41 +110,66 @@ export async function updateInfoProduct(
   try {
     console.log(id, params, "update params");
 
-    const response = await fetch(`/api/product/update?id=${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: params.name,
-        cost: params.cost,
-        description: params.description,
-        vouchers: params.vouchers,
-        provider: params.provider,
-        category: params.category,
-        collections: params.collections,
-        variants: params.variants.map((variant) => ({
-          _id: variant._id,
-          addOn: variant.addOn,
-          material: variant.material,
-          sizes: variant.sizes.map((size) => ({
-            _id: size._id,
-            size: size.size,
-            stock: size.stock
-          }))
-        }))
-      })
-    });
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("name", params.name);
+    formData.append("cost", params.cost.toString());
+    formData.append("description", params.description);
+    formData.append("provider", params.provider);
+    formData.append("category", params.category || "");
+    formData.append("collections", params.collections);
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Error updating customer");
+    // Thêm các tệp vào FormData
+    if (params.images && params.images.length > 0) {
+      params.images.forEach(async (image: FileContent) => {
+        if (image.url && image.fileName) {
+          try {
+            const response = await fetch(image.url);
+            if (response.ok) {
+              const blob = await response.blob();
+              formData.append("images", blob, image.fileName);
+            } else {
+              console.error("Failed to fetch image from URL", image.url);
+            }
+          } catch (error) {
+            console.error("Error fetching image", error);
+          }
+        } else {
+          console.error("FileContent is missing necessary fields");
+        }
+      });
     }
 
-    const updatedCustomer = await response.json();
-    return updatedCustomer;
+    // Thêm các vouchers và variants vào FormData (có thể là mảng, cần xử lý trước khi append)
+    if (params.vouchers) {
+      if (Array.isArray(params.vouchers)) {
+        params.vouchers.forEach((voucher) => {
+          formData.append("vouchers", voucher);
+        });
+      } else {
+        formData.append("vouchers", params.vouchers);
+      }
+    }
+
+    if (params.variants && Array.isArray(params.variants)) {
+      formData.append("variants", JSON.stringify(params.variants));
+    }
+
+    const response = await fetch(`/api/product/update?id=${id}`, {
+      method: "PUT",
+      body: formData // Gửi FormData thay vì JSON
+    });
+
+    // Đảm bảo phản hồi được đọc đúng cách chỉ một lần
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(responseData.error || "Error updating product");
+    }
+
+    return responseData;
   } catch (error) {
-    console.error("Failed to update customer:", error);
+    console.error("Failed to update product:", error);
     throw error;
   }
 }

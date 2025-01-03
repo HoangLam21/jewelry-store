@@ -76,3 +76,11 @@ export const generateRandomID = (length: number) => {
 export const formatCurrency = (value: number): string => {
   return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
 };
+
+export const parseCurrency = (formattedValue: string): number => {
+  return Number(
+    formattedValue
+      .replace(/\./g, "") // Loại bỏ dấu chấm (phân cách hàng nghìn)
+      .replace(/[^\d-]/g, "") // Loại bỏ các ký tự không phải số và dấu `-`
+  );
+};

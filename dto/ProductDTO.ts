@@ -1,4 +1,6 @@
-interface FileContent {
+import { Variant } from "@/components/admin/product/ProductList";
+
+export interface FileContent {
   _id: string;
   fileName: string;
   url: string;
@@ -53,22 +55,10 @@ export interface CreateProduct {
   name: string;
   cost: number;
   description: string;
+  images: FileContent[];
   vouchers: string;
   provider: string;
   category: string;
   collections: string;
-  variants: [
-    {
-      _id: string;
-      addOn: number;
-      material: string;
-      sizes: [
-        {
-          _id: string;
-          size: string;
-          stock: number;
-        }
-      ];
-    }
-  ];
+  variants: Variant[];
 }

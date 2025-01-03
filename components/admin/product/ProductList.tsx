@@ -9,12 +9,8 @@ import ProductDetail from "./ProductDetail";
 import ProductEdit from "./ProductEdit";
 import Format from "@/components/shared/card/ConfirmCard";
 import { deleteProductById, fetchProduct } from "@/lib/service/product.service";
-import { ProductResponse } from "@/dto/ProductDTO";
+import { FileContent, ProductResponse } from "@/dto/ProductDTO";
 import { formatCurrency } from "@/lib/utils";
-export interface ImageInfo {
-  url: string;
-  fileName: string;
-}
 export interface Sizes {
   size: string;
   stock: number;
@@ -27,7 +23,7 @@ export interface Variant {
 export interface Product {
   id: string;
   image: string;
-  imageInfo: ImageInfo[];
+  imageInfo: FileContent[];
   productName: string;
   price: string;
   collection: string;
@@ -41,12 +37,7 @@ export interface Product {
 export const defaultDetailProduct: Product = {
   id: "",
   image: "",
-  imageInfo: [
-    {
-      url: "",
-      fileName: ""
-    }
-  ],
+  imageInfo: [],
   productName: "Unknown Product",
   price: "0",
   collection: "",
@@ -80,22 +71,17 @@ const ProductList = () => {
     const fetchData = async () => {
       try {
         const result: ProductResponse[] = await fetchProduct();
-        console.log(result, "check");
-
         if (result) {
           const data: Product[] = result.map((item) => ({
             id: item._id,
             image: item.files[0].url,
-            imageInfo: item.files.map((item) => ({
-              url: item.url,
-              fileName: item.fileName
-            })),
+            imageInfo: item.files,
             productName: item.name,
             price: formatCurrency(item.cost),
             collection: item.collections,
             description: item.description,
-            vouchers: item.vouchers[item.vouchers.length - 1]._id,
-            provider: item.provider ? item.provider.name : "",
+            vouchers: item.vouchers?.[item.vouchers.length - 1]?._id || "",
+            provider: item.provider ? item.provider._id : "",
             category: item.category,
             variants: item.variants
           }));
@@ -111,7 +97,6 @@ const ProductList = () => {
 
     fetchData();
   }, []);
-
   const filterData = list.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
@@ -198,6 +183,7 @@ const ProductList = () => {
       {onEdit && (
         <ProductEdit
           detailProduct={detailItem}
+          setList={setList}
           onBack={(value: boolean) => handleBack(value)}
         />
       )}

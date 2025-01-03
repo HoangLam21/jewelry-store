@@ -10,17 +10,15 @@ import { ProductsData } from "@/constants/data";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
-import {
-  defaultDetailProduct,
-  ImageInfo,
-  Product,
-  Sizes,
-  Variant
-} from "./ProductList";
-import { formatCurrency } from "@/lib/utils";
+import React, { useEffect, useRef, useState } from "react";
+import { defaultDetailProduct, Product, Sizes, Variant } from "./ProductList";
+import { formatCurrency, parseCurrency } from "@/lib/utils";
 import ConfirmModal, { ConfirmModalProps } from "./ConfirmModal";
 import AddVariant from "./AddVariant";
+import { updateInfoProduct } from "@/lib/service/product.service";
+import { CreateProduct, FileContent } from "@/dto/ProductDTO";
+import { fetchProvider } from "@/lib/service/provider.service";
+import { fetchVoucher } from "@/lib/service/voucher.service";
 
 export interface CombinedVariant {
   material: string; // Material
@@ -68,22 +66,59 @@ export const groupVariants = (combinedList: CombinedVariant[]): Variant[] => {
 };
 interface Props {
   detailProduct: Product;
+  setList: React.Dispatch<React.SetStateAction<Product[]>>;
   onBack: (value: boolean) => void;
 }
 
-const ProductEdit = ({ detailProduct, onBack }: Props) => {
+const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
   const [onRemove, setOnRemove] = useState(false);
-  const [imageList, setImageList] = useState<ImageInfo[]>(
+  const [imageList, setImageList] = useState<FileContent[]>(
     detailProduct.imageInfo
   );
   const [onAdd, setOnAdd] = useState(false);
+  const [providerList, setProviderList] = useState<string[]>([]);
+  const [voucherList, setVoucherList] = useState<string[]>([]);
   const [combinedData, setCombinedData] = useState<CombinedVariant[]>(
     combineVariants(detailProduct.variants)
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  useEffect(() => {
+    const fetchDataProvider = async () => {
+      try {
+        const result = await fetchProvider();
+
+        if (result) {
+          const providerId: string[] = result.map((item: any) => item._id);
+          setProviderList(providerId);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+
+    const fetchDataVoucher = async () => {
+      try {
+        const result = await fetchVoucher();
+
+        if (result) {
+          const voucherId: string[] = result.map((item: any) => item._id);
+          setVoucherList(voucherId);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+    fetchDataProvider();
+    fetchDataVoucher();
+  }, []);
+
   //Images
-  const [item, setItem] = useState<Product>(defaultDetailProduct);
+  const [item, setItem] = useState<Product>(detailProduct);
   const handleAdd = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -92,13 +127,21 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      const newFiles = Array.from(files).map((file) => ({
-        url: URL.createObjectURL(file), // Tạo URL để hiển thị ảnh
-        fileName: file.name
+      const newFiles: FileContent[] = Array.from(files).map((file) => ({
+        _id: "", // Nếu cần thiết
+        fileName: file.name,
+        url: URL.createObjectURL(file),
+        publicId: "",
+        bytes: file.size.toString(),
+        width: "",
+        height: "",
+        format: file.type.split("/")[1] || "",
+        type: file.type
       }));
       setImageList((prevList) => [...prevList, ...newFiles]); // Kết hợp ảnh mới với ảnh cũ
     }
   };
+
   const handleRemoveImage = (fileName: string) => {
     setImageList((prevList) =>
       prevList.filter((img) => img.fileName !== fileName)
@@ -153,7 +196,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
       accessor: "name"
     }
   ];
-  const renderRow = (img: ImageInfo) => (
+  const renderRow = (img: FileContent) => (
     <tr
       key={img.fileName}
       className="border-t border-gray-300 text-sm dark:text-dark-360"
@@ -235,7 +278,48 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
     );
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (item) {
+      const data: CreateProduct = {
+        name: item.productName,
+        cost: parseCurrency(item.price),
+        description: item.description,
+        images: imageList,
+        vouchers: item.vouchers,
+        provider: item.provider,
+        category: detailProduct.category,
+        collections: item.collection,
+        variants: groupVariants(combinedData)
+      };
+      console.log(data);
+      const result = await updateInfoProduct(detailProduct.id, data);
+      console.log(result);
+      if (result) {
+        setList((prev) =>
+          prev.map((product) =>
+            product.id === item.id
+              ? {
+                  ...product,
+                  image: item.image,
+                  imageInfo: imageList,
+                  productName: item.productName,
+                  price: formatCurrency(Number(item.price)),
+                  collection: item.collection,
+                  description: item.description,
+                  vouchers: item.vouchers,
+                  provider: item.provider,
+                  category: detailProduct.category,
+                  variants: groupVariants(combinedData)
+                }
+              : product
+          )
+        );
+
+        alert("Update information of customer");
+      } else {
+        alert("Can't update information of customer");
+      }
+    } else alert("No information of customer to update");
     console.log("save");
   };
   return (
@@ -294,24 +378,17 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                       value={detailProduct.id}
                       width="w-full"
                     />
-                    <InputSelection
-                      width="w-full"
+                    <InputUnEdit
                       titleInput="Category"
-                      options={["Rings", "Bracelets"]}
-                      value={item?.category ?? "None"}
-                      onChange={(value) => {
-                        setItem((prev) => ({
-                          ...prev!,
-                          category: value
-                        }));
-                      }}
+                      value={detailProduct.category}
+                      width="w-full"
                     />
                   </div>
                   <div className="w-1/2 h-fit gap-4 flex flex-col">
                     <InputSelection
                       width="w-full"
                       titleInput="Voucher"
-                      options={["20%", "40%", "None"]}
+                      options={voucherList}
                       value={item?.vouchers ?? "None"}
                       onChange={(value) => {
                         setItem((prev) => ({
@@ -334,7 +411,7 @@ const ProductEdit = ({ detailProduct, onBack }: Props) => {
                   <InputSelection
                     width="w-full"
                     titleInput="Provider"
-                    options={["Rings", "Bracelets"]}
+                    options={providerList}
                     value={item?.provider ?? "None"}
                     onChange={(value) => {
                       setItem((prev) => ({
