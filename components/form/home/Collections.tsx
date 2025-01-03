@@ -46,7 +46,7 @@ const Collections = () => {
     <div className="mt-[150px] mx-auto bg-[#EDF1F3] dark:bg-dark-200 pb-16">
       <div className="flex w-[95%] mx-auto pt-2">
         <p className="jost text-[30px] font-normal text-dark100_light500">
-          CATEGORIES
+          COLLECTIONS
         </p>
         <div className="border-b-2 border-primary-100 ml-auto">
           <p className="font-medium text-dark100_light500 text-[14px] mt-5">

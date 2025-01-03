@@ -1,4 +1,5 @@
 import { useCart } from "@/contexts/CartContext";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const ProductCard = ({ item }: { item: any }) => {
@@ -7,6 +8,7 @@ const ProductCard = ({ item }: { item: any }) => {
   const [selectedMaterial, setSelectedMaterial] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const { dispatch } = useCart();
+  const router = useRouter();
 
   const handleAddToCart = () => {
     if (selectedMaterial && selectedSize) {
@@ -23,6 +25,10 @@ const ProductCard = ({ item }: { item: any }) => {
     }
   };
 
+  const handleNavigateProductDetail = (id: string) => {
+    router.push(`/product/${id}`);
+  };
+
   return (
     <div
       className="relative w-[260px] h-[454px] transition-all"
@@ -32,7 +38,8 @@ const ProductCard = ({ item }: { item: any }) => {
       <img
         src={item.files[0].url}
         alt={item.name}
-        className="w-full h-[350px] mt-2"
+        onClick={() => handleNavigateProductDetail(item._id)}
+        className="w-full h-[350px] mt-2 object-cover"
       />
       <h2 className="text-[20px] jost font-normal uppercase text-dark100_light500">
         {item.name}
