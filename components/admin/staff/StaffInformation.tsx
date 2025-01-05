@@ -12,35 +12,12 @@ import TableSearch from "@/components/shared/table/TableSearch";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import LabelStatus from "@/components/shared/label/LabelStatus";
-import { getStaffById } from "@/lib/service/staff.service";
-
-interface SaleInvoice {
-  id: string;
-  customer: string;
-  createDate: Date;
-  note: string;
-  total: number;
-  status: number;
-}
-
-interface Staff {
-  id: string;
-  gender: string;
-  position: string;
-  earning: number;
-  phone: string;
-  fullname: string;
-  dob: Date;
-  email: string;
-  address: string;
-  city: string;
-  country: string;
-  experience: string; // Experience as string, adjust if it's an object
-  kindOfJob: string;
-  description: string;
-  dow: Date;
-  numberSaleInvoice: SaleInvoice[];
-}
+import {
+  getAllImportsOfStaff,
+  getStaffById,
+} from "@/lib/service/staff.service";
+import { Staff } from "@/dto/StaffDTO";
+import { Import } from "@/dto/ImportDTO";
 
 const columns = [
   { header: "Customer", accessor: "customer" },
@@ -66,6 +43,7 @@ const columns = [
 const StaffInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [staff, setStaff] = useState<Staff | null>(null); // Store staff data safely
+  const [importOfStaff, setImportOfStaff] = useState<Import[]>([]); // Store staff data safely
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
@@ -80,28 +58,31 @@ const StaffInformation = () => {
   type SortableKeys = "id" | "customer" | "createDate" | "total" | "status";
 
   useEffect(() => {
-    if (id) {
-      const foundItem = StaffData.find((item) => item.id === id);
-      if (foundItem) {
-        setStaff(foundItem);
+    const fetchStaffData = async () => {
+      try {
+        if (id) {
+          const foundItem = await getStaffById(id);
+          setStaff(foundItem);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin nhân viên:", error);
       }
-    }
+    };
+
+    const fetchImportOfStaffData = async () => {
+      try {
+        if (id) {
+          const foundItem = await getAllImportsOfStaff(id);
+          setImportOfStaff(foundItem);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin import cua nhân viên:", error);
+      }
+    };
+
+    fetchStaffData();
+    fetchImportOfStaffData();
   }, [id]);
-
-  // useEffect(() => {
-  //   const fetchStaffData = async () => {
-  //     try {
-  //       if (id) {
-  //         const foundItem = await getStaffById(id);
-  //         setStaff(foundItem);
-  //       }
-  //     } catch (error) {
-  //       console.error("Lỗi khi lấy thông tin nhân viên:", error);
-  //     }
-  //   };
-
-  //   fetchStaffData()
-  // },[])
 
   // Render nothing if staff is not loaded yet
   if (!staff) {
@@ -112,22 +93,22 @@ const StaffInformation = () => {
     return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
   };
 
-  const getValueByKey = (item: (typeof StaffData)[0], key: SortableKeys) => {
+  const getValueByKey = (item: Import, key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
       case "customer":
-        return item.fullname;
+        return item.invoice.map((it) => it.productName);
       case "createDate":
-        return item.position;
+        return item.createAt;
       case "status":
-        return item.earning;
+        return item.status;
       default:
         return "";
     }
   };
 
-  const sorted = [...StaffData].sort((a, b) => {
+  const sorted = [...importOfStaff].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -147,12 +128,15 @@ const StaffInformation = () => {
     setSortConfig({ key, direction });
   };
 
-  const filteredInvoices = staff.numberSaleInvoice.filter((invoice) => {
+  const filteredInvoices = importOfStaff.filter((invoice) => {
     const query = searchQuery.toLowerCase();
     return (
-      invoice.customer.toLowerCase().includes(query) ||
-      invoice.note.toLowerCase().includes(query) ||
-      invoice.total.toString().includes(query)
+      invoice.invoice
+        .map((it) => it.productName.toLowerCase())
+        .includes(query) ||
+      invoice.invoice
+        .map((it) => (it.quantity * it.unitPrice).toString().toLowerCase())
+        .includes(query)
     );
   });
 
@@ -180,28 +164,32 @@ const StaffInformation = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (invoice: SaleInvoice) => (
+  const renderRow = (invoice: Import) => (
     <tr
       key={invoice.id}
       className="border-t border-gray-300 text-sm dark:text-dark-360"
     >
-      <td className="px-4 py-2">{invoice.customer}</td>
+      <td className="px-4 py-2">
+        {invoice.invoice.map((it) => it.productName)}
+      </td>
       <td className="px-4 py-2 hidden md:table-cell">{invoice.id}</td>
       <td className="hidden px-4 py-2 md:table-cell">
-        {format(new Date(invoice.createDate), "PPP")}
+        {format(new Date(invoice.createAt), "PPP")}
       </td>
-      <td className="hidden px-4 py-2 lg:table-cell">{invoice.note}</td>
+
       <td className="hidden px-4 py-2 lg:table-cell">
-        {formatCurrency(invoice.total)}
+        {invoice.invoice.map((it, index) => (
+          <div key={index}>{formatCurrency(it.quantity * it.unitPrice)}</div>
+        ))}
       </td>
       <td className="px-4 py-2">
-        {invoice.status === 0 ? (
+        {invoice.status === false ? (
           <LabelStatus
             background="bg-light-red"
             text_color="text-dark-red"
             title="Just created"
           />
-        ) : invoice.status === 1 ? (
+        ) : invoice.status === true ? (
           <LabelStatus
             background="bg-light-blue"
             text_color="text-accent-blue"
@@ -232,7 +220,7 @@ const StaffInformation = () => {
           <div className="w-1/5">
             <Image
               alt="avatar"
-              src="/assets/images/avatar.jpg"
+              src={staff.avatar || "/assets/images/avatar.jpg"}
               width={115}
               height={130}
               className="rounded-md"
@@ -241,25 +229,28 @@ const StaffInformation = () => {
 
           <div className="w-full grid grid-cols-2 gap-5">
             <div className="flex flex-col gap-5">
-              <LabelInformation content={staff.fullname} title="Fullname" />
+              <LabelInformation content={staff.fullName} title="Fullname" />
               <LabelInformation
-                content={format(new Date(staff.dob), "PPP")}
+                content={format(new Date(staff.birthday), "PPP")}
                 title="Date of Birth"
               />
               <LabelInformation content={staff.gender} title="Gender" />
             </div>
             <div className="flex flex-col gap-5">
-              <LabelInformation content={staff.id} title="ID" />
+              <LabelInformation content={staff._id} title="ID" />
               <LabelInformation content={staff.email} title="Email" />
-              <LabelInformation content={staff.phone} title="Phone Number" />
+              <LabelInformation
+                content={staff.phoneNumber}
+                title="Phone Number"
+              />
             </div>
           </div>
         </div>
 
         <div className="w-full grid grid-cols-3 gap-4">
           <LabelInformation content={staff.address} title="Address" />
-          <LabelInformation content={staff.city} title="City" />
-          <LabelInformation content={staff.country} title="Country" />
+          <LabelInformation content={staff.district} title="City" />
+          <LabelInformation content={staff.province} title="Country" />
         </div>
         <LabelInformation content={staff.experience} title="Experience" />
       </div>
@@ -276,13 +267,10 @@ const StaffInformation = () => {
         <LabelInformation content={staff.kindOfJob} title="Kind of job" />
         <LabelInformation content={staff.description} title="Description" />
         <LabelInformation
-          content={format(staff.dow, "PPP")}
+          content={format(staff.enrolledDate, "PPP")}
           title="Date of work"
         />
-        <LabelInformation
-          content={formatCurrency(staff.earning)}
-          title="Salary"
-        />
+        <LabelInformation content={`${staff.salary} VND`} title="Salary" />
       </div>
 
       {/* Number of sales invoices */}

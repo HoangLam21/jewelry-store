@@ -21,7 +21,7 @@ const Page = () => {
 
     // Prepare data for export (map the vouchers to a plain object)
     const staffData = staffs.map((staff) => ({
-      ID: staff.id,
+      ID: staff._id,
       FullName: staff.fullName,
       Position: staff.position,
       PhoneNumber: staff.phoneNumber,
