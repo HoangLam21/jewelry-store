@@ -1,9 +1,10 @@
-export interface ImportInvoice {
-  id: string;
-  createAt: string;
-  createBy: string;
-  total: number;
-  status: number;
+export interface CreateProvider {
+  name: string;
+  address: string;
+  contact: string;
+  representativeName: string;
+  city: string;
+  country: string;
 }
 
 export interface Provider {
@@ -16,5 +17,4 @@ export interface Provider {
   city: string;
   country: string;
   email: string;
-  numberImportInvoice: ImportInvoice[];
 }

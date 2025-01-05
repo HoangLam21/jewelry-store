@@ -12,8 +12,10 @@ import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import LabelStatus from "@/components/shared/label/LabelStatus";
 import { getProviderById } from "@/lib/service/provider.service";
-import { ImportInvoice, Provider } from "@/dto/ProviderDTO";
+import { Provider } from "@/dto/ProviderDTO";
 import { Providers } from "@/constants/data";
+import { Import } from "@/dto/ImportDTO";
+import { getAllImportsOfStaff } from "@/lib/actions/import.action";
 
 const columns = [
   { header: "ID", accessor: "id" },
@@ -45,25 +47,7 @@ const ProviderInformation = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-
-  // useEffect(() => {
-  //   const fetchStaffData = async () => {
-  //     try {
-  //       if (id) {
-  //         const foundItem = await getProviderById(id);
-  //         setProvider(foundItem);
-  //       }
-  //     } catch (error) {
-  //       console.error("Lỗi khi lấy thông tin nhân viên:", error);
-  //     }
-  //   };
-
-  //   fetchStaffData();
-  // }, []);
-
-  // if (!provider) {
-  //   return <p>Loading staff information...</p>;
-  // }
+  const [importOfProvider, setImportOfProvider] = useState<Import[]>([]); // Store staff data safely
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -72,9 +56,9 @@ const ProviderInformation = () => {
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "fullname" | "total" | "status" | "number";
+  type SortableKeys = "id" | "fullname" | "total" | "status";
 
-  const getValueByKey = (item: ImportInvoice, key: SortableKeys) => {
+  const getValueByKey = (item: Import, key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
@@ -83,23 +67,30 @@ const ProviderInformation = () => {
       case "status":
         return item.status;
       case "total":
-        return item.total;
+        return item.invoice.map((it) => it.quantity * it.unitPrice);
       default:
         return "";
     }
   };
 
   useEffect(() => {
-    if (id) {
-      const foundItem = Providers.find((item) => item._id === id);
-      if (foundItem) {
-        setProvider(foundItem);
+    const fetchImportData = async () => {
+      try {
+        if (id) {
+          const foundItem = await getProviderById(id);
+          setProvider(foundItem);
+          const foundInvoice = await getAllImportsOfStaff(id);
+          setImportOfProvider(foundInvoice);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin provider:", error);
       }
-    }
+    };
+    fetchImportData();
   }, [id]);
 
   if (!provider) {
-    return <p>Loading staff information...</p>;
+    return <p>Loading provider information...</p>;
   }
 
   const formatCurrency = (value: number): string => {
@@ -114,11 +105,11 @@ const ProviderInformation = () => {
     setSortConfig({ key, direction });
   };
 
-  const filteredInvoices = provider.numberImportInvoice.filter((invoice) => {
+  const filteredInvoices = importOfProvider.filter((invoice) => {
     const query = searchQuery.toLowerCase();
     return (
       invoice.createBy.toLowerCase().includes(query) ||
-      invoice.createAt.toLowerCase().includes(query) ||
+      invoice.createAt.toISOString().toLowerCase().includes(query) ||
       invoice.id.toString().includes(query)
     );
   });
@@ -147,7 +138,7 @@ const ProviderInformation = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (invoice: ImportInvoice) => (
+  const renderRow = (invoice: Import) => (
     <tr
       key={invoice.id}
       className="border-t border-gray-300 text-sm dark:text-dark-360"
@@ -157,17 +148,17 @@ const ProviderInformation = () => {
         {format(new Date(invoice.createAt), "PPP")}
       </td>
       <td className="px-4 py-2">{invoice.createBy}</td>
-      <td className="hidden px-4 py-2 lg:table-cell">
-        {formatCurrency(invoice.total)}
-      </td>
+      {/* <td className="hidden px-4 py-2 lg:table-cell">
+        {formatCurrency(invoice.invoice.map((it) => (it.quantity*it.unitPrice)))}
+      </td> */}
       <td className="px-4 py-2">
-        {invoice.status === 0 ? (
+        {invoice.status === false ? (
           <LabelStatus
             background="bg-light-red"
             text_color="text-dark-red"
             title="Just created"
           />
-        ) : invoice.status === 1 ? (
+        ) : invoice.status === true ? (
           <LabelStatus
             background="bg-light-blue"
             text_color="text-accent-blue"
@@ -209,7 +200,7 @@ const ProviderInformation = () => {
             <div className="flex flex-col gap-5">
               <LabelInformation content={provider._id} title="ID" />
               <LabelInformation content={provider.name} title="Fullname" />
-              <LabelInformation content={provider.email} title="Email" />
+              {/* <LabelInformation content={provider.email} title="Email" /> */}
             </div>
             <div className="flex flex-col gap-5">
               <LabelInformation

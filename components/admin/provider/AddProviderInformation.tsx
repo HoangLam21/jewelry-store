@@ -2,6 +2,7 @@
 import TitleSession from "@/components/shared/label/TitleSession";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { StaffData } from "@/constants/data";
 import Image from "next/image";
 import LabelInformation from "@/components/shared/label/LabelInformation";
 import MyButton from "@/components/shared/button/MyButton";
@@ -10,18 +11,21 @@ import InputDate from "@/components/shared/input/InputDate";
 import InputSelection from "@/components/shared/input/InputSelection";
 import { CreateProvider } from "@/dto/ProviderDTO";
 import { FileContent } from "@/dto/ProductDTO";
-import {
-  getProviderById,
-  updatedProvider,
-} from "@/lib/service/provider.service";
+import { createProvider } from "@/lib/service/provider.service";
 
-const EditProviderInformation = () => {
-  const { id } = useParams<{ id: string }>() as { id: string };
-  const [provider, setProvider] = useState<CreateProvider | null>(null);
+const defaultStaff: CreateProvider = {
+  name: "",
+  address: "",
+  contact: "",
+  representativeName: "none",
+  city: "",
+  country: "",
+};
+
+const AddProviderInformation = () => {
   const [updateProvider, setUpdateProvider] = useState<CreateProvider | null>(
-    null
+    defaultStaff
   );
-
   const [avatar, setAvatar] = useState<FileContent>({
     _id: "",
     fileName: "avatar.jpg", // You can adjust this if needed
@@ -33,28 +37,6 @@ const EditProviderInformation = () => {
     format: "image/jpeg", // Set default format if necessary
     type: "image", // Set default type if necessary
   });
-
-  useEffect(() => {
-    const fetchproviderData = async () => {
-      try {
-        if (id) {
-          const foundItem = await getProviderById(id.toString());
-          setProvider(foundItem);
-
-          setUpdateProvider(foundItem);
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy thông tin nhân viên:", error);
-      }
-    };
-
-    fetchproviderData();
-  }, [id]);
-
-  if (!provider) {
-    return <p>Loading provider information...</p>;
-  }
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (updateProvider) {
       setUpdateProvider({
@@ -62,13 +44,6 @@ const EditProviderInformation = () => {
         [e.target.name]: e.target.value,
       });
     }
-  };
-
-  const formatDate = (date: Date | string): string => {
-    const parsedDate = new Date(date);
-    return parsedDate instanceof Date && !isNaN(parsedDate.getTime()) // Check for a valid date
-      ? parsedDate.toISOString()
-      : ""; // Return empty string if invalid date
   };
 
   const handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,10 +92,21 @@ const EditProviderInformation = () => {
           country: updateProvider.country,
         };
 
-        // Create the provider first
-        console.log(data, "data of create provider");
-        const result = await updatedProvider(id, data);
-        alert("Provider updated successfully, but no avatar uploaded.");
+        // Create the staff first
+        console.log(data, "data of create staff");
+        const result = await createProvider(data);
+        alert("Staff created successfully, but no avatar uploaded.");
+        // if (result) {
+        //   // Only upload avatar if there is an avatar to upload
+        //   if (avatar && avatar.url) {
+        //     await createAvatar(result._id, avatar); // Pass the staff ID and avatar
+        //     alert("Staff and avatar created successfully.");
+        //   } else {
+        //     alert("Staff created successfully, but no avatar uploaded.");
+        //   }
+        // } else {
+        //   alert("Can't create staff.");
+        // }
       } catch (err: any) {
         console.error("Error creating data:", err);
         const errorMessage = err?.message || "An unexpected error occurred.";
@@ -138,8 +124,9 @@ const EditProviderInformation = () => {
       />
 
       <div className="w-full p-6 flex flex-col gap-6">
-        <div className="flex w-full">
+        <div className="flex w-full gap-8">
           <div className="w-[115px] h-[115px]">
+            {/* Use the url property from the avatar object */}
             <Image
               alt="avatar"
               src={avatar?.url || "/assets/images/avatar.jpg"} // Default to fallback image if avatar.url is not available
@@ -148,8 +135,7 @@ const EditProviderInformation = () => {
               className="w-full h-full object-cover rounded-full"
             />
           </div>
-          <div className="flex-1 flex flex-col justify-between">
-            <LabelInformation content={provider ? `#${id}` : ""} title="ID" />
+          <div className="flex-1 flex flex-col justify-end">
             <div className="flex gap-8 ">
               <MyButton
                 event={() => document.getElementById("fileInput")?.click()} // Open file dialog when the button is clicked
@@ -182,6 +168,14 @@ const EditProviderInformation = () => {
             onChange={handleChange}
             placeholder="Enter Fullname"
             value={updateProvider?.name ?? ""}
+          />
+          <InputEdit
+            titleInput="Representative"
+            width="w-full"
+            name="representativeName"
+            onChange={handleChange}
+            placeholder="Enter Representative"
+            value={updateProvider?.representativeName ?? ""}
           />
           {/* <InputDate
             titleInput="Date of birth"
@@ -313,4 +307,4 @@ const EditProviderInformation = () => {
   );
 };
 
-export default EditProviderInformation;
+export default AddProviderInformation;
