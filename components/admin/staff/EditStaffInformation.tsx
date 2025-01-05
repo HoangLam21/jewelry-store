@@ -87,10 +87,6 @@ const EditStaffInformation = () => {
       : ""; // Return empty string if invalid date
   };
 
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
-  };
-
   const handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileInput = event.target;
     const file = fileInput.files?.[0];
