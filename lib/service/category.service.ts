@@ -18,18 +18,7 @@ export async function fetchCategory(): Promise<CategoryResponse[]> {
 export async function getDetailCategory(
   id: string
 ): Promise<CategoryResponse | null> {
-  // const token = localStorage.getItem("token");
-  // if (!token) {
-  //   console.error("Không tìm thấy token");
-  //   throw new Error("Thiếu token xác thực.");
-  // }
-
   try {
-    // const response = await fetch(`/api/customer/${customerId}`, {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`
-    //   }
-    // });
     const response = await fetch(`/api/category/get?id=${id}`);
     if (!response.ok) {
       throw new Error("Không thể lấy thông tin loai hang.");
@@ -128,4 +117,70 @@ export async function updateInfoCategory(
   }
 }
 
-export async function getProductFromCategory() {}
+export async function fetchProductsOfCategory(categoryId: string) {
+  try {
+    const response = await fetch(`/api/category/get-product?id=${categoryId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching products of category:", error);
+    throw error;
+  }
+}
+
+export async function editProductCategory(
+  productId: string,
+  newCategoryId: string
+) {
+  try {
+    const response = await fetch(`/api/category/edit-product`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ productId, newCategoryId })
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to edit product category: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error editing product category:", error);
+    throw error;
+  }
+}
+
+export async function removeProductFromCategory(
+  categoryId: string,
+  productId: string
+) {
+  try {
+    const response = await fetch(`/api/category/remove-product`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ categoryId, productId })
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to remove product from category: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error removing product from category:", error);
+    throw error;
+  }
+}
