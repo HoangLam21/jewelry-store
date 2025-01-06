@@ -23,9 +23,7 @@ import {
   fetchCategory
 } from "@/lib/service/category.service";
 import { CategoryResponse } from "@/dto/CategoryDTO";
-import { categoryData } from "@/constants/data";
 import Format from "@/components/shared/card/ConfirmCard";
-import { deleteCategory } from "@/lib/actions/category.action";
 
 const columns = [
   { header: "Category ID", accessor: "categoryId" },
@@ -38,6 +36,7 @@ export const defaultCategory: CategoryResponse = {
   _id: "default_id",
   name: "Default Category",
   hot: false,
+  description: "",
   products: [
     {
       _id: "product_1",
@@ -126,15 +125,12 @@ const CategoryList = () => {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 8;
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const currentData = filterData.slice(startIndex, endIndex);
   const [isMounted, setIsMounted] = useState(false);
 
   const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = filterData.slice(indexOfFirstItem, indexOfLastItem);
   const paginationUI: PaginationProps = {
     currentPage,
     setCurrentPage,

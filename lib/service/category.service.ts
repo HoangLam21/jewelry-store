@@ -1,9 +1,13 @@
-import { CategoryResponse, CreateCategory } from "@/dto/CategoryDTO";
+import {
+  CategoryResponse,
+  CreateCategory,
+  ProductAdditionToCategory
+} from "@/dto/CategoryDTO";
 import { CreateProduct, ProductResponse } from "@/dto/ProductDTO";
 
 export async function fetchCategory(): Promise<CategoryResponse[]> {
   try {
-    const response = await fetch(`/api/category/all`);
+    const response = await fetch(`/api/category/all-category`);
     if (!response.ok) {
       throw new Error("Error fetching category");
     }
@@ -57,7 +61,6 @@ export async function deleteCategoryById(id: string) {
 
 export async function createCategory(
   params: CreateCategory
-  // token: string
 ): Promise<CategoryResponse> {
   try {
     console.log(params, "param");
@@ -184,3 +187,27 @@ export async function removeProductFromCategory(
     throw error;
   }
 }
+
+export const addProductToCategory = async (
+  param: ProductAdditionToCategory
+) => {
+  try {
+    const response = await fetch("/api/category/add-product", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(param)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to add product to category");
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    console.error("Error adding product to category:", error);
+    throw new Error(error.message || "Failed to add product to category");
+  }
+};
