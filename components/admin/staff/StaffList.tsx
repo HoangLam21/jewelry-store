@@ -6,8 +6,9 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
-import { fetchStaff } from "@/lib/service/staff.service";
 import { Staff } from "@/dto/StaffDTO";
+import { deleteStaff } from "@/lib/service/staff.service";
+import Format from "@/components/shared/card/ConfirmCard";
 
 const columns = [
   { header: "ID", accessor: "id" },
@@ -23,7 +24,7 @@ const columns = [
   },
   {
     header: "Earning",
-    accessor: "earning",
+    accessor: "salary",
     className: "hidden lg:table-cell",
   },
   { header: "Phone", accessor: "phone", className: "hidden lg:table-cell" },
@@ -41,27 +42,27 @@ const StaffList = ({
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
   const [filterOption, setFilterOption] = useState("");
-
+  const [onDelete, setOnDelete] = useState(false);
   const totalResult = staffs.length;
-
+  const [deleteStaffId, setDeleteStaffId] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
     direction: "ascending" | "descending";
   }>({
-    key: "id",
+    key: "_id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "gender" | "earning" | "position" | "number";
+  type SortableKeys = "_id" | "gender" | "salary" | "position";
 
   const getValueByKey = (item: (typeof staffs)[0], key: SortableKeys) => {
     switch (key) {
-      case "id":
-        return item.id;
+      case "_id":
+        return item._id;
       case "gender":
-        return item.position;
+        return item.gender;
       case "position":
         return item.position;
-      case "earning":
+      case "salary":
         return item.salary;
       default:
         return "";
@@ -89,14 +90,12 @@ const StaffList = ({
     setSortConfig({ key, direction });
   };
 
-  console.log(staffs, "staffs");
-
   const filterData = sorted.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
       item.fullName.toLowerCase().includes(lowerCaseQuery) ||
-      item.position.toLowerCase().includes(lowerCaseQuery) ||
+      item.gender.toLowerCase().includes(lowerCaseQuery) ||
       item.position.toLowerCase().includes(lowerCaseQuery) ||
       item.salary.toString().toLowerCase().includes(lowerCaseQuery) ||
       item.phoneNumber.toLowerCase().includes(lowerCaseQuery);
@@ -126,18 +125,38 @@ const StaffList = ({
     console.log("this is sort");
   };
 
+  const handleDeleteStaff = async (id: string) => {
+    try {
+      const result = await deleteStaff(id);
+      if (result) {
+        setOnDelete(false);
+        setStaffs((prev: Staff[]) =>
+          prev.filter((item: Staff) => item._id !== id)
+        );
+        () => setDeleteStaffId(null);
+        alert("Delete staff successfully.");
+      } else {
+        alert("Can't delete staff.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
+  };
+
   const renderRow = (item: Staff) => (
     <tr
-      key={item.id}
+      key={item._id}
       className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
           <p>{item.fullName}</p>
-          <p>#00{item.id}</p>
+          <p>#00{item._id}</p>
         </div>
       </td>
-      <td className="px-4 py-2">{item.fullName}</td>
+      <td className="px-4 py-2">{item.gender}</td>
       <td className="px-4 py-2">{item.position}</td>
 
       <td className="px-4 py-2 hidden md:table-cell">
@@ -148,36 +167,50 @@ const StaffList = ({
 
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <Link href={`/admin/staff/${item.id}`}>
+          <Link href={`/admin/staff/${item._id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:eye"
                 width={24}
                 height={24}
-                className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1"
+                className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1 hover:cursor-pointer"
               />
             </div>
           </Link>
-          <Link href={`/admin/staff/edit/${item.id}`}>
+          <Link href={`/admin/staff/edit/${item._id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:edit"
                 width={24}
                 height={24}
-                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1"
+                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1 hover:cursor-pointer"
               />
             </div>
           </Link>
-          <div className="w-7 h-7 flex items-center justify-center rounded-full">
+          <div
+            className="w-7 h-7 flex items-center justify-center rounded-full"
+            onClick={() => setDeleteStaffId(item._id)}
+          >
             <Icon
               icon="tabler:trash"
               width={24}
               height={24}
-              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1"
+              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1 hover:cursor-pointer"
             />
           </div>
         </div>
       </td>
+      {deleteStaffId === item._id && (
+        <td colSpan={columns.length}>
+          <Format
+            onClose={() => setDeleteStaffId(null)}
+            content={`delete: `}
+            label={"Delete staff"}
+            userName={item.fullName}
+            onConfirmDelete={() => handleDeleteStaff(item._id)}
+          />
+        </td>
+      )}
     </tr>
   );
   return (
@@ -185,7 +218,7 @@ const StaffList = ({
       <TableSearch onSearch={setSearchQuery} onSort={handleSort} />
       <Table
         columns={columns}
-        data={currentData}
+        data={filterData}
         renderRow={renderRow}
         onSort={(key: string) => requestSort(key as SortableKeys)}
       />

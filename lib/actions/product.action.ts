@@ -131,12 +131,12 @@ export const updateProduct = async (
         updateImageIds.push(createdImage._id);
       }
     }
-    console.log("createdImage: ",updateImageIds);
+    console.log("createdImage: ", updateImageIds);
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
         ...data,
-        files: updateImageIds
+        files: updateImageIds,
       },
       { new: true }
     );
@@ -161,17 +161,6 @@ export const updateProduct = async (
 };
 
 export const deleteProduct = async (id: string) => {
-  try {
-    connectToDatabase();
-    const deletedProduct = await Product.findByIdAndDelete(id);
-    if (!deletedProduct) {
-      throw new Error("Product not found");
-    }
-    return true;
-  } catch (error) {
-    console.log("Error deleting Product: ", error);
-    throw new Error("Failed to delete product");
-  }
   try {
     connectToDatabase();
     const deletedProduct = await Product.findByIdAndDelete(id);

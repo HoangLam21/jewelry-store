@@ -79,8 +79,8 @@ export const updateStaff = async (
     email: string;
     address: string;
     avatar: string;
-    gender:boolean;
-    birthday:Date;
+    gender: boolean;
+    birthday: Date;
     enrolledDate: Date;
     salary: string;
     position: string;

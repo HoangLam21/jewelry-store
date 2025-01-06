@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ShippingInfomation from "@/components/form/checkout/ShippingInfomation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { state } = useCart();
@@ -15,7 +16,10 @@ export default function Page() {
   const [deliveryMethod, setDeliveryMethod] = useState("standard");
   const [city, setCity] = useState("");
   const [shippingFee, setShippingFee] = useState(0);
-
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [note, setNote] = useState("");
+  const router = useRouter();
   useEffect(() => {
     const { originalPrice, discount, finalPrice } = state.items.reduce(
       (totals, item) => {
@@ -50,6 +54,55 @@ export default function Page() {
     setTotalDiscount(discount);
     setTotalFinalPrice(finalPrice);
   }, [state.items]);
+
+  const handleOrder = async () => {
+    const details = state.items.map((item: any) => ({
+      id: item._id,
+      material: item.selectedMaterial,
+      size: item.selectedSize,
+      unitPrice: item.cost,
+      quantity: item.quantity,
+      discount: item.vouchers?.[0]?.discount || "0",
+    }));
+
+    const orderData = {
+      cost: totalFinalPrice + shippingFee,
+      discount: totalDiscount,
+      details,
+      status: "pending",
+      shippingMethod: deliveryMethod,
+      ETD: new Date(),
+      address,
+      customer: "6776bd0974de08ccc866a4ab",
+      phoneNumber: phoneNumber,
+      note: note,
+      staff: "6776bd0974de08ccc866a4ab", // Thay bằng ID nhân viên hiện tại
+    };
+
+    try {
+      console.log("vo");
+      const response = await fetch("/api/order/create", {
+        method: "POST", // HTTP method
+        headers: {
+          "Content-Type": "application/json", // Định dạng dữ liệu
+        },
+        body: JSON.stringify(orderData), // Dữ liệu gửi đi
+      });
+
+      if (!response.ok) {
+        // Nếu có lỗi, tạo một lỗi mới
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const data = await response.json(); // Chuyển phản hồi sang JSON
+      console.log("Order created:", data);
+      router.push("/");
+      // Điều hướng hoặc thông báo thành công
+    } catch (error: any) {
+      console.error("Error creating order:", error.message);
+      // Thông báo lỗi
+    }
+  };
 
   useEffect(() => {
     const calculateShippingFee = () => {
@@ -90,9 +143,16 @@ export default function Page() {
             SHIPPING INFOMATION
           </h2>
           <form className="flex flex-col space-y-4">
-            <ShippingInfomation city={city} setCity={setCity} />
+            <ShippingInfomation
+              city={city}
+              setCity={setCity}
+              setAddress={setAddress}
+              setPhoneNumber={setPhoneNumber}
+              setNote={setNote}
+            />
             <button
               type="submit"
+              onClick={handleOrder}
               className="bg-primary-100 text-white p-3  hover:bg-primary-200"
             >
               Confirm & Proceed to Payment
