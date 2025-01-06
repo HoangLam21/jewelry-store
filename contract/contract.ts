@@ -899,6 +899,35 @@ export const contract = c.router({
             },
         },
 
+        addProductsToCart: {
+            method: "POST",
+            path: "/api/cart/add-products",
+            body: z.object({
+                userId: z.string(),
+                products: z.array(
+                    z.object({
+                        productId: z.string(),
+                        quantity: z.number().positive(),
+                    })
+                ),
+            }),
+            responses: {
+                201: z.object({
+                    userId: z.string(),
+                    products: z.record(z.number()), // Map<ProductId, Quantity>
+                    totalCost: z.number(),
+                    createdAt: z.date().optional(),
+                    updatedAt: z.date().optional(),
+                }),
+                400: z.object({
+                    error: z.string(),
+                }),
+                500: z.object({
+                    error: z.string(),
+                }),
+            },
+        },
+
         removeProductFromCart: {
             method: "DELETE",
             path: "/api/cart/remove/product",
