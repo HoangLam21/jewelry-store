@@ -5,10 +5,11 @@ interface Comment {
   id: string;
   userId: string;
   userName: string;
+  avatar: string;
   productId: string;
   rating: number;
   createAt: Date;
-  productNamme: string;
+  productName: string;
   size: string;
   material: string;
   comment: string;
@@ -21,7 +22,7 @@ const CommentCard = ({ item }: { item: Comment }) => {
       <div className="w-20">
         <Image
           alt="avatar"
-          src="/assets/images/avatar.jpg"
+          src={item.avatar}
           width={45}
           height={45}
           className="rounded-full"
@@ -42,20 +43,21 @@ const CommentCard = ({ item }: { item: Comment }) => {
             </span>
           ))}
         </p>
-        <p>
+        <p className="text-sm">
           {" "}
           {`${new Date(item.createAt).toLocaleDateString("vi-VN", {
             year: "numeric",
             month: "2-digit",
-            day: "2-digit",
+            day: "2-digit"
           })} ${new Date(item.createAt).toLocaleTimeString("vi-VN", {
             hour: "2-digit",
             minute: "2-digit",
-            second: "2-digit",
-          })} |  Phân loại hàng: ${item.productNamme} | Size: ${
+            second: "2-digit"
+          })} |  Phân loại hàng: ${item.productName} | Size: ${
             item.size
           } | Material: ${item.material}`}
         </p>
+        <p>{item.comment}</p>
         <div className="flex gap-2 mt-2">
           {item.image.map((it, index) => (
             <div className="w-32 h-32" key={index}>

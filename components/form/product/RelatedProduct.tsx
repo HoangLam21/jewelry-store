@@ -6,43 +6,43 @@ const jewelryRelatedProduct = [
   {
     id: 1,
     name: "Rings",
-    image: "/assets/images/793249C01_RGB.jpg",
+    image: "/assets/images/793249C01_RGB.jpg"
   },
   {
     id: 2,
     name: "Necklaces",
-    image: "/assets/images/B89C2414.jpg",
+    image: "/assets/images/B89C2414.jpg"
   },
   {
     id: 3,
     name: "Bracelets",
-    image: "/assets/images/193569C00_RGB.jpg",
+    image: "/assets/images/193569C00_RGB.jpg"
   },
   {
     id: 4,
     name: "Earrings",
-    image: "/assets/images/793249C01_RGB.jpg",
+    image: "/assets/images/793249C01_RGB.jpg"
   },
   {
     id: 5,
     name: "Watches",
-    image: "/assets/images/793249C01_RGB.jpg",
+    image: "/assets/images/793249C01_RGB.jpg"
   },
   {
     id: 6,
     name: "Brooches",
-    image: "/assets/images/793249C01_RGB.jpg",
+    image: "/assets/images/793249C01_RGB.jpg"
   },
   {
     id: 7,
     name: "Charms",
-    image: "/assets/images/793249C01_RGB.jpg",
-  },
+    image: "/assets/images/793249C01_RGB.jpg"
+  }
 ];
 
 const RelatedProduct = () => {
   return (
-    <div className="mt-[150px] w-[95%] mx-auto">
+    <div className=" w-[95%] mx-auto">
       <div className="flex">
         <p className="jost text-[30px] font-normal text-dark100_light500">
           RELATED PRODUCTS

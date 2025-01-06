@@ -12,33 +12,8 @@ import Categories from "@/components/form/home/Categories";
 import RelatedProduct from "@/components/form/product/RelatedProduct";
 import { getProductById } from "@/lib/services/product.service";
 import { useCart } from "@/contexts/CartContext";
+import { Product } from "@/components/admin/product/ProductList";
 
-interface ImageInfo {
-  url: string;
-  fileName: string;
-}
-interface Sizes {
-  size: string;
-  stock: number;
-}
-interface Variant {
-  material: string;
-  sizes: Sizes[];
-  addOn: number;
-}
-interface Product {
-  id: string;
-  image: string;
-  imageInfo: ImageInfo[];
-  productName: string;
-  price: string;
-  collection: string;
-  description: string;
-  vouchers: string;
-  provider: string;
-  category: string;
-  variants: Variant[];
-}
 const calculateTotalStock = (product: Product): number => {
   return product.variants.reduce((variantTotal, variant) => {
     const sizeTotal = variant.sizes.reduce(
@@ -62,8 +37,8 @@ const page = () => {
         ...product,
         selectedMaterial,
         selectedSize,
-        quantity: 1,
-      },
+        quantity: 1
+      }
     });
     setIsModalOpen(false);
   }
@@ -74,7 +49,7 @@ const page = () => {
       console.log(data);
     };
     getProduct();
-  }, []);
+  }, [id]);
 
   if (!product) {
     return <p>Loading provider information...</p>;
@@ -92,6 +67,10 @@ const page = () => {
   //   setUpdateCart(updatedItem); // Gửi thông tin mới về cho giỏ hàng
   //   setProduct(updatedItem); // Cập nhật trực tiếp sản phẩm trong component
   // };
+
+  const handleBuyNow = () => {
+    console.log("add to cart");
+  };
 
   const handleAddToCart = () => {
     console.log("add to cart");
@@ -145,12 +124,12 @@ const page = () => {
 
           <p className="underline text-[20px]">VARIANTS</p>
           <div className="flex">
-            {product.variants.map((variant, index) => (
+            {product.variants.map((variant: any, index: any) => (
               <div key={index}>
                 <p className="font-bold">Material: {variant.material}</p>
                 <p>Sizes:</p>
                 <ul>
-                  {variant.sizes.map((size, idx) => (
+                  {variant.sizes.map((size: any, idx: any) => (
                     <li key={idx}>
                       {size.size} - Stock: {size.stock}
                     </li>
@@ -162,7 +141,7 @@ const page = () => {
 
           <p className="underline text-[20px]">VOUCHERS</p>
           <ul>
-            {product.vouchers.map((voucher) => (
+            {product.vouchers.map((voucher: any) => (
               <li key={voucher._id}>
                 {voucher.name} - sale off {voucher.discount}%
               </li>
@@ -204,7 +183,7 @@ const page = () => {
             <MyButton
               title="BUY NOW"
               width="w-1/2"
-              event={handleAddToCart}
+              event={handleBuyNow}
               background="bg-primary-100"
               text_color="text-white"
             />

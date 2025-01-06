@@ -3,33 +3,7 @@ import React, { useState } from "react";
 import Description from "./Description";
 import AdditionalInformation from "./AdditonalInformation";
 import Reviews from "./Reviews";
-
-interface ImageInfo {
-  url: string;
-  fileName: string;
-}
-interface Sizes {
-  size: string;
-  stock: number;
-}
-interface Variant {
-  material: string;
-  sizes: Sizes[];
-  addOn: number;
-}
-interface Product {
-  id: string;
-  image: string;
-  imageInfo: ImageInfo[];
-  productName: string;
-  price: string;
-  collection: string;
-  description: string;
-  vouchers: string;
-  provider: string;
-  category: string;
-  variants: Variant[];
-}
+import { Product } from "@/components/admin/product/ProductList";
 
 const DetailProduct = ({ item }: { item: Product }) => {
   const [activeTitle, setActiveTitle] = useState("DESCRIPTION"); // Track the active title
