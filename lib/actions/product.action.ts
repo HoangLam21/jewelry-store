@@ -7,6 +7,7 @@ import { createFile, deleteFile } from "./file.action";
 import Voucher from "@/database/voucher.model";
 import ProductProvider from "@/database/provider.model";
 import File from "@/database/file.model";
+import Category from "@/database/category.model";
 
 // Tạo sản phẩm mới
 export const createProduct = async (data: {
@@ -15,7 +16,7 @@ export const createProduct = async (data: {
   images: formidable.File[];
   description: string;
   vouchers?: string[];
-  provider: string;
+  provider?: string;
   category?: string;
   collections?: string;
   variants: {
@@ -31,16 +32,23 @@ export const createProduct = async (data: {
       const createdImage = await createFile(image);
       imageIds.push(createdImage._id);
     }
+    const provider = await ProductProvider.findById(data.provider);
+    const category = await Category.findById(data.category);
+    const voucherIds = [];
+    for (const id of data.vouchers!) {
+      const voucher = await Voucher.findById(id);
+      if (voucher) {
+        voucherIds.push(voucher._id);
+      }
+    }
     const newProduct = await Product.create({
       name: data.name,
       cost: data.cost,
       files: imageIds,
       description: data.description,
-      vouchers: data.vouchers?.map(
-        (voucher) => new mongoose.Types.ObjectId(voucher)
-      ),
-      provider: new mongoose.Types.ObjectId(data.provider),
-      category: new mongoose.Types.ObjectId(data.category),
+      vouchers: voucherIds,
+      provider: provider ? provider._id : "",
+      category: category ? category._id : "",
       variants: data.variants,
       collections: data.collections,
     });
