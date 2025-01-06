@@ -90,6 +90,23 @@ const CategoryInformation = () => {
         setDetail(foundItem);
       }
     }
+    //     const fetchDetail = async () => {
+    //   if (id) {
+    //     try {
+    //       const result: CategoryResponse = await getDetailCategory(id);
+    //       if (result) {
+    //         setDetail(result);
+    //       } else {
+    //         alert("Can't get detail category.");
+    //       }
+    //     } catch (err: any) {
+    //       console.error("Error get detail data:", err);
+    //       const errorMessage = err?.message || "An unexpected error occurred.";
+    //       alert(`Error get detail data: ${errorMessage}`);
+    //     }
+    //   }
+    // };
+    // fetchDetail();
   }, [id]);
 
   if (!detail) {

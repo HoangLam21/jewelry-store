@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Product, Variant } from "./ProductList";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   detailProduct: Product;
@@ -23,6 +24,10 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
 
   const columns = [
     { header: "Material", accessor: "material" },
+    {
+      header: "Add on",
+      accessor: "addon"
+    },
     {
       header: "Size",
       accessor: "size"
@@ -42,6 +47,12 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
           {/* Cột Material */}
           <td rowSpan={variant.sizes.length || 1} className="px-4 py-2">
             <p className="text-sm dark:text-dark-360">{variant.material}</p>
+          </td>
+          {/* Cột AddOn */}
+          <td rowSpan={variant.sizes.length || 1} className="px-4 py-2">
+            <p className="text-sm dark:text-dark-360">
+              {formatCurrency(variant.addOn)}
+            </p>
           </td>
           {/* Hiển thị Size và Stock từ hàng đầu tiên */}
           {variant.sizes.length > 0 ? (

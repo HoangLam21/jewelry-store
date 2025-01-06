@@ -28,6 +28,7 @@ import {
   addProductToCategory,
   createCategory
 } from "@/lib/service/category.service";
+import ConfirmModal, { ConfirmModalProps } from "../product/ConfirmModal";
 
 const columns = [
   { header: "Product ID", accessor: "id" },
@@ -223,87 +224,106 @@ const AddCategoryInformation = () => {
       alert(`Error create data: ${errorMessage}`);
     }
   };
+  const [isConfirm, setIsConfirm] = useState(false);
+  const [confirm, setConfirm] = useState<ConfirmModalProps>({
+    setConfirm: () => {},
+    handleAction: () => {},
+    name: "",
+    action: ""
+  });
+  const handleConfirmCreate = () => {
+    setIsConfirm(true);
+    setConfirm({
+      setConfirm: setIsConfirm,
+      handleAction: () => handleCreate(),
+      name: "new category",
+      action: "create"
+    });
+  };
 
   return (
-    <div className="w-full flex flex-col p-4 rounded-md shadow-md">
-      {/* General Information */}
-      <TitleSession icon="" title="General Information" />
+    <>
+      <div className="w-full flex flex-col p-4 rounded-md shadow-md">
+        {/* General Information */}
+        <TitleSession icon="" title="General Information" />
 
-      <div className="w-full p-6 flex flex-col gap-6">
-        <div className="flex w-full">
-          <div className="flex-1 flex flex-col justify-between">
-            <LabelInformation
-              content={newDetail ? `#${newDetail._id}` : ""}
-              title="ID"
+        <div className="w-full p-6 flex flex-col gap-6">
+          <div className="flex w-full">
+            <div className="flex-1 flex flex-col justify-between">
+              <LabelInformation
+                content={newDetail ? `#${newDetail._id}` : ""}
+                title="ID"
+              />
+            </div>
+          </div>
+          <div className="w-full grid grid-cols-2 gap-x-20 gap-y-4">
+            <InputEdit
+              titleInput="Name"
+              width="w-full"
+              name="name"
+              onChange={handleChange}
+              placeholder="Enter name"
+            />
+
+            <InputDate
+              titleInput="Create At"
+              width="w-full"
+              value={formatDate(newDetail.createAt)}
+            />
+          </div>
+          <div className="flex w-full h-fit">
+            <InputEdit
+              titleInput="Description"
+              width="w-full"
+              onChange={handleChange}
+              placeholder="Enter description..."
             />
           </div>
         </div>
-        <div className="w-full grid grid-cols-2 gap-x-20 gap-y-4">
-          <InputEdit
-            titleInput="Name"
-            width="w-full"
-            name="name"
-            onChange={handleChange}
-            placeholder="Enter name"
-          />
 
-          <InputDate
-            titleInput="Create At"
-            width="w-full"
-            value={formatDate(newDetail.createAt)}
-          />
-        </div>
-        <div className="flex w-full h-fit">
-          <InputEdit
-            titleInput="Description"
-            width="w-full"
-            onChange={handleChange}
-            placeholder="Enter description..."
-          />
-        </div>
-      </div>
+        {/* Product Information */}
+        <TitleSession icon="" title="Product List" />
 
-      {/* Product Information */}
-      <TitleSession icon="" title="Product List" />
-
-      <div className="w-full p-6 flex flex-col gap-2">
-        <div className="w-full grid grid-cols-2 gap-x-20 gap-y-4">
-          <LabelInformation content={quantity.toString()} title="Quantity" />
-        </div>
-        <div className="w-full flex flex-col p-2 rounded-md shadow-sm">
-          <TableSearch
-            onSearch={(query) => setSearchQuery(query)}
-            onSort={(searchQuery: string) =>
-              handleSort(searchQuery as SortableKeys)
-            }
-          />
-          {/* LIST */}
-          <div className="w-full px-4">
-            <Table
-              columns={columns}
-              renderRow={renderRow}
-              data={currentData}
-              onSort={(key: string) => requestSort(key as SortableKeys)}
+        <div className="w-full p-6 flex flex-col gap-2">
+          <div className="w-full grid grid-cols-2 gap-x-20 gap-y-4">
+            <LabelInformation content={quantity.toString()} title="Quantity" />
+          </div>
+          <div className="w-full flex flex-col p-2 rounded-md shadow-sm">
+            <TableSearch
+              onSearch={(query) => setSearchQuery(query)}
+              onSort={(searchQuery: string) =>
+                handleSort(searchQuery as SortableKeys)
+              }
             />
-          </div>
-          {/* PAGINATION */}
-          <div className=" mt-4 flex items-center justify-center p-4 text-sm text-gray-500 md:justify-between">
-            <PaginationUI paginationUI={paginationUI} />
+            {/* LIST */}
+            <div className="w-full px-4">
+              <Table
+                columns={columns}
+                renderRow={renderRow}
+                data={currentData}
+                onSort={(key: string) => requestSort(key as SortableKeys)}
+              />
+            </div>
+            {/* PAGINATION */}
+            <div className=" mt-4 flex items-center justify-center p-4 text-sm text-gray-500 md:justify-between">
+              <PaginationUI paginationUI={paginationUI} />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="w-full flex justify-end p-6 ">
-        <MyButton
-          event={handleCreate}
-          width="w-28"
-          background="bg-primary-100"
-          text_color="text-white"
-          title="Update"
-        />
+        {/* Footer */}
+        <div className="w-full flex justify-end p-6 ">
+          <MyButton
+            event={handleConfirmCreate}
+            width="w-28"
+            background="bg-primary-100"
+            text_color="text-white"
+            title="Update"
+          />
+        </div>
       </div>
-    </div>
+      {isConfirm && <ConfirmModal confirm={confirm} />}
+    </>
   );
 };
 

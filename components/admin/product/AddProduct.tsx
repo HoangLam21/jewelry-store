@@ -268,11 +268,11 @@ const AddProduct = ({ onBack, setList }: Props) => {
           }
         ]);
 
-        alert("Update information of customer");
+        alert("Update information of product");
       } else {
-        alert("Can't update information of customer");
+        alert("Can't update information of product");
       }
-    } else alert("No information of customer to update");
+    } else alert("No information of product to update");
     console.log("save");
   };
   const handleConfirmSave = () => {
