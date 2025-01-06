@@ -67,7 +67,7 @@ export async function deleteProductById(productId: string) {
 }
 
 export async function createProduct(
-  params: CreateProduct
+  params: any
   // token: string
 ): Promise<ProductResponse> {
   try {
@@ -77,9 +77,9 @@ export async function createProduct(
     formData.append("name", params.name);
     formData.append("cost", params.cost.toString());
     formData.append("description", params.description);
-    formData.append("provider", params.provider);
-    formData.append("category", params.category || "");
-    formData.append("collections", params.collections);
+    // formData.append("provider", params.provider);
+    // formData.append("category", params.category || "");
+    // formData.append("collections", params.collections);
 
     // Thêm các tệp vào FormData
     if (params.images && params.images.length > 0) {
@@ -108,7 +108,7 @@ export async function createProduct(
 
     if (params.vouchers) {
       if (Array.isArray(params.vouchers)) {
-        params.vouchers.forEach((voucher) => {
+        params.vouchers.forEach((voucher: any) => {
           formData.append("vouchers", voucher);
         });
       } else {

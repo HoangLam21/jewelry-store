@@ -236,14 +236,14 @@ const AddProduct = ({ onBack, setList }: Props) => {
   //SAVE
   const handleSave = async () => {
     if (item) {
-      const data: CreateProduct = {
+      const data = {
         name: item.productName,
         cost: parseCurrency(item.price),
         description: item.description,
         images: selectedFiles,
-        vouchers: item.vouchers,
-        provider: item.provider,
-        category: item.category,
+        //vouchers: item.vouchers,
+        //provider: item.provider,
+        //category: item.category,
         collections: item.collection,
         variants: groupVariants(combinedData)
       };
