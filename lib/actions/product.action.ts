@@ -47,8 +47,8 @@ export const createProduct = async (data: {
       files: imageIds,
       description: data.description,
       vouchers: voucherIds,
-      provider: provider ? provider._id : "",
-      category: category ? category._id : "",
+      provider: provider? provider._id:undefined ,
+      category: category? category._id:undefined ,
       variants: data.variants,
       collections: data.collections,
     });
