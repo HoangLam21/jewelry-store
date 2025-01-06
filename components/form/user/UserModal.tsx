@@ -1,24 +1,64 @@
-import React, { useState } from "react";
-
-const fakeUser = {
-  fullName: "John Doe",
-  phoneNumber: "+123456789",
-  email: "john.doe@example.com",
-  address: "123 Main St, Springfield, IL, USA",
-  avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-  purchaseHistory: [
-    { id: 1, item: "Gold Necklace", date: "2024-12-01", price: "$500" },
-    { id: 2, item: "Silver Ring", date: "2024-11-15", price: "$200" },
-  ],
-};
-
+import { updateInfoCustomer } from "@/lib/service/customer.service";
+import React, { useEffect, useState } from "react";
+import EditModal from "./EditModal";
+import Avatar from "./Avatar";
 interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+interface CreateCustomer {
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  address: string;
+}
+
 const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<"info" | "history">("info");
+  const [user, setUser] = useState<any>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editData, setEditData] = useState<CreateCustomer>({
+    fullName: "",
+    phoneNumber: "",
+    email: "",
+    address: "",
+  });
+
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUser(parsedData);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, []);
+
+  const handleEditClick = () => {
+    setEditData({
+      fullName: user?.fullName || "",
+      phoneNumber: user?.phoneNumber || "",
+      email: user?.email || "",
+      address: user?.address || "",
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!user?._id) return;
+
+    try {
+      const updatedUser = await updateInfoCustomer(user._id, editData);
+      setUser(updatedUser);
+      localStorage.setItem("userData", JSON.stringify(updatedUser));
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -52,59 +92,46 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
           Purchase History
         </button>
       </div>
-      <img
-        src={fakeUser.avatar}
-        alt={fakeUser.fullName}
+
+      <Avatar user={user} setProfileUser={setUser} />
+      {/* <img
+        src={user?.avatar}
+        alt={user?.fullName}
         className="w-24 h-24 rounded-full mb-4"
-      />
-      <h2 className="text-2xl font-semibold mb-4">{fakeUser.fullName}</h2>
+      /> */}
+      <h2 className="text-2xl font-semibold mb-4">{user?.fullName}</h2>
 
-      <div className="w-full">
-        {activeTab === "info" && (
-          <div className="mt-10 pl-5">
-            <div className="mt-3">
-              <p className="mt-3">
-                <strong className="text-gray-200">Phone:</strong>{" "}
-                {fakeUser.phoneNumber}
-              </p>
-            </div>
-            <div className="mt-3">
-              {" "}
-              <p>
-                <strong className="text-gray-200">Email:</strong>{" "}
-                {fakeUser.email}
-              </p>
-            </div>
-            <div className="mt-3">
-              <p>
-                <strong className="text-gray-200">Address:</strong>{" "}
-                {fakeUser.address}
-              </p>
-            </div>
-          </div>
-        )}
+      <button
+        onClick={handleEditClick}
+        className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+      >
+        Edit Info
+      </button>
 
-        {activeTab === "history" && (
-          <div>
-            {fakeUser.purchaseHistory.length > 0 ? (
-              <ul className="space-y-2">
-                {fakeUser.purchaseHistory.map((purchase) => (
-                  <li
-                    key={purchase.id}
-                    className="flex justify-between items-center border border-gray-500 bg-transparent rounded p-3"
-                  >
-                    <span>{purchase.item}</span>
-                    <span>{purchase.date}</span>
-                    <span className="font-bold">{purchase.price}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-600">No purchase history available.</p>
-            )}
-          </div>
-        )}
-      </div>
+      {/* Info Tab */}
+      {activeTab === "info" && (
+        <div className="w-full pl-5">
+          <p className="mt-3">
+            <strong className="text-gray-200">Phone:</strong>{" "}
+            {user?.phoneNumber}
+          </p>
+          <p className="mt-3">
+            <strong className="text-gray-200">Email:</strong> {user?.email}
+          </p>
+          <p className="mt-3">
+            <strong className="text-gray-200">Address:</strong> {user?.address}
+          </p>
+        </div>
+      )}
+
+      {isEditModalOpen && (
+        <EditModal
+          editData={editData}
+          setEditData={setEditData}
+          setIsEditModalOpen={setIsEditModalOpen}
+          handleSaveEdit={handleSaveEdit}
+        />
+      )}
     </div>
   );
 };

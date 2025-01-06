@@ -9,69 +9,73 @@ import MyButton from "@/components/shared/button/MyButton";
 import InputEdit from "@/components/shared/input/InputEdit";
 import InputDate from "@/components/shared/input/InputDate";
 import InputSelection from "@/components/shared/input/InputSelection";
-
-interface SaleInvoice {
-  id: string;
-  customer: string;
-  createDate: Date;
-  note: string;
-  total: number;
-  status: number;
-}
-
-interface Staff {
-  id: string;
-  gender: string;
-  position: string;
-  earning: number;
-  phone: string;
-  fullname: string;
-  dob: Date;
-  email: string;
-  address: string;
-  city: string;
-  country: string;
-  district: string;
-  experience: string;
-  kindOfJob: string;
-  description: string;
-  dow: Date;
-  numberSaleInvoice: SaleInvoice[];
-}
+import { CreateStaff, FileContent, Staff } from "@/dto/StaffDTO";
+import { getAllImportsOfStaff } from "@/lib/actions/import.action";
+import { Import } from "@/dto/ImportDTO";
+import {
+  createAvatar,
+  getStaffById,
+  updatedStaff,
+} from "@/lib/service/staff.service";
 
 const EditStaffInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [staff, setStaff] = useState<Staff | null>(null);
   const [updateStaff, setUpdateStaff] = useState<Staff | null>(null);
 
+  const [avatar, setAvatar] = useState<FileContent>({
+    _id: "",
+    fileName: "avatar.jpg", // You can adjust this if needed
+    publicId: "",
+    bytes: "0",
+    url: "/assets/images/avatar.jpg", // Default avatar URL
+    width: "", // Set default if necessary
+    height: "", // Set default if necessary
+    format: "image/jpeg", // Set default format if necessary
+    type: "image", // Set default type if necessary
+  });
+
   useEffect(() => {
-    if (id) {
-      const foundStaff = StaffData.find((item) => item.id === id);
-      setStaff(foundStaff || null);
-      setUpdateStaff(foundStaff || null);
-    }
+    const fetchStaffData = async () => {
+      try {
+        if (id) {
+          const foundItem = await getStaffById(id.toString());
+          setStaff(foundItem);
+
+          // Kiểm tra xem thông tin avatar có trong staff không, nếu có thì gán giá trị cho avatar
+          if (foundItem?.avatar) {
+            setAvatar({
+              _id: "",
+              fileName: "avatar.jpg", // You can adjust this if needed
+              publicId: "",
+              bytes: "0",
+              url: foundItem.avatar, // Default avatar URL
+              width: "", // Set default if necessary
+              height: "", // Set default if necessary
+              format: "image/jpeg", // Set default format if necessary
+              type: "image", // Set default type if necessary
+            });
+          }
+          setUpdateStaff(foundItem);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin nhân viên:", error);
+      }
+    };
+
+    fetchStaffData();
   }, [id]);
+
+  // Render nothing if staff is not loaded yet
+  if (!staff) {
+    return <p>Loading staff information...</p>;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (updateStaff) {
       setUpdateStaff({
         ...updateStaff,
         [e.target.name]: e.target.value,
-      });
-    }
-  };
-
-  const handleDateChange = (date: string) => {
-    if (updateStaff) {
-      const updatedInvoices = updateStaff.numberSaleInvoice.map((invoice) => ({
-        ...invoice,
-        createDate: new Date(date),
-      }));
-      setUpdateStaff({
-        ...updateStaff,
-        dob: new Date(date),
-        dow: new Date(date),
-        numberSaleInvoice: updatedInvoices,
       });
     }
   };
@@ -83,20 +87,82 @@ const EditStaffInformation = () => {
       : ""; // Return empty string if invalid date
   };
 
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
-  };
-
-  const handleUploadFile = () => {
-    console.log("handle upload");
+  const handleUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileInput = event.target;
+    const file = fileInput.files?.[0];
+    if (file) {
+      const fileContent: FileContent = {
+        _id: "", // Set _id if you have one
+        fileName: file.name,
+        url: URL.createObjectURL(file),
+        publicId: "", // If you have publicId, set it here
+        bytes: file.size.toString(),
+        width: "", // Set width if you have it
+        height: "", // Set height if you have it
+        format: file.type,
+        type: "image", // Set the file type accordingly
+      };
+      setAvatar(fileContent); // Now set it as FileContent
+    }
   };
 
   const handleDeleteFile = () => {
-    console.log("handle delete file");
+    setAvatar({
+      _id: "",
+      fileName: "",
+      publicId: "",
+      bytes: "0",
+      url: "",
+      width: "",
+      height: "",
+      format: "",
+      type: "",
+    });
   };
 
-  const handleUpdate = () => {
-    console.log("update");
+  const handleUpdate = async () => {
+    if (updateStaff) {
+      console.log(updateStaff);
+      try {
+        const data: CreateStaff = {
+          fullName: updateStaff.fullName,
+          position: updateStaff.position,
+          phoneNumber: updateStaff.phoneNumber,
+          email: updateStaff.email,
+          address: updateStaff.address,
+          avatar: updateStaff.avatar, // No need to include avatar here for now
+          salary: updateStaff.salary,
+          enrolledDate: updateStaff.enrolledDate,
+          province: updateStaff.province,
+          district: updateStaff.district,
+          experience: updateStaff.experience,
+          kindOfJob: updateStaff.kindOfJob,
+          description: updateStaff.description,
+          birthday: updateStaff.birthday,
+          gender: updateStaff.gender,
+        };
+
+        // Create the staff first
+        console.log(data, "data of create staff");
+        const result = await updatedStaff(staff._id, data);
+
+        if (result) {
+          // Only upload avatar if there is an avatar to upload
+          if (avatar && avatar.url) {
+            await createAvatar(result._id, avatar); // Pass the staff ID and avatar
+            alert("Staff and avatar created successfully.");
+          } else {
+            alert("Staff created successfully, but no avatar uploaded.");
+          }
+        } else {
+          alert("Can't create staff.");
+        }
+      } catch (err: any) {
+        console.error("Error creating data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error creating data: ${errorMessage}`);
+      }
+    }
   };
 
   return (
@@ -108,31 +174,37 @@ const EditStaffInformation = () => {
       />
 
       <div className="w-full p-6 flex flex-col gap-6">
-        <div className="flex w-full">
-          <div className="w-1/5">
+        <div className="flex w-full gap-8">
+          <div className="w-[115px] h-[115px]">
             <Image
               alt="avatar"
-              src="/assets/images/avatar.jpg"
+              src={avatar?.url || "/assets/images/avatar.jpg"} // Default to fallback image if avatar.url is not available
               width={115}
               height={115}
-              className="rounded-full"
+              className="w-full h-full object-cover rounded-full"
             />
           </div>
           <div className="flex-1 flex flex-col justify-between">
             <LabelInformation
-              content={staff ? `#${staff.id}` : ""}
+              content={staff ? `#${staff._id}` : ""}
               title="ID"
             />
             <div className="flex gap-8 ">
               <MyButton
-                event={handleUploadFile}
+                event={() => document.getElementById("fileInput")?.click()} // Open file dialog when the button is clicked
                 width="w-40"
                 title="Upload photo"
                 px="px-4"
                 height="h-9"
               />
+              <input
+                id="fileInput"
+                type="file"
+                style={{ display: "none" }}
+                onChange={handleUploadFile} // File upload event
+              />
               <MyButton
-                event={handleDeleteFile}
+                event={handleDeleteFile} // Delete file event
                 width="w-40"
                 title="Delete photo"
                 px="px-4"
@@ -145,24 +217,28 @@ const EditStaffInformation = () => {
           <InputEdit
             titleInput="Fullname"
             width="w-full"
-            name="fullname"
+            name="fullName"
             onChange={handleChange}
             placeholder="Enter Fullname"
-            value={updateStaff?.fullname ?? ""}
+            value={updateStaff?.fullName ?? staff.fullName}
           />
           <InputDate
             titleInput="Date of birth"
             width="w-full"
-            value={updateStaff ? formatDate(updateStaff.dob) : ""}
+            value={
+              updateStaff
+                ? formatDate(updateStaff.enrolledDate)
+                : formatDate(staff.enrolledDate)
+            }
             onChange={() => {}}
           />
           <InputEdit
             titleInput="Phone"
             width="w-full"
-            name="phone"
+            name="phoneNumber"
             onChange={handleChange}
             placeholder="Enter Phone"
-            value={updateStaff?.phone ?? ""}
+            value={updateStaff?.phoneNumber ?? staff.phoneNumber}
           />
           <InputEdit
             titleInput="Email"
@@ -170,13 +246,13 @@ const EditStaffInformation = () => {
             name="email"
             onChange={handleChange}
             placeholder="Enter Fullname"
-            value={updateStaff?.email ?? ""}
+            value={updateStaff?.email ?? staff.email}
           />
           <InputSelection
             width="w-full"
             titleInput="Gender"
             options={["Male", "Female", "Orther"]}
-            value={updateStaff?.gender ?? "Male"}
+            value={updateStaff?.gender ?? staff.gender}
             onChange={(value) => {
               setUpdateStaff((prev) => ({
                 ...prev!,
@@ -190,7 +266,7 @@ const EditStaffInformation = () => {
             name="experience"
             onChange={handleChange}
             placeholder="Enter Experience"
-            value={updateStaff?.experience ?? ""}
+            value={updateStaff?.experience ?? staff.experience}
           />
         </div>
       </div>
@@ -205,25 +281,13 @@ const EditStaffInformation = () => {
         <div className="w-full grid grid-cols-2 gap-x-20 gap-y-4">
           <InputSelection
             width="w-full"
-            titleInput="Country"
+            titleInput="Province"
             options={["VietNam", "UK", "US", "JP", "C", "K", "Canada"]}
-            value={updateStaff?.country ?? "VietNam"}
+            value={updateStaff?.province ?? staff.province}
             onChange={(value) => {
               setUpdateStaff((prev) => ({
                 ...prev!,
-                country: value,
-              }));
-            }}
-          />
-          <InputSelection
-            width="w-full"
-            titleInput="City"
-            options={["TP.HCM", "HN", "DN", "HP", "PT", "VT"]}
-            value={updateStaff?.city ?? "TP.HCM"}
-            onChange={(value) => {
-              setUpdateStaff((prev) => ({
-                ...prev!,
-                city: value,
+                province: value,
               }));
             }}
           />
@@ -231,7 +295,19 @@ const EditStaffInformation = () => {
             width="w-full"
             titleInput="District"
             options={["Q1", "Q2", "BT", "Q7", "Q9", "TD"]}
-            value={updateStaff?.district ?? "Q1"}
+            value={updateStaff?.district ?? staff.district}
+            onChange={(value) => {
+              setUpdateStaff((prev) => ({
+                ...prev!,
+                district: value,
+              }));
+            }}
+          />
+          <InputSelection
+            width="w-full"
+            titleInput="District"
+            options={["Q1", "Q2", "BT", "Q7", "Q9", "TD"]}
+            value={updateStaff?.district ?? staff.district}
             onChange={(value) => {
               setUpdateStaff((prev) => ({
                 ...prev!,
@@ -245,7 +321,7 @@ const EditStaffInformation = () => {
             name="address"
             onChange={handleChange}
             placeholder="Enter Address"
-            value={updateStaff?.address ?? ""}
+            value={updateStaff?.address ?? staff.address}
           />
         </div>
       </div>
@@ -261,15 +337,15 @@ const EditStaffInformation = () => {
             name="email"
             onChange={handleChange}
             placeholder="Enter Username"
-            value={updateStaff?.email ?? ""}
+            value={updateStaff?.email ?? staff.email}
           />
           <InputEdit
             titleInput="Password"
             width="w-full"
-            name="phone"
+            name="phoneNumber"
             onChange={handleChange}
             placeholder="Enter Password"
-            value={updateStaff?.phone ?? ""}
+            value={updateStaff?.phoneNumber ?? staff.phoneNumber}
           />
         </div>
       </div>
@@ -286,7 +362,7 @@ const EditStaffInformation = () => {
             width="w-full"
             titleInput="Kind of job"
             options={["Fulltime", "Partime"]}
-            value={updateStaff?.kindOfJob ?? "Fulltime"}
+            value={updateStaff?.kindOfJob ?? staff.kindOfJob}
             onChange={(value) => {
               setUpdateStaff((prev) => ({
                 ...prev!,
@@ -300,12 +376,16 @@ const EditStaffInformation = () => {
             name="description"
             onChange={handleChange}
             placeholder="Enter Description"
-            value={updateStaff?.description ?? ""}
+            value={updateStaff?.description ?? staff?.description}
           />
           <InputDate
             titleInput="Date of work"
             width="w-full"
-            value={updateStaff ? formatDate(updateStaff.dow) : ""}
+            value={
+              updateStaff
+                ? formatDate(updateStaff.enrolledDate)
+                : formatDate(staff.enrolledDate)
+            }
             onChange={() => {}}
           />
           <InputEdit
@@ -314,7 +394,7 @@ const EditStaffInformation = () => {
             name="earning"
             onChange={handleChange}
             placeholder="Enter Salary"
-            value={updateStaff ? formatCurrency(updateStaff.earning) : ""}
+            value={updateStaff ? updateStaff.salary : staff.salary}
           />
         </div>
       </div>

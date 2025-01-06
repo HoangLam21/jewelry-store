@@ -1,4 +1,4 @@
-interface Import {
+export interface Import {
   id: string;
   suplier: {
     id: string;
@@ -6,27 +6,17 @@ interface Import {
     fullname: string;
     address: string;
   };
-  invoice: {
-    id: string;
-    productName: string;
-    productImage: string;
-    unitPrice: number;
-    quantity: number;
-    discount: number;
-  }[];
+  invoice: Invoice[];
   status: boolean;
   createAt: Date;
   createBy: string;
 }
 
-[
-  {
-    staff: "string",
-    totalCost: 0,
-    details: {
-      additionalProp1: 0,
-      additionalProp2: 0,
-      additionalProp3: 0,
-    },
-  },
-];
+export interface Invoice {
+  id: string;
+  productName: string;
+  productImage: string;
+  unitPrice: number;
+  quantity: number;
+  discount: number;
+}

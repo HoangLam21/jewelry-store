@@ -6,8 +6,9 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
-import { fetchProvider } from "@/lib/service/provider.service";
+import { deleteProvider, fetchProvider } from "@/lib/service/provider.service";
 import { Provider } from "@/dto/ProviderDTO";
+import Format from "@/components/shared/card/ConfirmCard";
 
 const columns = [
   { header: "ID", accessor: "_id" },
@@ -37,6 +38,8 @@ const ProviderList = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
+  const [deleteProviderId, setDeleteProviderId] = useState<string | null>(null);
+  const [onDelete, setOnDelete] = useState(false);
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -45,7 +48,7 @@ const ProviderList = ({
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "name" | "contact" | "address" | "number";
+  type SortableKeys = "id" | "name" | "contact" | "address";
 
   const getValueByKey = (item: (typeof provider)[0], key: SortableKeys) => {
     switch (key) {
@@ -53,7 +56,6 @@ const ProviderList = ({
         return item._id;
       case "name":
         return item.name;
-
       case "address":
         return item.address;
       case "contact":
@@ -117,6 +119,26 @@ const ProviderList = ({
     console.log("this is sort");
   };
 
+  const handleDeleteprovider = async (id: string) => {
+    try {
+      const result = await deleteProvider(id);
+      if (result) {
+        setOnDelete(false);
+        setProvider((prev: Provider[]) =>
+          prev.filter((item: Provider) => item._id !== id)
+        );
+        () => setDeleteProviderId(null);
+        alert("Delete provider successfully.");
+      } else {
+        alert("Can't delete provider.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
+  };
+
   const renderRow = (item: Provider) => (
     <tr
       key={item._id}
@@ -140,7 +162,7 @@ const ProviderList = ({
                 icon="tabler:eye"
                 width={24}
                 height={24}
-                className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1"
+                className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1 hover:cursor-pointer"
               />
             </div>
           </Link>
@@ -150,22 +172,37 @@ const ProviderList = ({
                 icon="tabler:edit"
                 width={24}
                 height={24}
-                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1"
+                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1 hover:cursor-pointer"
               />
             </div>
           </Link>
-          <div className="w-7 h-7 flex items-center justify-center rounded-full">
+          <div
+            className="w-7 h-7 flex items-center justify-center rounded-full"
+            onClick={() => setDeleteProviderId(item._id)}
+          >
             <Icon
               icon="tabler:trash"
               width={24}
               height={24}
-              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1"
+              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1 hover:cursor-pointer"
             />
           </div>
         </div>
       </td>
+      {deleteProviderId === item._id && (
+        <td colSpan={columns.length}>
+          <Format
+            onClose={() => setDeleteProviderId(null)}
+            content={`delete: `}
+            label={"Delete provider"}
+            userName={item.name}
+            onConfirmDelete={() => handleDeleteprovider(item._id)}
+          />
+        </td>
+      )}
     </tr>
   );
+
   return (
     <div className="w-full flex flex-col p-4 rounded-md shadow-sm">
       <TableSearch onSearch={setSearchQuery} onSort={handleSort} />

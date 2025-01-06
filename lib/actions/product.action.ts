@@ -7,6 +7,7 @@ import { createFile, deleteFile } from "./file.action";
 import Voucher from "@/database/voucher.model";
 import ProductProvider from "@/database/provider.model";
 import File from "@/database/file.model";
+import Category from "@/database/category.model";
 
 // Tạo sản phẩm mới
 export const createProduct = async (data: {
@@ -15,7 +16,7 @@ export const createProduct = async (data: {
   images: formidable.File[];
   description: string;
   vouchers?: string[];
-  provider: string;
+  provider?: string;
   category?: string;
   collections?: string;
   variants: {
@@ -31,18 +32,25 @@ export const createProduct = async (data: {
       const createdImage = await createFile(image);
       imageIds.push(createdImage._id);
     }
+    const provider = await ProductProvider.findById(data.provider);
+    const category = await Category.findById(data.category);
+    const voucherIds = [];
+    for (const id of data.vouchers!) {
+      const voucher = await Voucher.findById(id);
+      if (voucher) {
+        voucherIds.push(voucher._id);
+      }
+    }
     const newProduct = await Product.create({
       name: data.name,
       cost: data.cost,
       files: imageIds,
       description: data.description,
-      vouchers: data.vouchers?.map(
-        (voucher) => new mongoose.Types.ObjectId(voucher)
-      ),
-      provider: new mongoose.Types.ObjectId(data.provider),
-      category: new mongoose.Types.ObjectId(data.category),
+      vouchers: voucherIds,
+      provider: provider ? provider._id : "",
+      category: category ? category._id : "",
       variants: data.variants,
-      collections: data.collections
+      collections: data.collections,
     });
     return newProduct;
   } catch (error) {
@@ -59,14 +67,14 @@ export const getProducts = async () => {
     for (const product of products) {
       const files = await File.find({ _id: { $in: product.files } });
       const vouchers = await Voucher.find({
-        _id: { $in: product.vouchers }
+        _id: { $in: product.vouchers },
       });
       const provider = await ProductProvider.findById(product.provider);
       productResponse.push({
         ...product.toObject(),
         vouchers: vouchers,
         provider: provider,
-        files: files
+        files: files,
       });
     }
     return productResponse;
@@ -87,11 +95,12 @@ export const getProductById = async (id: string) => {
     const files = await File.find({ _id: { $in: product.files } });
     const vouchers = await Voucher.find({ _id: { $in: product.vouchers } });
     const provider = await ProductProvider.findById(product.provider);
+    const productObject = product.toObject();
     return {
-      ...product.toObject,
+      ...productObject,
       files: files,
       vouchers: vouchers,
-      provider: provider
+      provider: provider,
     };
   } catch (error) {
     console.log("Error fetching Product by ID: ", error);
@@ -104,7 +113,7 @@ export const updateProduct = async (
   data: Partial<{
     name: string;
     cost: number;
-    files: formidable.File[];
+    images: formidable.File[];
     description: string;
     vouchers: string[];
     provider: string;
@@ -124,23 +133,24 @@ export const updateProduct = async (
     for (const id of existProduct.files) {
       await deleteFile(id);
     }
-    if (data.files) {
-      for (const image of data.files) {
+    if (data.images) {
+      for (const image of data.images) {
         const createdImage = await createFile(image);
         updateImageIds.push(createdImage._id);
       }
     }
+    console.log("createdImage: ", updateImageIds);
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
         ...data,
-        images: updateImageIds
+        files: updateImageIds,
       },
       { new: true }
     );
     const files = await File.find({ _id: { $in: updatedProduct.files } });
     const vouchers = await Voucher.find({
-      _id: { $in: updatedProduct.vouchers }
+      _id: { $in: updatedProduct.vouchers },
     });
     const provider = await ProductProvider.findById(updatedProduct.provider);
     if (!updatedProduct) {
@@ -150,7 +160,7 @@ export const updateProduct = async (
       ...updatedProduct.toObject(),
       files: files,
       vouchers: vouchers,
-      provider: provider
+      provider: provider,
     };
   } catch (error) {
     console.log("Error updating Product: ", error);
