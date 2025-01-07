@@ -1,4 +1,6 @@
-export async function fetchImport(): Promise<[]> {
+import { Import } from "@/dto/ImportDTO";
+
+export async function fetchImport(): Promise<Import[]> {
   try {
     const response = await fetch(`/api/import/all`);
     if (!response.ok) {

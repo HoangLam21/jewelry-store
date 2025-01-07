@@ -1,12 +1,45 @@
 "use client";
 import OrderList from "@/components/admin/order/OrderList";
 import Headers from "@/components/shared/header/Headers";
+import { Order } from "@/dto/OrderDTO";
+import { fetchOrder } from "@/lib/service/order.service";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 
 const Page = () => {
   const router = useRouter();
+
+  const [orderData, setOrderData] = useState<Order[] | null>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadOrder = async () => {
+      try {
+        const data = await fetchOrder();
+
+        if (isMounted) {
+          setOrderData(data);
+        }
+      } catch (error) {
+        console.error("Error loading Provider:", error);
+      }
+    };
+    loadOrder();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  if (!orderData) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-white">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
+  console.log(orderData, "this iss orrder data");
 
   const handleExport = () => {
     console.log("Export clicked");
@@ -28,7 +61,7 @@ const Page = () => {
         onClickSecondButton={handleAddOrder}
         type={2}
       ></Headers>
-      <OrderList />
+      <OrderList orderData={orderData} setOrderData={setOrderData} />
     </div>
   );
 };

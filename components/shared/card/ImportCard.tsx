@@ -1,14 +1,21 @@
+import { Variant } from "@/components/admin/product/ProductList";
+import { FileContent } from "@/dto/ProductDTO";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import React from "react";
 
-interface Product {
+export interface Product {
   id: string;
   image: string;
+  imageInfo: FileContent[];
   productName: string;
   price: string;
-  material: string;
-  quantity: number;
+  collection: string;
+  description: string;
+  vouchers: string;
+  provider: string;
+  category: string;
+  variants: Variant[];
 }
 
 const ImportCard = ({
@@ -33,9 +40,7 @@ const ImportCard = ({
         />
       </div>
       <p className="text-xs break-words truncate px-1">{item.productName}</p>
-      <p className="text-xs  truncate px-1 self-end">
-        {formatPrice(item.price)}
-      </p>
+      <p className="text-xs  truncate px-1 self-end">{item.price}</p>
     </div>
   );
 };
