@@ -1,3 +1,4 @@
+"use client";
 import { convertFilesToFileContent } from "@/components/admin/product/AddProduct";
 import InputEdit from "@/components/shared/input/InputEdit";
 import LabelInformation from "@/components/shared/label/LabelInformation";
@@ -8,7 +9,11 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { CommentData } from "./Reviews";
+import { CreateRatingDTO } from "@/dto/RatingDTO";
+import { useParams } from "next/navigation";
+import { createReview } from "@/lib/services/rating.service";
 interface props {
+  userName: string;
   setOpenReview: React.Dispatch<React.SetStateAction<boolean>>;
   setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
 }
@@ -20,7 +25,8 @@ const defaultContent = {
   rating: 0,
   comment: ""
 };
-const CreateReview = ({ setOpenReview, setComments }: props) => {
+const CreateReview = ({ setOpenReview, setComments, userName }: props) => {
+  const { id } = useParams<{ id: string }>() as { id: string };
   const [selectedFiles, setSelectedFiles] = useState<FileContent[]>([]);
   const [newReview, setNewReview] = useState<ContentReview>(defaultContent);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -93,8 +99,37 @@ const CreateReview = ({ setOpenReview, setComments }: props) => {
     );
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     console.log(newReview);
+    if (newReview) {
+      const data: CreateRatingDTO = {
+        productId: id,
+        point: newReview.rating,
+        content: newReview.comment,
+        images: selectedFiles
+      };
+      const result = await createReview(data);
+      if (result) {
+        const data: CommentData = {
+          id: result._id,
+          userId: result.userId,
+          userName: userName,
+          avatar: "/assets/images/avatar.jpg",
+          productId: result.productId,
+          rating: result.point,
+          createAt: new Date(result.createAt),
+          productName: "",
+          size: "",
+          material: "",
+          comment: result.content,
+          image: result.imageUrls
+        };
+        setComments((pre) => [...pre, data]);
+        alert("Review is recorded.");
+      } else {
+        alert("Can't record your review");
+      }
+    } else alert("Error review this product");
   };
   return (
     <div className="modal-overlay">

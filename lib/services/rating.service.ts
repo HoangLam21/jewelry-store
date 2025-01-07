@@ -17,19 +17,44 @@ export async function getReviewById(id: string) {
 }
 
 export async function createReview(params: CreateRatingDTO) {
-  const userId = localStorage.getItem("userId");
+  let userId = localStorage.getItem("userId");
+  // if(!userId) {
+  //   alert("User is not found. Please try agian");
+  //   return;
+  // }
+  if (!userId) userId = "676c26abbc53a1913f2c9581";
   const formDataToSend = new FormData();
-  formDataToSend.append("userId", userId || "");
+  formDataToSend.append("userId", userId);
   formDataToSend.append("productId", params.productId);
   formDataToSend.append("point", params.point.toString());
   formDataToSend.append("content", params.content);
-  params.images &&
-    params.images.forEach((file: FileContent) => {
-      formDataToSend.append("images", file.url);
+
+  if (params.images && params.images.length > 0) {
+    // Sử dụng Promise.all để xử lý các tệp hình ảnh bất đồng bộ
+    const imagePromises = params.images.map(async (image: FileContent) => {
+      if (image.url && image.fileName) {
+        try {
+          const response = await fetch(image.url);
+          if (response.ok) {
+            const blob = await response.blob();
+            formDataToSend.append("images", blob, image.fileName);
+          } else {
+            console.error("Failed to fetch image from URL", image.url);
+          }
+        } catch (error) {
+          console.error("Error fetching image", error);
+        }
+      } else {
+        console.error("FileContent is missing necessary fields");
+      }
     });
 
+    // Đợi tất cả các Promise hoàn thành
+    await Promise.all(imagePromises);
+  }
+
   try {
-    const response = await fetch("/api/your-api-path", {
+    const response = await fetch("/api/rating/create", {
       method: "POST",
       body: formDataToSend
     });
@@ -40,6 +65,7 @@ export async function createReview(params: CreateRatingDTO) {
 
     const result = await response.json();
     console.log("Rating created successfully: ", result);
+    return result;
   } catch (error) {
     console.error("Error submitting form: ", error);
   }

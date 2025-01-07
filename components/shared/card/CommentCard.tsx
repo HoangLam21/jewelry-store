@@ -62,7 +62,7 @@ const CommentCard = ({ item }: { item: Comment }) => {
           {item.image.map((it, index) => (
             <div className="w-32 h-32" key={index}>
               <Image
-                src={it}
+                src={it || "/assets/images/avatar.jpg"}
                 alt="product image"
                 className="w-full h-full object-cover"
                 width={125}
