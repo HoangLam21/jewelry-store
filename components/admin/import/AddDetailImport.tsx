@@ -64,7 +64,7 @@ const AddDetailImport: React.FC<AddDetailProductProps> = ({
     if (selectedSize && selectedMaterial && quantity > 0) {
       // Tạo chi tiết sản phẩm mới
       const newDetail = {
-        productId: selectedProduct?.id,
+        id: selectedProduct?.id,
         material: selectedMaterial,
         size: selectedSize,
         unitPrice: unitPrice,
@@ -73,9 +73,9 @@ const AddDetailImport: React.FC<AddDetailProductProps> = ({
       };
 
       // Kiểm tra xem sản phẩm đã tồn tại trong danh sách chưa
-      const existingDetailIndex = item.invoice.findIndex(
+      const existingDetailIndex = item.details.findIndex(
         (detail) =>
-          detail.productId === newDetail.productId &&
+          detail.id === newDetail.id &&
           detail.material === newDetail.material &&
           detail.size === newDetail.size
       );
@@ -83,20 +83,20 @@ const AddDetailImport: React.FC<AddDetailProductProps> = ({
       let updatedDetails;
       if (existingDetailIndex !== -1) {
         // Nếu sản phẩm đã tồn tại, cộng dồn số lượng
-        updatedDetails = item.invoice.map((detail, index) =>
+        updatedDetails = item.details.map((detail, index) =>
           index === existingDetailIndex
             ? { ...detail, quantity: detail.quantity + newDetail.quantity }
             : detail
         );
       } else {
         // Nếu sản phẩm chưa tồn tại, thêm sản phẩm mới
-        updatedDetails = [...item.invoice, newDetail];
+        updatedDetails = [...item.details, newDetail];
       }
 
       // Cập nhật state `item`
       setItem({
         ...item,
-        invoice: updatedDetails,
+        details: updatedDetails,
       });
 
       // Reset form

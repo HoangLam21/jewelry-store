@@ -43,8 +43,8 @@ export async function createImport(params: CreateImport): Promise<Order> {
     console.log(params, "update params");
 
     // Validate and prepare details array
-    const invoice = params.invoice.map((detail) => ({
-      productId: detail.productId,
+    const details = params.details.map((detail) => ({
+      id: detail.id,
       material: detail.material,
       size: detail.size,
       unitPrice: detail.unitPrice,
@@ -53,7 +53,7 @@ export async function createImport(params: CreateImport): Promise<Order> {
     }));
     // Prepare the body in JSON format
     const body = JSON.stringify({
-      invoice,
+      details,
       provider: params.provider,
       staff: params.staff,
     });

@@ -11,6 +11,7 @@ import Collections from "@/components/form/home/Collections";
 import Sale from "@/components/form/home/Sale";
 import { fetchProducts } from "@/lib/services/product.service";
 import { getCustomerById } from "@/lib/services/customer.service";
+import { fetchCategory } from "@/lib/service/category.service";
 
 export default function Page() {
   const [productsData, setProductsData] = useState<any[]>([]);
@@ -35,8 +36,10 @@ export default function Page() {
     const getAllProducts = async () => {
       try {
         const data = await fetchProducts();
+        const categories = await fetchCategory();
         if (isMounted) {
           setProductsData(data);
+          setCategoriesData(categories);
         }
       } catch (error) {
         console.error("Error loading posts:", error);

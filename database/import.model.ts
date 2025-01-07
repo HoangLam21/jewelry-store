@@ -20,7 +20,11 @@ export interface Import extends Document, IAudit {
 
 const ImportSchema = new Schema<Import>({
   staff: { type: Schema.Types.ObjectId, ref: "Staff", required: true },
-  provider: { type: Schema.Types.ObjectId, ref: "Provider", required: true },
+  provider: {
+    type: Schema.Types.ObjectId,
+    ref: "ProductProvider",
+    required: true,
+  },
   totalCost: { type: Number, required: true },
   details: {
     type: [

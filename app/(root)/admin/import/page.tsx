@@ -9,13 +9,15 @@ import React, { Provider, useEffect, useState } from "react";
 
 const Page = () => {
   const router = useRouter();
-  const [importData, setImportData] = useState<[] | null>([]);
+  const [importData, setImportData] = useState<any[] | null>([]);
 
   useEffect(() => {
     let isMounted = true;
     const loadImport = async () => {
       try {
         const data = await fetchImport();
+
+        console.log(data, "this is data of import");
 
         if (isMounted) {
           setImportData(data);

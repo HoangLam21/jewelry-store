@@ -7,7 +7,11 @@ import { ObjectId } from "mongodb";
 import ProductProvider from "@/database/provider.model";
 import Staff from "@/database/staff.model";
 import File from "@/database/file.model";
+import mongoose from "mongoose";
+import staff from "@/pages/api/import/staff";
+import provider from "@/pages/api/import/provider";
 import Voucher from "@/database/voucher.model";
+import Customer from "@/database/customer.model";
 
 interface CreateImportInput {
   staff: string;
@@ -43,97 +47,41 @@ interface ImportResponse {
   createBy: string;
 }
 
-// export const createImport = async (
-//   data: CreateImportInput
-// ): Promise<ImportResponse> => {
-//   try {
-//     await connectToDatabase();
-
-//     // Calculate total cost from invoice items
-//     const totalCost = data.invoice.reduce((sum, item) => {
-//       const itemCost = item.unitPrice * item.quantity;
-//       const discountAmount = (parseFloat(item.discount) / 100) * itemCost;
-//       return sum + (itemCost - discountAmount);
-//     }, 0);
-
-//     // Create import record
-//     const newImport = await Import.create({
-//       staff: new ObjectId(data.staff),
-//       provider: new ObjectId(data.provider),
-//       totalCost,
-//       details: data.invoice,
-//       status: false,
-//     });
-
-//     // Fetch related data for response
-//     const populatedImport = await Import.findById(newImport._id)
-//       .populate("staff", "fullname")
-//       .populate("provider", "phoneNumber fullname address")
-//       .populate("details.id", "name image");
-
-//     if (!populatedImport) {
-//       throw new Error("Failed to fetch created import");
-//     }
-
-//     // Transform to required response format
-//     const response: ImportResponse = {
-//       id: populatedImport._id.toString(),
-//       supplier: {
-//         id: populatedImport.provider._id.toString(),
-//         phoneNumber: populatedImport.provider.phoneNumber,
-//         fullname: populatedImport.provider.fullname,
-//         address: populatedImport.provider.address,
-//       },
-//       invoice: populatedImport.details.map((detail: any) => ({
-//         id: detail.id._id.toString(),
-//         productName: detail.id.name,
-//         productImage: detail.id.image,
-//         unitPrice: detail.unitPrice,
-//         quantity: detail.quantity,
-//         discount: detail.discount,
-//       })),
-//       status: populatedImport.status,
-//       createAt: populatedImport.createdAt,
-//       createBy: populatedImport.staff.fullname,
-//     };
-
-//     return response;
-//   } catch (error) {
-//     console.error("Error creating Import: ", error);
-//     throw new Error("Failed to create import");
-//   }
-// };
-
 export const createImport = async (data: {
   staff: string;
   provider: string;
-  invoice: {
-    productId: string;
+  details: {
+    id: string;
     material: string;
     size: string;
     unitPrice: number;
     quantity: number;
-    discount: string;
+    discount: string; // Expects a percentage string, e.g., "10" for 10%
   }[];
 }) => {
   try {
-    connectToDatabase();
-    const totalCost = data.invoice.reduce((sum, item) => {
+    // Connect to the database
+    await connectToDatabase();
+
+    // Calculate total cost
+    const totalCost = data.details.reduce((sum, item) => {
       const itemCost = item.unitPrice * item.quantity;
       const discountAmount = (parseFloat(item.discount) / 100) * itemCost;
       return sum + (itemCost - discountAmount);
     }, 0);
 
+    // Create a new import record
     const newOrder = await Import.create({
       staff: new ObjectId(data.staff),
       provider: new ObjectId(data.provider),
       totalCost,
-      details: data.invoice,
+      details: data.details,
       status: false,
     });
+
     return newOrder;
   } catch (error) {
-    console.log("Error creating Order: ", error);
+    console.error("Error creating Order: ", error);
     throw new Error("Failed to create order");
   }
 };
@@ -234,264 +182,149 @@ export const verifyImport = async (id: string) => {
   }
 };
 
-// Interface cho populated documents
-interface ImportDetail {
-  id: ObjectId;
-  material: string;
-  size: string;
-  unitPrice: number;
-  quantity: number;
-  discount: string;
-}
-
-interface StaffDocument {
-  _id: ObjectId;
-  fullName: string;
-}
-
-interface ProviderDocument {
-  _id: ObjectId;
-  phoneNumber: string;
-  fullname: string;
-  address: string;
-}
-
-interface ProductDocument {
-  _id: ObjectId;
-  name: string;
-  provider: ProviderDocument;
-  files: ObjectId[];
-}
-
-interface FileDocument {
-  _id: ObjectId;
-  url: string;
-}
-
-interface ImportDocument {
-  _id: ObjectId;
-  staff: StaffDocument;
-  details: ImportDetail[];
-  status: boolean;
-  createdAt: Date;
-}
-
-export const getImports = async (): Promise<ImportResponse[]> => {
-  try {
-    await connectToDatabase();
-
-    // Get imports with populated staff
-    const rawImports = await Import.find().populate("staff").lean();
-
-    // Type assertion với unknown trung gian
-    const imports = rawImports as unknown as ImportDocument[];
-
-    const result = await Promise.all(
-      imports.map(async (importData) => {
-        try {
-          // Validate staff
-          if (!importData.staff || !importData.details?.length) {
-            throw new Error(`Invalid import data for ${importData._id}`);
-          }
-
-          // Get first product with populated provider
-          const rawProduct = await Product.findById(importData.details[0].id)
-            .populate("provider")
-            .lean();
-
-          // Type assertion với unknown trung gian
-          const firstProduct = rawProduct as unknown as ProductDocument;
-
-          if (!firstProduct?.provider) {
-            throw new Error(
-              `Product or provider not found for import ${importData._id}`
-            );
-          }
-
-          // Process invoice details
-          const invoices = await Promise.all(
-            importData.details.map(async (detail) => {
-              const rawProduct = await Product.findById(detail.id).lean();
-
-              // Type assertion với unknown trung gian
-              const product = rawProduct as unknown as ProductDocument;
-
-              if (!product) {
-                throw new Error(`Product not found: ${detail.id}`);
-              }
-
-              let productImage: string | null = null;
-              if (product.files?.length) {
-                const rawFile = await File.findById(product.files[0]).lean();
-                const file = rawFile as unknown as FileDocument;
-                productImage = file?.url || null;
-              }
-
-              return {
-                id: product._id.toString(),
-                productName: product.name,
-                productImage,
-                unitPrice: detail.unitPrice,
-                quantity: detail.quantity,
-                discount: Number(detail.discount) || 0,
-              };
-            })
-          );
-
-          return {
-            id: importData._id.toString(),
-            supplier: {
-              id: firstProduct.provider._id.toString(),
-              phoneNumber: firstProduct.provider.phoneNumber,
-              fullname: firstProduct.provider.fullname,
-              address: firstProduct.provider.address,
-            },
-            invoice: invoices,
-            status: importData.status,
-            createAt: importData.createdAt,
-            createBy: importData.staff.fullName,
-          };
-        } catch (error) {
-          console.error(`Error processing import ${importData._id}:`, error);
-          return null;
-        }
-      })
-    );
-
-    return result.filter((item): item is ImportResponse => item !== null);
-  } catch (error) {
-    console.error("Error fetching Imports: ", error);
-    throw new Error("Failed to fetch imports");
-  }
-};
-
 // Đọc nhập hàng theo ID
+// export const getImportById = async (id: string) => {
+//   try {
+//     connectToDatabase();
+//     const importData = await Import.findById(id);
+//     if (!importData) {
+//       throw new Error("Import not found");
+//     }
+//     const staff = await Staff.findById(importData.staff);
+//     const provider = await ProductProvider.findById(
+//       (
+//         await Product.findById(importData.details[0].id)
+//       ).provider
+//     );
+//     const invoices = await Promise.all(
+//       importData.details.map(async (detail: any) => {
+//         const product = await Product.findById(detail.id);
+//         const file = (await File.find({ _id: { $in: product.files } }))[0];
+//         return {
+//           id: product._id.toString(),
+//           productName: product.name,
+//           productImage: file.url,
+//           unitPrice: detail.unitPrice,
+//           quantity: detail.quantity,
+//           discount: Number(detail.discount),
+//         };
+//       })
+//     );
+//     return {
+//       id: importData._id.toString(),
+//       suplier: {
+//         id: provider._id.toString(),
+//         phoneNumber: provider.phoneNumber,
+//         fullname: provider.fullname,
+//         address: provider.address,
+//       },
+//       invoice: invoices,
+//       status: importData.status,
+//       createAt: importData.createdAt,
+//       createBy: staff.fullName,
+//     };
+//   } catch (error) {
+//     console.log("Error fetching Import: ", error);
+//     throw new Error("Failed to fetch import");
+//   }
+// };
+
 export const getImportById = async (id: string) => {
   try {
     connectToDatabase();
-    const importData = await Import.findById(id);
-    if (!importData) {
-      throw new Error("Import not found");
+    const order = await Import.findById(id);
+    if (!order) {
+      throw new Error("Order not found");
     }
-    const staff = await Staff.findById(importData.staff);
-    const provider = await ProductProvider.findById(
-      (
-        await Product.findById(importData.details[0].id)
-      ).provider
-    );
-    const invoices = await Promise.all(
-      importData.details.map(async (detail: any) => {
-        const product = await Product.findById(detail.id);
-        const file = (await File.find({ _id: { $in: product.files } }))[0];
-        return {
-          id: product._id.toString(),
-          productName: product.name,
-          productImage: file.url,
-          unitPrice: detail.unitPrice,
-          quantity: detail.quantity,
-          discount: Number(detail.discount),
-        };
-      })
-    );
+    console.log(order, "import detail");
+    const orderDetails = order.details;
+    const products = [];
+    for (const detail of orderDetails) {
+      const product = await Product.findById(detail.id.toString());
+      if (!product) {
+        throw new Error("Product not found");
+      }
+      const vouchers = await Voucher.find({
+        _id: { $in: product.vouchers },
+      });
+      const provider = await ProductProvider.findById(product.provider);
+      const files = await File.find({ _id: { $in: product.files } });
+      products.push({
+        product: {
+          ...product.toObject(),
+          vouchers: vouchers,
+          provider: provider,
+          files: files,
+        },
+        material: detail.material,
+        size: detail.size,
+        quantity: detail.quantity,
+        unitPrice: detail.unitPrice,
+        discount: detail.discount,
+      });
+    }
+    const customer = await ProductProvider.findById(order.provider);
+    console.log(order.customer, "provider order.customer");
+    const staff = await Staff.findById(order.staff);
     return {
-      id: importData._id.toString(),
-      suplier: {
-        id: provider._id.toString(),
-        phoneNumber: provider.phoneNumber,
-        fullname: provider.fullname,
-        address: provider.address,
+      order: {
+        ...order.toObject(),
+        provider: customer,
+        staff: staff,
       },
-      invoice: invoices,
-      status: importData.status,
-      createAt: importData.createdAt,
-      createBy: staff.fullName,
+      products: products,
     };
   } catch (error) {
-    console.log("Error fetching Import: ", error);
-    throw new Error("Failed to fetch import");
+    console.log("Error fetching Order: ", error);
+    throw new Error("Failed to fetch order");
   }
 };
 
 // Lấy tất cả nhập hàng của một nhà cung cấp
-export const getAllImportsOfProvider = async (providerId: string) => {
+export const getAllImportsOfProvider = async (staffId: string) => {
   try {
     connectToDatabase();
-    const imports = await Import.find();
-    const result = await Promise.all(
-      imports.map(async (importData) => {
-        const staff = await Staff.findById(importData.staff);
-        const provider = await ProductProvider.findById(
-          (
-            await Product.findById(importData.details[0].id)
-          ).provider
-        );
-        const invoices = await Promise.all(
-          importData.details.map(async (detail: any) => {
-            const product = await Product.findById(detail.id);
-            const file = (await File.find({ _id: { $in: product.files } }))[0];
-            return {
-              id: product._id.toString(),
-              productName: product.name,
-              productImage: file.url,
-              unitPrice: detail.unitPrice,
-              quantity: detail.quantity,
-              discount: Number(detail.discount),
-            };
-          })
-        );
-        if (provider._id.toString() === providerId) {
-          return {
-            id: importData._id.toString(),
-            suplier: {
-              id: provider._id.toString(),
-              phoneNumber: provider.phoneNumber,
-              fullname: provider.fullname,
-              address: provider.address,
-            },
-            invoice: invoices,
-            status: importData.status,
-            createAt: importData.createdAt,
-            createBy: staff.fullName,
-          };
-        } else {
-          return null;
-        }
-      })
-    );
-    return result.filter((importData) => importData !== null);
-  } catch (error) {
-    console.log("Error fetching Imports of Provider: ", error);
-    throw new Error("Failed to fetch imports of provider");
-  }
-};
+    const imports = await Import.find({ provider: new ObjectId(staffId) });
 
-// Lấy tất cả nhập hàng của một nhân viên
-export const getAllImportsOfStaff = async (staffId: string) => {
-  try {
-    connectToDatabase();
-    const imports = await Import.find({ staff: new ObjectId(staffId) });
+    // Nếu không có import nào, trả về mảng rỗng
+    if (!imports || imports.length === 0) {
+      return [];
+    }
+
     const result = await Promise.all(
       imports.map(async (importData) => {
         const staff = await Staff.findById(importData.staff);
-        const provider = await ProductProvider.findById(
-          (
-            await Product.findById(importData.details[0].id)
-          ).provider
-        );
+        const provider = await ProductProvider.findById(importData.provider);
+
         const invoices = await Promise.all(
           importData.details.map(async (detail: any) => {
             const product = await Product.findById(detail.id);
-            const file = (await File.find({ _id: { $in: product.files } }))[0];
+            if (!product) {
+              console.warn(`Product not found for ID: ${detail.id}`);
+              return null; // Bỏ qua sản phẩm không tồn tại
+            }
+            if (!product.files || product.files.length === 0) {
+              console.warn(`Product files not found for ID: ${detail.id}`);
+              return null; // Bỏ qua sản phẩm không có files
+            }
+            const file = await File.find({ _id: { $in: product.files } });
+
             return {
               id: product._id.toString(),
               productName: product.name,
-              productImage: file.url,
-              unitPrice: detail.unitPrice,
+              productImage: file[0]?.url || "", // Kiểm tra URL file trước khi gán
+              unitPrice: product.cost,
               quantity: detail.quantity,
+              material: detail.material,
+              size: detail.size,
               discount: Number(detail.discount),
             };
           })
         );
+        console.log(invoices, "import invoices provider");
+        console.log(provider.representativeName, "import provider provider");
+        console.log(importData, "import importData provider");
+        console.log(staff, "import staff provider");
         return {
           id: importData._id.toString(),
           suplier: {
@@ -500,16 +333,128 @@ export const getAllImportsOfStaff = async (staffId: string) => {
             fullname: provider.fullname,
             address: provider.address,
           },
-          invoice: invoices,
+          Representative: provider.representativeName,
+          invoice: invoices.filter(Boolean), // Loại bỏ null từ danh sách hóa đơn
           status: importData.status,
           createAt: importData.createdAt,
           createBy: staff.fullName,
         };
       })
     );
+
     return result;
   } catch (error) {
-    console.log("Error fetching Imports of Staff: ", error);
+    console.error("Error fetching Imports of Staff: ", error);
     throw new Error("Failed to fetch imports of staff");
+  }
+};
+
+export const getAllImportsOfStaff = async (staffId: string) => {
+  try {
+    connectToDatabase();
+    const imports = await Import.find({ staff: new ObjectId(staffId) });
+
+    // Nếu không có import nào, trả về mảng rỗng
+    if (!imports || imports.length === 0) {
+      return [];
+    }
+
+    const result = await Promise.all(
+      imports.map(async (importData) => {
+        const staff = await Staff.findById(importData.staff);
+        const provider = await ProductProvider.findById(importData.provider);
+
+        const invoices = await Promise.all(
+          importData.details.map(async (detail: any) => {
+            const product = await Product.findById(detail.id);
+            if (!product) {
+              console.warn(`Product not found for ID: ${detail.id}`);
+              return null; // Bỏ qua sản phẩm không tồn tại
+            }
+            if (!product.files || product.files.length === 0) {
+              console.warn(`Product files not found for ID: ${detail.id}`);
+              return null; // Bỏ qua sản phẩm không có files
+            }
+            const file = await File.find({ _id: { $in: product.files } });
+
+            return {
+              id: product._id.toString(),
+              productName: product.name,
+              productImage: file[0]?.url || "", // Kiểm tra URL file trước khi gán
+              unitPrice: product.cost,
+              quantity: detail.quantity,
+              material: detail.material,
+              size: detail.size,
+              discount: Number(detail.discount),
+            };
+          })
+        );
+
+        return {
+          id: importData._id.toString(),
+          suplier: {
+            id: provider._id.toString(),
+            phoneNumber: provider.phoneNumber,
+            fullname: provider.fullname,
+            address: provider.address,
+          },
+          invoice: invoices.filter(Boolean), // Loại bỏ null từ danh sách hóa đơn
+          status: importData.status,
+          createAt: importData.createdAt,
+          createBy: staff.fullName,
+        };
+      })
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Error fetching Imports of Staff: ", error);
+    throw new Error("Failed to fetch imports of staff");
+  }
+};
+
+export const getImports = async () => {
+  try {
+    connectToDatabase();
+    const imported = await Import.find().populate("provider").populate("staff");
+    console.log(imported, "imported");
+    const importsResponse = [];
+
+    for (const imports of imported) {
+      const products = [];
+      for (const detail of imports.details) {
+        const product = await Product.findById(detail.id.toString())
+          .populate("vouchers")
+          .populate("provider")
+          .populate("files");
+
+        if (!product) {
+          throw new Error("Product not found");
+        }
+        products.push({
+          product: {
+            ...product.toObject(),
+            vouchers: product.vouchers,
+            provider: product.provider,
+            files: product.files,
+          },
+          material: detail.material,
+          size: detail.size,
+          quantity: detail.quantity,
+          unitPrice: detail.unitPrice,
+          discount: detail.discount,
+        });
+      }
+      importsResponse.push({
+        ...imports.toObject(),
+        customer: imports.provider,
+        staff: imports.staff,
+        products: products,
+      });
+    }
+    return importsResponse;
+  } catch (error) {
+    console.error("Error fetching Imports: ", error);
+    throw new Error("Failed to fetch imports");
   }
 };

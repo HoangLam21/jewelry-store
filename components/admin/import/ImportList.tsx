@@ -18,8 +18,8 @@ import Format from "@/components/shared/card/ConfirmCard";
 const columns = [
   { header: "ID", accessor: "id" },
   {
-    header: "CreateAt",
-    accessor: "createAt",
+    header: "Supplier",
+    accessor: "suplier",
     className: "hidden md:table-cell",
   },
   {
@@ -51,8 +51,6 @@ const ImportList = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-  const totalResult = importData.length;
-  const [filterOption, setFilterOption] = useState("");
   const [deleteOrderId, setDeleteImportId] = useState<string | null>(null);
 
   const [sortConfig, setSortConfig] = useState<{
@@ -72,8 +70,8 @@ const ImportList = ({
         return item.createBy;
       case "status":
         return item.status;
-      case "total":
-        return item.cost;
+      // case "total":
+      //   return item.;
       default:
         return "";
     }
@@ -106,7 +104,7 @@ const ImportList = ({
     const matchesSearch =
       item.staff?.fullName.toLowerCase().includes(lowerCaseQuery) ||
       item.createAt.toLowerCase().includes(lowerCaseQuery) ||
-      item.cost.toString().toLowerCase().includes(lowerCaseQuery);
+      item.totalCost.toString().toLowerCase().includes(lowerCaseQuery);
 
     return matchesSearch;
   });
@@ -133,7 +131,7 @@ const ImportList = ({
     console.log("this is sort");
   };
 
-  const handleDeleteOrder = async (id: string) => {
+  const handleDeleteImport = async (id: string) => {
     console.log("davo");
     try {
       const result = await deleteImport(id);
@@ -153,87 +151,109 @@ const ImportList = ({
     }
   };
 
-  const renderRow = (item: any) => (
-    <tr
-      key={item._id}
-      className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
-    >
-      <td className="px-4 py-2">
-        <div className="flex flex-col">
-          <p>Import Id</p>
-          <p>#00{item._id}</p>
-        </div>
-      </td>
-      <td className="px-4 py-2">{format(item.createAt, "PPP")}</td>
-      <td className="px-4 py-2">{item.staff?.fullName || ""}</td>
+  const renderRow = (item: any) => {
+    const handleStatusChange = async (
+      event: React.ChangeEvent<HTMLSelectElement>,
+      orderId: string
+    ) => {
+      const newStatus = event.target.value;
+      try {
+        const response = await fetch(`/api/order/${orderId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: newStatus }),
+        });
+        if (response.ok) {
+          alert("Status updated successfully!");
+          // Optionally reload the table or re-fetch data here
+        } else {
+          console.error("Failed to update status");
+          alert("Failed to update status");
+        }
+      } catch (error) {
+        console.error("Error updating status:", error);
+        alert("An error occurred while updating status");
+      }
+    };
 
-      <td className="px-4 py-2 hidden md:table-cell">
-        {" "}
-        {formatPrice(item.cost)}
-      </td>
-      <td className="px-4 py-2">
-        {item.status === "done" ? (
-          <LabelStatus
-            title="Done"
-            background="bg-custom-green"
-            text_color="text-dark-green"
-          />
-        ) : (
-          <LabelStatus
-            title="Pending"
-            background="bg-light-yellow"
-            text_color="text-yellow-600"
-          />
-        )}
-      </td>
-      <td className="px-4 py-2 hidden lg:table-cell">
-        <div className="flex items-center gap-2">
-          <Link href={`/admin/import/${item._id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full">
-              <Icon
-                icon="tabler:eye"
-                width={24}
-                height={24}
-                className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1"
-              />
-            </div>
-          </Link>
-          <Link href={`/admin/import/edit/${item._id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
-              <Icon
-                icon="tabler:edit"
-                width={24}
-                height={24}
-                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1 hover:cursor-pointer"
-              />
-            </div>
-          </Link>
-          <div
-            className="w-7 h-7 flex items-center justify-center rounded-full"
-            onClick={() => setDeleteImportId(item._id)}
-          >
-            <Icon
-              icon="tabler:trash"
-              width={24}
-              height={24}
-              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1 hover:cursor-pointer"
-            />
+    return (
+      <tr
+        key={item._id}
+        className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
+      >
+        <td className="px-4 py-2">
+          <div className="flex flex-col">
+            <p>Order Id</p>
+            <p>#00{item._id}</p>
           </div>
-        </div>
-      </td>
-      {deleteOrderId === item._id && (
-        <td colSpan={columns.length}>
-          <Format
-            onClose={() => setDeleteImportId(null)}
-            content={`delete: `}
-            label={"Delete order"}
-            userName={item._id}
-            onConfirmDelete={() => handleDeleteOrder(item._id)}
-          />
         </td>
-      )}
-    </tr>
-  );
+        <td className="px-4 py-2">{format(item.createAt, "PPP")}</td>
+        <td className="px-4 py-2">{item.staff?.fullName || ""}</td>
+        <td className="px-4 py-2 hidden md:table-cell">
+          {formatPrice(item.totalCost)}
+        </td>
+        <td className="px-4 py-2">
+          <select
+            value={item.status}
+            onChange={(event) => handleStatusChange(event, item._id)}
+            className="border rounded px-2 py-1 text-sm"
+          >
+            <option value="pending">Pending</option>
+            <option value="done">Done</option>
+            {/* Add more status options as needed */}
+          </select>
+        </td>
+        <td className="px-4 py-2 hidden lg:table-cell">
+          <div className="flex items-center gap-2">
+            <Link href={`/admin/import/${item._id}`}>
+              <div className="w-7 h-7 flex items-center justify-center rounded-full">
+                <Icon
+                  icon="tabler:eye"
+                  width={24}
+                  height={24}
+                  className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1"
+                />
+              </div>
+            </Link>
+            {/* <Link href={`/admin/import/edit/${item._id}`}>
+              <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
+                <Icon
+                  icon="tabler:edit"
+                  width={24}
+                  height={24}
+                  className="text-white dark:bg-dark-150 bg-dark-green rounded-md p-1 hover:cursor-pointer"
+                />
+              </div>
+            </Link> */}
+            <div
+              className="w-7 h-7 flex items-center justify-center rounded-full"
+              onClick={() => setDeleteImportId(item._id)}
+            >
+              <Icon
+                icon="tabler:trash"
+                width={24}
+                height={24}
+                className="dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1 hover:cursor-pointer"
+              />
+            </div>
+          </div>
+        </td>
+        {deleteOrderId === item._id && (
+          <td colSpan={columns.length}>
+            <Format
+              onClose={() => setDeleteImportId(null)}
+              content={`delete: `}
+              label={"Delete import"}
+              userName={item._id}
+              onConfirmDelete={() => handleDeleteImport(item._id)}
+            />
+          </td>
+        )}
+      </tr>
+    );
+  };
   return (
     <div className="w-full flex flex-col p-4 rounded-md shadow-sm">
       <TableSearch onSearch={setSearchQuery} onSort={handleSort} />

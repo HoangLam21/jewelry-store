@@ -1470,4 +1470,63 @@ export const contract = c.router({
       },
     },
   }),
+  schedule: c.router({
+    createSchedule: {
+      method: "POST",
+      path: "/api/schedule/create",
+      body: z.object({
+        staff: z.string(),
+        shift: z.number(),
+        date: z.string(),
+      }),
+      responses: {},
+    },
+
+    updateSchedule: {
+      method: "PUT",
+      path: "/api/schedule/update",
+      body: z.object({
+        staff: z.string(),
+        shift: z.number(),
+        date: z.string(),
+      }),
+      responses: {},
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+
+    getAllSchedules: {
+      method: "GET",
+      path: "/api/schedule/all",
+      responses: {},
+    },
+
+    getScheduleById: {
+      method: "GET",
+      path: "/api/schedule/id",
+      responses: {},
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+
+    deleteSchedule: {
+      method: "DELETE",
+      path: "/api/schedule/delete",
+      responses: {},
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+
+    getSchedulesOfStaff: {
+      method: "GET",
+      path: "/api/schedule/staff",
+      responses: {},
+      query: z.object({
+        id: z.string(),
+      }),
+    },
+  }),
 });

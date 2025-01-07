@@ -297,7 +297,7 @@ const OrderList = ({
                 />
               </div>
             </Link>
-            <Link href={`/admin/order/edit/${item._id}`}>
+            {/* <Link href={`/admin/order/edit/${item._id}`}>
               <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
                 <Icon
                   icon="tabler:edit"
@@ -306,7 +306,7 @@ const OrderList = ({
                   className="text-white dark:bg-dark-150 bg-dark-green rounded-md p-1 hover:cursor-pointer"
                 />
               </div>
-            </Link>
+            </Link> */}
             <div
               className="w-7 h-7 flex items-center justify-center rounded-full"
               onClick={() => setDeleteOrderId(item._id)}

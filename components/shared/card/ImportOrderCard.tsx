@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Product } from "./ImportCard";
 
 export interface DetailImportProduct {
-  productId: string;
+  id: string;
   material: string;
   size: string;
   unitPrice: number;
@@ -31,15 +31,15 @@ const ImportOrderCard = ({
     if (newQuantity === 0) {
       // Xóa sản phẩm khỏi giỏ hàng
       setItem((prevItem: any) => {
-        const updatedDetails = prevItem.invoice.filter(
+        const updatedDetails = prevItem.details.filter(
           (detail: any) =>
             !(
-              detail.productId === cartItem.productId &&
+              detail.id === cartItem.id &&
               detail.material === cartItem.material &&
               detail.size === cartItem.size
             )
         );
-        return { ...prevItem, invoice: updatedDetails };
+        return { ...prevItem, details: updatedDetails };
       });
     } else {
       setQuantity(newQuantity);
@@ -50,9 +50,9 @@ const ImportOrderCard = ({
 
       // Cập nhật state giỏ hàng cha
       setItem((prevItem: any) => {
-        const updatedDetails = prevItem.invoice.map((detail: any) => {
+        const updatedDetails = prevItem.details.map((detail: any) => {
           if (
-            detail.productId === cartItem.productId &&
+            detail.id === cartItem.id &&
             detail.material === cartItem.material &&
             detail.size === cartItem.size
           ) {
@@ -60,7 +60,7 @@ const ImportOrderCard = ({
           }
           return detail;
         });
-        return { ...prevItem, invoice: updatedDetails };
+        return { ...prevItem, details: updatedDetails };
       });
     }
   };
@@ -73,7 +73,7 @@ const ImportOrderCard = ({
 
   return (
     <div
-      key={cartItem.productId}
+      key={cartItem.id}
       className="w-full h-full flex flex-row items-center justify-between py-3"
     >
       <div className="flex w-full h-full gap-4 items-center py-3">

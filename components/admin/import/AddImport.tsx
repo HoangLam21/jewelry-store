@@ -11,20 +11,13 @@ import { formatCurrency, formatPrice } from "@/lib/utils";
 import ImportOrderCard, {
   DetailImportProduct,
 } from "@/components/shared/card/ImportOrderCard";
-import TableSearch from "@/components/shared/table/TableSearch";
 import TableSearchNoFilter from "@/components/shared/table/TableSearchNoFilter";
-import PhoneNumberInput from "@/components/shared/input/PhoneInput";
 import Image from "next/image";
-import { Import } from "@/database/import.model";
 import { FileContent, ProductResponse } from "@/dto/ProductDTO";
 import { Variant } from "../product/ProductList";
 import { CreateImport } from "@/dto/ImportDTO";
 import { fetchProduct } from "@/lib/service/product.service";
-import { fetchVoucher } from "@/lib/service/voucher.service";
 import { createImport } from "@/lib/service/import.service";
-import InputDate from "@/components/shared/input/InputDate";
-import InputNumberSelection from "@/components/shared/input/InputNumberSelection";
-import AddDetailProduct from "../order/AddDetailProduct";
 import AddDetailImport from "./AddDetailImport";
 
 export interface Product {
@@ -50,7 +43,7 @@ const AddImport = () => {
   const [isProductOverlayOpen, setIsProductOverlayOpen] = useState(false);
 
   const [productDetail, setProductDetail] = useState({
-    productId: "",
+    id: "",
     material: "",
     size: "",
     unitPrice: "",
@@ -59,7 +52,7 @@ const AddImport = () => {
   });
 
   const [item, setItem] = useState<CreateImport>({
-    invoice: [],
+    details: [],
     provider: "", // Default to an empty string
     staff: "6776bdd574de08ccc866a4b8", // Default to an empty string
   });
@@ -129,15 +122,15 @@ const AddImport = () => {
     setSelectedItem(product);
     setProductDetail({
       ...productDetail,
-      productId: product.id,
+      id: product.id,
     });
     setIsProductOverlayOpen(true); // Mở modal
   };
 
   const updateCart = (updatedItem: DetailImportProduct) => {
     // Update the item details with the new quantity
-    const updatedDetails = item.invoice.map((detail) =>
-      detail.productId === updatedItem.productId
+    const updatedDetails = item.details.map((detail) =>
+      detail.id === updatedItem.id
         ? { ...detail, quantity: updatedItem.quantity } // Update the quantity
         : detail
     );
@@ -145,15 +138,15 @@ const AddImport = () => {
     // Update the state with the new details
     setItem({
       ...item,
-      invoice: updatedDetails,
+      details: updatedDetails,
     });
   };
 
-  console.log(item.invoice, "invoice");
+  console.log(item.details, "details");
 
   // Calculate the total price and discount
   const calculateTotal = () => {
-    return item.invoice.reduce((total, detail) => {
+    return item.details.reduce((total, detail) => {
       const price = detail.unitPrice * detail.quantity;
       const discountAmount = (price * parseFloat(detail.discount)) / 100;
       return total + price - discountAmount;
@@ -173,17 +166,19 @@ const AddImport = () => {
       }));
 
       const data: CreateImport = {
-        invoice: item.invoice,
+        details: item.details,
         provider: item.provider, // Default to an empty string
         staff: "6776bdd574de08ccc866a4b8", // Default to an empty string
       };
 
-      console.log(data);
+      console.log(data, "data import");
 
       try {
         const result = await createImport(data);
-        console.log(result);
-        alert("Order created successfully!");
+        if (result) {
+          console.log(result, "rs of impirt");
+          alert("Order created successfully!");
+        }
       } catch (error) {
         console.error("Error creating order:", error);
         alert("Failed to create order.");
@@ -223,7 +218,7 @@ const AddImport = () => {
           />
         </div>
 
-        {/* Invoice Detail */}
+        {/* details Detail */}
         <TitleSession title="Import Product" />
         <div className="w-full md:w-2/3 lg:w-[250px]">
           <TableSearchNoFilter onSearch={setSearchQuery} />
@@ -242,14 +237,14 @@ const AddImport = () => {
           {/* Cart Section */}
           {/* Cart Section */}
           <div className="flex flex-col md:w-2/5 w-2/3 lg:w-2/5 max-h-[400px]">
-            {item.invoice.length > 0 ? (
+            {item.details.length > 0 ? (
               <div className="container w-full flex flex-col overflow-y-auto rounded-lg p-4 pt-2">
                 <h4 className="text-[18px] font-semibold">In cart:</h4>
                 <hr className="my-2" />
                 <div>
-                  {item.invoice.map((cartItem) => (
+                  {item.details.map((cartItem) => (
                     <div
-                      key={`${cartItem.productId}-${cartItem.material}-${cartItem.size}`}
+                      key={`${cartItem.id}-${cartItem.material}-${cartItem.size}`}
                       className="flex flex-col gap-4"
                     >
                       <ImportOrderCard

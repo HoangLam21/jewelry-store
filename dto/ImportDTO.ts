@@ -31,8 +31,8 @@ export interface Invoice {
 export interface CreateImport {
   staff: string;
   provider: string;
-  invoice: {
-    productId: string;
+  details: {
+    id: string;
     material: string;
     size: string;
     unitPrice: number;
