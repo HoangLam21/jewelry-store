@@ -1,27 +1,40 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { getCategoryById } from "@/lib/services/category.service";
-import Link from "next/link";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import ProductCard from "@/components/card/product/ProductCard";
+import { fetchProducts } from "@/lib/services/product.service";
+import { getVoucherById } from "@/lib/services/voucher.service";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const Page = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
-  const [category, setCategory] = useState<any>(null);
   const [productsData, setProductsData] = useState<any[]>([]);
+  const [voucherData, setVoucherData] = useState<any>(null);
   const [sortOption, setSortOption] = useState<string>("default");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
-
   useEffect(() => {
-    const getProduct = async () => {
-      const data = await getCategoryById(id);
-      setCategory(data);
-      setProductsData(data.products);
-      console.log(data);
+    let isMounted = true;
+    const getAllProducts = async () => {
+      try {
+        const voucher = await getVoucherById(id);
+        const data = await fetchProducts();
+        if (isMounted) {
+          const filtered = data.filter((product: any) =>
+            product.vouchers.some((voucher: any) => voucher._id === id)
+          );
+          setProductsData(filtered);
+          setVoucherData(voucher);
+        }
+      } catch (error) {
+        console.error("Error loading posts:", error);
+      }
     };
-    getProduct();
+    getAllProducts();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleSortChange = (option: string) => {
@@ -48,13 +61,12 @@ const Page = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
   return (
     <div>
       <div className="bg-[#EDF1F3] dark:bg-dark-200 h-[250px] flex justify-center items-center">
         <div>
           <h1 className="text-dark100_light500 font-light text-[84px]">
-            CATEGORY
+            VOUCHER
           </h1>
           <div className="flex justify-center items-center">
             <Link href="/">
@@ -66,14 +78,14 @@ const Page = () => {
               height="16"
             />
             <Link href="/">
-              <span className="text-dark100_light500">Category</span>
+              <span className="text-dark100_light500">Voucher</span>
             </Link>
             <Icon
               icon="solar:alt-arrow-right-line-duotone"
               width="24"
               height="16"
             />
-            <span className="text-primary-100">{category?.name}</span>
+            <span className="text-primary-100">{voucherData?.name}</span>
           </div>
         </div>
       </div>
