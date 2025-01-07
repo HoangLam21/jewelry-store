@@ -43,7 +43,7 @@ const columns = [
 const StaffInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [staff, setStaff] = useState<Staff | null>(null); // Store staff data safely
-  const [importOfStaff, setImportOfStaff] = useState<Import[]>([]); // Store staff data safely
+  const [importOfStaff, setImportOfStaff] = useState<[]>([]); // Store staff data safely
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
@@ -72,7 +72,9 @@ const StaffInformation = () => {
     const fetchImportOfStaffData = async () => {
       try {
         if (id) {
-          const foundItem = await getAllImportsOfStaff(id);
+          const foundItem = await getAllImportsOfStaff(
+            "6776bdd574de08ccc866a4b8"
+          );
           setImportOfStaff(foundItem);
         }
       } catch (error) {
@@ -108,18 +110,19 @@ const StaffInformation = () => {
     }
   };
 
-  const sorted = [...importOfStaff].sort((a, b) => {
-    const aValue = getValueByKey(a, sortConfig.key);
-    const bValue = getValueByKey(b, sortConfig.key);
+  // const sorted = [...importOfStaff].sort((a, b) => {
+  //   const aValue = getValueByKey(a, sortConfig.key);
+  //   const bValue = getValueByKey(b, sortConfig.key);
 
-    if (aValue < bValue) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
+  //   if (aValue < bValue) {
+  //     return sortConfig.direction === "ascending" ? -1 : 1;
+  //   }
+  //   if (aValue > bValue) {
+  //     return sortConfig.direction === "ascending" ? 1 : -1;
+  //   }
+  //   return 0;
+  // });
+
   const requestSort = (key: SortableKeys) => {
     let direction: "ascending" | "descending" = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -128,16 +131,27 @@ const StaffInformation = () => {
     setSortConfig({ key, direction });
   };
 
-  const filteredInvoices = importOfStaff.filter((invoice) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      invoice.invoice
-        .map((it) => it.productName.toLowerCase())
-        .includes(query) ||
-      invoice.invoice
-        .map((it) => (it.quantity * it.unitPrice).toString().toLowerCase())
-        .includes(query)
-    );
+  // const filteredInvoices = importOfStaff.filter((invoice) => {
+  //   const query = searchQuery.toLowerCase();
+  //   return (
+  //     invoice.invoice
+  //       .map((it) => it.productName.toLowerCase())
+  //       .includes(query) ||
+  //     invoice.invoice
+  //       .map((it) => (it.quantity * it.unitPrice).toString().toLowerCase())
+  //       .includes(query)
+  //   );
+  // });
+
+  const filteredInvoices = importOfStaff.filter((item: any) => {
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    // Lọc theo searchQuery
+    const matchesSearch =
+      item.staff?.fullName.toLowerCase().includes(lowerCaseQuery) ||
+      item.createAt.toLowerCase().includes(lowerCaseQuery) ||
+      item.cost.toString().toLowerCase().includes(lowerCaseQuery);
+
+    return matchesSearch;
   });
 
   const totalPages = Math.ceil(filteredInvoices.length / rowsPerPage);

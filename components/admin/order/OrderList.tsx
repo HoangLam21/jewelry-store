@@ -1,6 +1,6 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { ImportData } from "@/constants/data";
+
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
@@ -9,22 +9,10 @@ import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import { format } from "date-fns";
 import LabelStatus from "@/components/shared/label/LabelStatus";
-
-interface Staff {
-  id: string;
-  createAt: string;
-  createBy: string;
-  invoice: [
-    {
-      id: string;
-      productName: string;
-      unitPrice: number;
-      quantity: number;
-      discount: number;
-    }
-  ];
-  status: boolean;
-}
+import { Order } from "@/dto/OrderDTO";
+import { deleteOrder } from "@/lib/service/order.service";
+import Format from "@/components/shared/card/ConfirmCard";
+import { formatPrice } from "@/lib/utils";
 
 const columns = [
   { header: "ID", accessor: "id" },
@@ -52,10 +40,17 @@ const columns = [
   { header: "Action", accessor: "action" },
 ];
 
-const OrderList = () => {
+const OrderList = ({
+  orderData,
+  setOrderData,
+}: {
+  orderData: any[];
+  setOrderData: any;
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
+  const [deleteOrderId, setDeleteOrderId] = useState<string | null>(null);
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -64,24 +59,24 @@ const OrderList = () => {
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "fullname" | "total" | "status" | "number";
+  type SortableKeys = "id" | "createBy" | "total" | "status" | "number";
 
-  const getValueByKey = (item: (typeof ImportData)[0], key: SortableKeys) => {
+  const getValueByKey = (item: (typeof orderData)[0], key: SortableKeys) => {
     switch (key) {
       case "id":
-        return item.id;
-      case "fullname":
+        return item._id;
+      case "createBy":
         return item.createBy;
       case "status":
         return item.status;
       case "total":
-        return item.invoice.map((it) => it.quantity * it.unitPrice);
+        return item.cost;
       default:
         return "";
     }
   };
 
-  const sorted = [...ImportData].sort((a, b) => {
+  const sorted = [...orderData].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -106,13 +101,9 @@ const OrderList = () => {
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
-      item.createBy.toLowerCase().includes(lowerCaseQuery) ||
-      item.createBy.toLowerCase().includes(lowerCaseQuery) ||
-      item.invoice
-        .map((it) => it.quantity * it.unitPrice)
-        .toString()
-        .toLowerCase()
-        .includes(lowerCaseQuery);
+      item.staff?.fullName.toLowerCase().includes(lowerCaseQuery) ||
+      item.createAt.toLowerCase().includes(lowerCaseQuery) ||
+      item.cost.toString().toLowerCase().includes(lowerCaseQuery);
 
     return matchesSearch;
   });
@@ -139,28 +130,46 @@ const OrderList = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (item: Staff) => (
+  const handleDeleteOrder = async (id: string) => {
+    console.log("davo");
+    try {
+      const result = await deleteOrder(id);
+      if (result) {
+        setOrderData((prev: any[]) =>
+          prev.filter((item: any) => item._id !== id)
+        );
+        () => setDeleteOrderId(null);
+        alert("Delete order successfully.");
+      } else {
+        alert("Can't delete order.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
+  };
+
+  const renderRow = (item: any) => (
     <tr
-      key={item.id}
+      key={item._id}
       className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
           <p>Order Id</p>
-          <p>#00{item.id}</p>
+          <p>#00{item._id}</p>
         </div>
       </td>
       <td className="px-4 py-2">{format(item.createAt, "PPP")}</td>
-      <td className="px-4 py-2">{item.createBy}</td>
+      <td className="px-4 py-2">{item.staff?.fullName || ""}</td>
 
       <td className="px-4 py-2 hidden md:table-cell">
         {" "}
-        {`${item.invoice
-          .map((it) => it.quantity * it.unitPrice)
-          .toLocaleString("vi-VN")} VND`}
+        {formatPrice(item.cost)}
       </td>
       <td className="px-4 py-2">
-        {item.status ? (
+        {item.status === "done" ? (
           <LabelStatus
             title="Done"
             background="bg-custom-green"
@@ -176,7 +185,7 @@ const OrderList = () => {
       </td>
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <Link href={`/admin/order/${item.id}`}>
+          <Link href={`/admin/order/${item._id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:eye"
@@ -186,26 +195,40 @@ const OrderList = () => {
               />
             </div>
           </Link>
-          <Link href={`/admin/order/edit/${item.id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full">
+          <Link href={`/admin/order/edit/${item._id}`}>
+            <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
               <Icon
                 icon="tabler:edit"
                 width={24}
                 height={24}
-                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1"
+                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1 hover:cursor-pointer"
               />
             </div>
           </Link>
-          <div className="w-7 h-7 flex items-center justify-center rounded-full">
+          <div
+            className="w-7 h-7 flex items-center justify-center rounded-full"
+            onClick={() => setDeleteOrderId(item._id)}
+          >
             <Icon
               icon="tabler:trash"
               width={24}
               height={24}
-              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1"
+              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1 hover:cursor-pointer"
             />
           </div>
         </div>
       </td>
+      {deleteOrderId === item._id && (
+        <td colSpan={columns.length}>
+          <Format
+            onClose={() => setDeleteOrderId(null)}
+            content={`delete: `}
+            label={"Delete order"}
+            userName={item._id}
+            onConfirmDelete={() => handleDeleteOrder(item._id)}
+          />
+        </td>
+      )}
     </tr>
   );
   return (

@@ -6,7 +6,14 @@ export interface Import {
     fullname: string;
     address: string;
   };
-  invoice: Invoice[];
+  invoice: {
+    id: string;
+    productName: string;
+    productImage: string;
+    unitPrice: number;
+    quantity: number;
+    discount: number;
+  }[];
   status: boolean;
   createAt: Date;
   createBy: string;
