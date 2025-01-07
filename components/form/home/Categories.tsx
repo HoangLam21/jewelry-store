@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { fetchCategory } from "@/lib/services/category.service";
+import { useRouter } from "next/navigation";
 
 const Categories = ({ categoriesData }: any) => {
+  const router = useRouter();
+
+  const handleNavigateCategoryDetail = (id: string) => {
+    router.push(`/category/${id}`);
+  };
   return (
     <div className="mt-[150px] w-[95%] mx-auto">
       {/* Header */}
@@ -29,9 +35,13 @@ const Categories = ({ categoriesData }: any) => {
             key={category._id}
             className="flex-shrink-0 flex flex-col items-center"
           >
-            <div className="w-[140px] h-[140px] object-cover rounded-full flex justify-center items-center my-3 shadow-md">
+            <div
+              onClick={() => handleNavigateCategoryDetail(category._id)}
+              className="w-[140px] h-[140px] object-cover rounded-full flex justify-center items-center my-3 shadow-md"
+            >
               <p className="text-xl jost capitalize mt-2 text-dark100_light500">
                 {category.name}
+                <span className="text-primary-100 text-3xl">.</span>
               </p>
             </div>
 

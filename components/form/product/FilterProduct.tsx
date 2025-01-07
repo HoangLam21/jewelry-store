@@ -220,7 +220,7 @@ const FilterProduct = ({ productsData, setFilteredData }: any) => {
   };
 
   useEffect(() => {
-    const filteredData = productsData.filter((item: any) => {
+    const filteredData = productsData?.filter((item: any) => {
       const matchesQuery = searchQuery
         ? item.name.toLowerCase().includes(searchQuery.toLowerCase())
         : true;
