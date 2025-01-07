@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import EditModal from "./EditModal";
 import Avatar from "./Avatar";
 import { fetchOrder } from "@/lib/service/order.service";
+import MyButton from "@/components/shared/button/MyButton";
+import OrderDetailModal from "../order/DetailOrder";
 interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -21,6 +23,9 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [ordersData, setOrdersData] = useState<any[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+
   const [editData, setEditData] = useState<CreateCustomer>({
     fullName: "",
     phoneNumber: "",
@@ -93,6 +98,33 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleOrderDetailClick = (order: any) => {
+    setSelectedOrder(order);
+    setIsOrderModalOpen(true);
+  };
+
+  const handleCloseOrderModal = () => {
+    setSelectedOrder(null);
+    setIsOrderModalOpen(false);
+  };
+
+  const handleCancelOrder = async (orderId: string) => {
+    try {
+      // Thêm logic gọi API để hủy đơn hàng ở đây
+      console.log("Canceling order with ID:", orderId);
+
+      // Cập nhật trạng thái đơn hàng sau khi hủy (giả sử API trả về kết quả thành công)
+      setFilteredOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId ? { ...order, status: "cancelled" } : order
+        )
+      );
+      handleCloseOrderModal();
+    } catch (error) {
+      console.error("Failed to cancel order:", error);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -156,21 +188,18 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
         <div className="w-full pl-5 overflow-y-auto">
           {filteredOrders.length > 0 ? (
             filteredOrders.map((order) => (
-              <div
-                key={order._id}
-                className="p-4 mb-4 bg-gray-100 rounded-lg shadow-md"
-              >
-                <h3 className="text-lg font-semibold text-gray-800">
+              <div key={order._id} className="p-4 mb-4  rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold ">
                   Order ID: {order._id}
                 </h3>
                 <p>
                   <strong>Status:</strong> {order.status}
                 </p>
                 <p>
-                  <strong>Cost:</strong> ${order.cost.toLocaleString()}
+                  <strong>Cost:</strong> {order.cost.toLocaleString()}
                 </p>
                 <p>
-                  <strong>Discount:</strong> {order.discount}%
+                  <strong>Discount:</strong> {order.discount}
                 </p>
                 <p>
                   <strong>Shipping Method:</strong> {order.shippingMethod}
@@ -179,16 +208,16 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
                   <strong>ETD:</strong>{" "}
                   {new Date(order.ETD).toLocaleDateString()}
                 </p>
-                <div>
-                  <strong>Products:</strong>
-                  <ul className="mt-2 ml-4 list-disc">
-                    {order.details.map((item: any) => (
-                      <li key={item?._id}>
-                        {item?.material} (Size: {item?.size}, Quantity:{" "}
-                        {item?.quantity}, Discount: {item?.discount}%)
-                      </li>
-                    ))}
-                  </ul>
+                <div className="mt-3">
+                  <MyButton
+                    title="See detail"
+                    background="bg-primary-100"
+                    rounded="none"
+                    text_color="text-dark500_light100"
+                    text="text-sm"
+                    onClick={() => handleOrderDetailClick(order)}
+                    width=""
+                  />
                 </div>
               </div>
             ))
@@ -204,6 +233,14 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
           setEditData={setEditData}
           setIsEditModalOpen={setIsEditModalOpen}
           handleSaveEdit={handleSaveEdit}
+        />
+      )}
+      {isOrderModalOpen && selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          isOpen={isOrderModalOpen}
+          onClose={handleCloseOrderModal}
+          onCancelOrder={handleCancelOrder}
         />
       )}
     </div>

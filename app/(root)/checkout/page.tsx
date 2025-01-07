@@ -20,6 +20,7 @@ export default function Page() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
   const router = useRouter();
+
   useEffect(() => {
     const { originalPrice, discount, finalPrice } = state.items.reduce(
       (totals, item) => {
@@ -76,31 +77,28 @@ export default function Page() {
       customer: "6776bd0974de08ccc866a4ab",
       phoneNumber: phoneNumber,
       note: note,
-      staff: "6776bd0974de08ccc866a4ab", // Thay bằng ID nhân viên hiện tại
+      staff: "6776bd0974de08ccc866a4ab",
     };
 
     try {
       console.log("vo");
       const response = await fetch("/api/order/create", {
-        method: "POST", // HTTP method
+        method: "POST",
         headers: {
-          "Content-Type": "application/json", // Định dạng dữ liệu
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderData), // Dữ liệu gửi đi
+        body: JSON.stringify(orderData),
       });
 
       if (!response.ok) {
-        // Nếu có lỗi, tạo một lỗi mới
         throw new Error(`Server error: ${response.statusText}`);
       }
 
-      const data = await response.json(); // Chuyển phản hồi sang JSON
+      const data = await response.json();
       console.log("Order created:", data);
       router.push("/");
-      // Điều hướng hoặc thông báo thành công
     } catch (error: any) {
       console.error("Error creating order:", error.message);
-      // Thông báo lỗi
     }
   };
 
