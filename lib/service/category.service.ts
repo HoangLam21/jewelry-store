@@ -21,7 +21,7 @@ export async function fetchCategory(): Promise<CategoryResponse[]> {
 
 export async function getDetailCategory(id: string): Promise<CategoryResponse> {
   try {
-    const response = await fetch(`/api/category/get?categoryId=${id}`);
+    const response = await fetch(`/api/category/get?id=${id}`);
     if (!response.ok) {
       throw new Error("Không thể lấy thông tin loai hang.");
     }

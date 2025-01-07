@@ -67,7 +67,7 @@ export async function deleteProductById(productId: string) {
 }
 
 export async function createProduct(
-  params: any
+  params: CreateProduct
   // token: string
 ): Promise<ProductResponse> {
   try {
@@ -77,9 +77,13 @@ export async function createProduct(
     formData.append("name", params.name);
     formData.append("cost", params.cost.toString());
     formData.append("description", params.description);
-    // formData.append("provider", params.provider);
-    // formData.append("category", params.category || "");
-    // formData.append("collections", params.collections);
+    if (params.provider) {
+      formData.append("provider", params.provider);
+    }
+    if (params.category) {
+      formData.append("category", params.category);
+    }
+    formData.append("collections", params.collections || "");
 
     // Thêm các tệp vào FormData
     if (params.images && params.images.length > 0) {
@@ -150,9 +154,13 @@ export async function updateInfoProduct(
     formData.append("name", params.name);
     formData.append("cost", params.cost.toString());
     formData.append("description", params.description);
-    formData.append("provider", params.provider);
-    formData.append("category", params.category || "");
-    formData.append("collections", params.collections);
+    if (params.provider) {
+      formData.append("provider", params.provider);
+    }
+    if (params.category) {
+      formData.append("category", params.category);
+    }
+    formData.append("collections", params.collections || "");
 
     // Thêm các tệp vào FormData
     if (params.images && params.images.length > 0) {
