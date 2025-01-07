@@ -57,8 +57,8 @@ export interface CreateProduct {
   description: string;
   images: FileContent[];
   vouchers: string;
-  provider: string;
-  category: string;
+  provider?: string;
+  category?: string;
   collections: string;
   variants: Variant[];
 }

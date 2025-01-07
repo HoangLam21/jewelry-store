@@ -236,17 +236,20 @@ const AddProduct = ({ onBack, setList }: Props) => {
   //SAVE
   const handleSave = async () => {
     if (item) {
-      const data: CreateProduct = {
-        name: item.productName,
-        cost: parseCurrency(item.price),
-        description: item.description,
-        images: selectedFiles,
-        vouchers: item.vouchers,
-        provider: item.provider,
-        category: item.category,
-        collections: item.collection,
-        variants: groupVariants(combinedData)
-      };
+      const data: CreateProduct = Object.fromEntries(
+        Object.entries({
+          name: item.productName,
+          cost: parseCurrency(item.price),
+          description: item.description,
+          images: selectedFiles,
+          vouchers: item.vouchers,
+          provider: item.provider || undefined,
+          category: item.category || undefined,
+          collections: item.collection,
+          variants: groupVariants(combinedData)
+        }).filter(([_, value]) => value !== undefined)
+      ) as unknown as CreateProduct;
+
       console.log(data);
       const result = await createProduct(data);
       console.log(result);
@@ -268,11 +271,11 @@ const AddProduct = ({ onBack, setList }: Props) => {
           }
         ]);
 
-        alert("Update information of customer");
+        alert("Update information of product");
       } else {
-        alert("Can't update information of customer");
+        alert("Can't update information of product");
       }
-    } else alert("No information of customer to update");
+    } else alert("No information of product to update");
     console.log("save");
   };
   const handleConfirmSave = () => {
@@ -353,6 +356,17 @@ const AddProduct = ({ onBack, setList }: Props) => {
                         }));
                       }}
                     />
+                    <InputEdit
+                      titleInput="Description"
+                      onChange={(e) =>
+                        handleChangeProductInputFields(
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      width="w-full"
+                      placeholder="Enter some description..."
+                    />
                   </div>
                   <div className="w-1/2 h-fit gap-4 flex flex-col">
                     <InputSelection
@@ -375,20 +389,18 @@ const AddProduct = ({ onBack, setList }: Props) => {
                       width="w-full"
                       placeholder="Enter price of product..."
                     />
+                    <InputEdit
+                      titleInput="Collection"
+                      onChange={(e) =>
+                        handleChangeProductInputFields(
+                          "collection",
+                          e.target.value
+                        )
+                      }
+                      width="w-full"
+                      placeholder="Enter collection"
+                    />
                   </div>
-                </div>
-                <div className="flex w-full h-fit">
-                  <InputEdit
-                    titleInput="Description"
-                    onChange={(e) =>
-                      handleChangeProductInputFields(
-                        "description",
-                        e.target.value
-                      )
-                    }
-                    width="w-full"
-                    placeholder="Enter some description..."
-                  />
                 </div>
 
                 <div className="flex flex-col gap-4 w-full h-fit">
