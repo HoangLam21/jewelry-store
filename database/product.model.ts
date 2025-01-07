@@ -30,9 +30,9 @@ const ProductSchema = new Schema<IProduct>({
     provider: {
         type: Schema.Types.ObjectId,
         ref: "ProductProvider",
-        required: true,
+        required: false,
     },
-    category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    category: { type: Schema.Types.ObjectId, ref: "Category", required: false },
     collections: { type: String },
     variants: {
         type: [

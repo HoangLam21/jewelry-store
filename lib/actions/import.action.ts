@@ -133,53 +133,170 @@ export const verifyImport = async (id: string) => {
     }
 };
 
-// Đọc tất cả nhập hàng
-export const getImports = async () => {
+// Các interfaces cho response
+interface ImportResponse {
+    id: string;
+    supplier: {
+        id: string;
+        phoneNumber: string;
+        fullname: string;
+        address: string;
+    };
+    invoice: {
+        id: string;
+        productName: string;
+        productImage: string | null;
+        unitPrice: number;
+        quantity: number;
+        discount: number;
+    }[];
+    status: boolean;
+    createAt: Date;
+    createBy: string;
+}
+
+// Interface cho populated documents
+interface ImportDetail {
+    id: ObjectId;
+    material: string;
+    size: string;
+    unitPrice: number;
+    quantity: number;
+    discount: string;
+}
+
+interface StaffDocument {
+    _id: ObjectId;
+    fullName: string;
+}
+
+interface ProviderDocument {
+    _id: ObjectId;
+    phoneNumber: string;
+    fullname: string;
+    address: string;
+}
+
+interface ProductDocument {
+    _id: ObjectId;
+    name: string;
+    provider: ProviderDocument;
+    files: ObjectId[];
+}
+
+interface FileDocument {
+    _id: ObjectId;
+    url: string;
+}
+
+interface ImportDocument {
+    _id: ObjectId;
+    staff: StaffDocument;
+    details: ImportDetail[];
+    status: boolean;
+    createdAt: Date;
+}
+
+export const getImports = async (): Promise<ImportResponse[]> => {
     try {
-        connectToDatabase();
-        const imports = await Import.find();
+        await connectToDatabase();
+
+        // Get imports with populated staff
+        const rawImports = await Import.find().populate("staff").lean();
+
+        // Type assertion với unknown trung gian
+        const imports = rawImports as unknown as ImportDocument[];
+
         const result = await Promise.all(
             imports.map(async (importData) => {
-                const staff = await Staff.findById(importData.staff);
-                const provider = await ProductProvider.findById(
-                    (
-                        await Product.findById(importData.details[0].id)
-                    ).provider
-                );
-                const invoices = await Promise.all(
-                    importData.details.map(async (detail: any) => {
-                        const product = await Product.findById(detail.id);
-                        const file = (
-                            await File.find({ _id: { $in: product.files } })
-                        )[0];
-                        return {
-                            id: product._id.toString(),
-                            productName: product.name,
-                            productImage: file.url,
-                            unitPrice: detail.unitPrice,
-                            quantity: detail.quantity,
-                            discount: Number(detail.discount),
-                        };
-                    })
-                );
-                return {
-                    id: importData._id.toString(),
-                    suplier: {
-                        id: provider._id.toString(),
-                        phoneNumber: provider.phoneNumber,
-                        fullname: provider.fullname,
-                        address: provider.address,
-                    },
-                    invoice: invoices,
-                    status: importData.status,
-                    createAt: importData.createdAt,
-                    createBy: staff.fullName,
-                };
+                try {
+                    // Validate staff
+                    if (!importData.staff || !importData.details?.length) {
+                        throw new Error(
+                            `Invalid import data for ${importData._id}`
+                        );
+                    }
+
+                    // Get first product with populated provider
+                    const rawProduct = await Product.findById(
+                        importData.details[0].id
+                    )
+                        .populate("provider")
+                        .lean();
+
+                    // Type assertion với unknown trung gian
+                    const firstProduct =
+                        rawProduct as unknown as ProductDocument;
+
+                    if (!firstProduct?.provider) {
+                        throw new Error(
+                            `Product or provider not found for import ${importData._id}`
+                        );
+                    }
+
+                    // Process invoice details
+                    const invoices = await Promise.all(
+                        importData.details.map(async (detail) => {
+                            const rawProduct = await Product.findById(
+                                detail.id
+                            ).lean();
+
+                            // Type assertion với unknown trung gian
+                            const product =
+                                rawProduct as unknown as ProductDocument;
+
+                            if (!product) {
+                                throw new Error(
+                                    `Product not found: ${detail.id}`
+                                );
+                            }
+
+                            let productImage: string | null = null;
+                            if (product.files?.length) {
+                                const rawFile = await File.findById(
+                                    product.files[0]
+                                ).lean();
+                                const file = rawFile as unknown as FileDocument;
+                                productImage = file?.url || null;
+                            }
+
+                            return {
+                                id: product._id.toString(),
+                                productName: product.name,
+                                productImage,
+                                unitPrice: detail.unitPrice,
+                                quantity: detail.quantity,
+                                discount: Number(detail.discount) || 0,
+                            };
+                        })
+                    );
+
+                    return {
+                        id: importData._id.toString(),
+                        supplier: {
+                            id: firstProduct.provider._id.toString(),
+                            phoneNumber: firstProduct.provider.phoneNumber,
+                            fullname: firstProduct.provider.fullname,
+                            address: firstProduct.provider.address,
+                        },
+                        invoice: invoices,
+                        status: importData.status,
+                        createAt: importData.createdAt,
+                        createBy: importData.staff.fullName,
+                    };
+                } catch (error) {
+                    console.error(
+                        `Error processing import ${importData._id}:`,
+                        error
+                    );
+                    return null;
+                }
             })
         );
-        return result;
+
+        return result.filter((item): item is ImportResponse => item !== null);
     } catch (error) {
-        console.log("Error fetching Imports: ", error);
+        console.error("Error fetching Imports: ", error);
         throw new Error("Failed to fetch imports");
     }
 };

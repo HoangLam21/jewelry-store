@@ -8,7 +8,7 @@ export default async function handler(
 ) {
     if (req.method === "GET") {
         try {
-            const categoryId = req.query.categoryId;
+            const categoryId = req.query.id;
             const category = await getCategoryById(categoryId as string);
             return res.status(200).json(category);
         } catch (error) {

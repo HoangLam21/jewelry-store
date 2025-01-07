@@ -1,7 +1,7 @@
 // category.action
 import Category from "@/database/category.model";
 import Product from "@/database/product.model";
-import mongoose from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
 import { connectToDatabase } from "../mongoose";
 
 // Create a new category
@@ -66,18 +66,109 @@ export const getCategories = async () => {
     }
 };
 
-// Get a category by ID
+// Interface cho Product sau khi populate
+interface ProductPopulated {
+    _id: ObjectId;
+    name: string;
+    cost: number;
+    files: {
+        _id: ObjectId;
+        url: string;
+    }[];
+    description: string;
+    vouchers: ObjectId[];
+    provider: {
+        _id: ObjectId;
+        fullname: string;
+        phoneNumber: string;
+        address: string;
+    };
+    category: ObjectId;
+    collections: string;
+    variants: {
+        material: string;
+        sizes: {
+            size: string;
+            stock: number;
+        }[];
+        addOn: number;
+    }[];
+    sales: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+// Interface cho Category sau khi populate products
+interface CategoryPopulated {
+    _id: ObjectId;
+    name: string;
+    hot: boolean;
+    products: ProductPopulated[];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 export const getCategoryById = async (id: string) => {
     try {
         await connectToDatabase();
-        const category = await Category.findById(id);
+
+        // Populate toàn bộ thông tin sản phẩm và các relationships của sản phẩm
+        const rawCategory = await Category.findById(id)
+            .populate({
+                path: "products",
+                populate: [
+                    {
+                        path: "files",
+                        select: "url", // Chỉ lấy url của file
+                    },
+                    {
+                        path: "provider",
+                        select: "fullname phoneNumber address", // Lấy thông tin cần thiết của provider
+                    },
+                ],
+            })
+            .lean();
+
+        // Type assertion
+        const category = rawCategory as unknown as CategoryPopulated;
+
         if (!category) {
             throw new Error("Category not found");
         }
-        return category;
+
+        // Transform dữ liệu trước khi trả về nếu cần
+        return {
+            id: category._id.toString(),
+            name: category.name,
+            hot: category.hot,
+            products: category.products.map((product) => ({
+                id: product._id.toString(),
+                name: product.name,
+                cost: product.cost,
+                images: product.files.map((file) => ({
+                    id: file._id.toString(),
+                    url: file.url,
+                })),
+                description: product.description,
+                provider: product.provider
+                    ? {
+                          id: product.provider._id.toString(),
+                          fullname: product.provider.fullname,
+                          phoneNumber: product.provider.phoneNumber,
+                          address: product.provider.address,
+                      }
+                    : null,
+                variants: product.variants,
+                sales: product.sales,
+                collections: product.collections,
+                createdAt: product.createdAt,
+                updatedAt: product.updatedAt,
+            })),
+            createdAt: category.createdAt,
+            updatedAt: category.updatedAt,
+        };
     } catch (error) {
         console.log("Error fetching category: ", error);
-        await mongoose.connection.close();
         throw new Error("Failed to fetch category");
     } finally {
         await mongoose.connection.close();
