@@ -1,3 +1,4 @@
+const {nextui} = require('@nextui-org/theme');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -7,6 +8,7 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./styles/theme.css",
+    "./node_modules/@nextui-org/theme/dist/components/(calendar|button|ripple|spinner).js"
   ],
   theme: {
     container: {
@@ -83,9 +85,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/line-clamp"), // Thêm plugin line-clamp
-  ],
+  plugins: [require("tailwindcss-animate"),require("@tailwindcss/typography"),require("@tailwindcss/line-clamp")],// Thêm plugin line-clamp,nextui()],
 };

@@ -1,5 +1,6 @@
 import Schedule from "@/database/schedule.model";
 import Staff from "@/database/staff.model";
+import { connectToDatabase } from "../mongoose";
 
 export const createSchedule = async (data: {
   staff: string;
@@ -7,6 +8,7 @@ export const createSchedule = async (data: {
   date: string;
 }) => {
   try {
+    connectToDatabase();
     const staff = await Staff.findById(data.staff);
     if (!staff) {
       throw new Error("Staff not exist");
@@ -23,6 +25,7 @@ export const updateSchedule = async (
   id: string,
   data: { staff: string; shift: number; date: string }
 ) => {
+  connectToDatabase();
   try {
     const staff = await Staff.findById(data.staff);
     if (!staff) {
@@ -40,6 +43,7 @@ export const updateSchedule = async (
 
 export const getAllSchedule = async () => {
   try {
+    connectToDatabase();
     const schedules = await Schedule.find();
     const scheduleResponse = [];
     for (const schedule of schedules) {
@@ -55,6 +59,7 @@ export const getAllSchedule = async () => {
 
 export const getScheduleById = async (id: string) => {
   try {
+    connectToDatabase();
     const schedule = await Schedule.findById(id);
     const staff = await Staff.findById(schedule.staff);
     return { ...schedule.toObject(), staff: staff };
@@ -66,6 +71,7 @@ export const getScheduleById = async (id: string) => {
 
 export const deleteSchedule = async (id: string) => {
   try {
+    connectToDatabase();
     await Schedule.findByIdAndDelete(id);
     return { message: "Delete schedule successfully!" };
   } catch (error) {
@@ -76,6 +82,7 @@ export const deleteSchedule = async (id: string) => {
 
 export const getSchedulesOfStaff = async (id: string) => {
   try {
+    connectToDatabase();
     const schedules = await Schedule.find({ staff: id });
     const scheduleResponse = [];
     for (const schedule of schedules) {
