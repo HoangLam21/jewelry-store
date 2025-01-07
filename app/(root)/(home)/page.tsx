@@ -11,9 +11,11 @@ import Collections from "@/components/form/home/Collections";
 import Sale from "@/components/form/home/Sale";
 import { fetchProducts } from "@/lib/services/product.service";
 import { getCustomerById } from "@/lib/services/customer.service";
+import { fetchCategory } from "@/lib/services/category.service";
 
 export default function Page() {
   const [productsData, setProductsData] = useState<any[]>([]);
+  const [categoriesData, setCategoriesData] = useState<any[]>([]);
   useEffect(() => {
     const fetchAndSaveUser = async () => {
       try {
@@ -35,8 +37,10 @@ export default function Page() {
     const getAllProducts = async () => {
       try {
         const data = await fetchProducts();
+        const categories = await fetchCategory();
         if (isMounted) {
           setProductsData(data);
+          setCategoriesData(categories);
         }
       } catch (error) {
         console.error("Error loading posts:", error);
@@ -47,12 +51,13 @@ export default function Page() {
       isMounted = false;
     };
   }, []);
+
   return (
     <>
       <div className="px-[2%]">
         <Swiper productsData={productsData} />
         <FeaturesSession />
-        <Categories />
+        <Categories categoriesData={categoriesData} />
       </div>
 
       <Sale />

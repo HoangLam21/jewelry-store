@@ -1,45 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { fetchCategory } from "@/lib/services/category.service";
 
-const jewelryCategories = [
-  {
-    id: 1,
-    name: "Rings",
-    image: "/assets/images/793249C01_RGB.jpg",
-  },
-  {
-    id: 2,
-    name: "Necklaces",
-    image: "/assets/images/B89C2414.jpg",
-  },
-  {
-    id: 3,
-    name: "Bracelets",
-    image: "/assets/images/193569C00_RGB.jpg",
-  },
-  {
-    id: 4,
-    name: "Earrings",
-    image: "/assets/images/793249C01_RGB.jpg",
-  },
-  {
-    id: 5,
-    name: "Watches",
-    image: "/assets/images/793249C01_RGB.jpg",
-  },
-  {
-    id: 6,
-    name: "Brooches",
-    image: "/assets/images/793249C01_RGB.jpg",
-  },
-  {
-    id: 7,
-    name: "Charms",
-    image: "/assets/images/793249C01_RGB.jpg",
-  },
-];
-
-const Categories = () => {
+const Categories = ({ categoriesData }: any) => {
   return (
     <div className="mt-[150px] w-[95%] mx-auto">
       {/* Header */}
@@ -61,21 +24,17 @@ const Categories = () => {
           scrollbarColor: "#ffffff #f4ece3",
         }}
       >
-        {jewelryCategories.map((category) => (
+        {categoriesData?.map((category: any) => (
           <div
-            key={category.id}
+            key={category._id}
             className="flex-shrink-0 flex flex-col items-center"
           >
-            <img
-              src={category.image}
-              alt={category.name}
-              width={150}
-              height={150}
-              className="w-[150px] h-[150px] object-cover rounded-full"
-            />
-            <p className="text-lg jost capitalize mt-2 text-dark100_light500">
-              {category.name.toUpperCase()}
-            </p>
+            <div className="w-[140px] h-[140px] object-cover rounded-full flex justify-center items-center my-3 shadow-md">
+              <p className="text-xl jost capitalize mt-2 text-dark100_light500">
+                {category.name}
+              </p>
+            </div>
+
             <style jsx>{`
               .scrollbar-hide::-webkit-scrollbar {
                 width: 8px;
