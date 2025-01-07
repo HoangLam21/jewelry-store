@@ -13,41 +13,6 @@ import RelatedProduct from "@/components/form/product/RelatedProduct";
 import { getProductById } from "@/lib/services/product.service";
 import { useCart } from "@/contexts/CartContext";
 
-interface ImageInfo {
-  url: string;
-  fileName: string;
-}
-interface Sizes {
-  size: string;
-  stock: number;
-}
-interface Variant {
-  material: string;
-  sizes: Sizes[];
-  addOn: number;
-}
-interface Product {
-  id: string;
-  image: string;
-  imageInfo: ImageInfo[];
-  productName: string;
-  price: string;
-  collection: string;
-  description: string;
-  vouchers: string;
-  provider: string;
-  category: string;
-  variants: Variant[];
-}
-const calculateTotalStock = (product: Product): number => {
-  return product.variants.reduce((variantTotal, variant) => {
-    const sizeTotal = variant.sizes.reduce(
-      (sizeTotal, size) => sizeTotal + size.stock,
-      0
-    );
-    return variantTotal + sizeTotal;
-  }, 0);
-};
 const page = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [product, setProduct] = useState<any>(null);
