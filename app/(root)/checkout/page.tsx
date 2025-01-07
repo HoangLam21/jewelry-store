@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ShippingInfomation from "@/components/form/checkout/ShippingInfomation";
 import { useRouter } from "next/navigation";
+import { getCartByUserId } from "@/lib/services/cart.service";
 
 export default function Page() {
   const { state } = useCart();
@@ -19,10 +20,73 @@ export default function Page() {
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
+  const [cart, setCart] = useState<any[]>([]);
   const router = useRouter();
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const { originalPrice, discount, finalPrice } = state.items.reduce(
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUser(parsedData);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const formatCartData = (cartData: any) => {
+      return cartData.details.map((detail: any) => ({
+        _id: detail._id,
+        name: detail.productName,
+        images: detail.productFiles[0]?.url || "",
+        cost: detail.productCost,
+        quantity: detail.quantity,
+        vouchers: detail.productVouchers || [],
+        variants: detail.productVariants || [],
+        selectedMaterial: detail.selectedMaterial,
+        selectedSize: detail.selectedSize,
+      }));
+    };
+
+    let isMounted = true;
+    const getCart = async () => {
+      try {
+        if (user?._id) {
+          const data = await getCartByUserId(user?._id);
+          if (isMounted) {
+            const formattedData = formatCartData(data);
+            setCart(formattedData);
+            console.log("state", state.items);
+          }
+        } else if (state.items.length > 0) {
+          const formattedState = state.items.map((detail: any) => ({
+            _id: detail._id,
+            name: detail.name,
+            images: detail.files[0]?.url || "",
+            cost: detail.cost,
+            quantity: detail.quantity,
+            vouchers: detail.vouchers || [],
+            variants: detail.variants || [],
+            selectedMaterial: detail.selectedMaterial || "",
+            selectedSize: detail.selectedSize || "",
+          }));
+          setCart(formattedState);
+        }
+      } catch (error) {
+        console.error("Error loading cart:", error);
+      }
+    };
+    getCart();
+    return () => {
+      isMounted = false;
+    };
+  }, [user?._id, state.items]);
+
+  useEffect(() => {
+    const { originalPrice, discount, finalPrice } = cart.reduce(
       (totals, item) => {
         const selectedVariant = item.variants.find(
           (variant) => variant.material === item.selectedMaterial
@@ -54,7 +118,7 @@ export default function Page() {
     setTotalOriginalPrice(originalPrice);
     setTotalDiscount(discount);
     setTotalFinalPrice(finalPrice);
-  }, [state.items]);
+  }, [cart]);
 
   const handleOrder = async () => {
     const details = state.items.map((item: any) => ({
@@ -161,26 +225,26 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-10">
             ORDER INFOMATION
           </h2>
-          {state.items.map((item: any) => (
+          {cart.map((item, index) => (
             <div
-              key={item._id}
+              key={item?._id + index}
               className="flex items-center justify-between mb-4 border-b pb-4"
             >
               <Image
-                src={item.files[0].url}
-                alt={item.name}
+                src={item?.images}
+                alt={item?.name}
                 width={100}
                 height={120}
                 className="object-cover h-40 rounded"
               />
               <div className="ml-4">
-                <h3 className="text-[18px] font-medium">{item.name}</h3>
+                <h3 className="text-[18px] font-medium">{item?.name}</h3>
                 <span className="text-[16px] text-gray-500">
-                  Quantity: {item.quantity}
+                  Quantity: {item?.quantity}
                 </span>
               </div>
               <span className="text-[18px] font-semibold text-primary-100">
-                {item.cost * item.quantity}
+                {item?.cost * item?.quantity}
               </span>
             </div>
           ))}

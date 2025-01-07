@@ -29,7 +29,7 @@ const CartCard = ({ item }: any) => {
         <div className="w-[35%] flex items-center">
           <div>
             <Image
-              src={item.files[0].url}
+              src={item?.images}
               alt={item.name}
               width={151}
               height={188}
