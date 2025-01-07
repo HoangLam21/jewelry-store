@@ -37,6 +37,82 @@ export const addProductToCart = async (
     }
 };
 
+interface CartProduct {
+    productId: string;
+    quantity: number;
+}
+
+export const addProductsToCart = async (
+    userId: string,
+    products: CartProduct[]
+) => {
+    try {
+        await connectToDatabase();
+
+        // Validate input
+        if (!products || products.length === 0) {
+            throw new Error("No products provided");
+        }
+
+        // Lấy thông tin sản phẩm để tính toán tổng giá
+        const productDetails = await Promise.all(
+            products.map(async (item) => {
+                const product = await Product.findById(item.productId);
+                if (!product) {
+                    throw new Error(`Product not found: ${item.productId}`);
+                }
+                return {
+                    id: item.productId,
+                    cost: product.cost,
+                    quantity: item.quantity,
+                };
+            })
+        );
+
+        // Tạo object để update details Map
+        const detailsUpdate = productDetails.reduce((acc, item) => {
+            acc[`details.${item.id}`] = item.quantity;
+            return acc;
+        }, {} as { [key: string]: number });
+
+        // Tính tổng cost của các sản phẩm mới
+        const additionalCost = productDetails.reduce((total, item) => {
+            return total + item.cost * item.quantity;
+        }, 0);
+
+        // Update cart
+        const cart = await Cart.findOneAndUpdate(
+            { user: userId },
+            {
+                $set: detailsUpdate,
+                $inc: { totalCost: additionalCost },
+            },
+            {
+                new: true,
+                upsert: true,
+            }
+        ).populate({
+            path: "details",
+            populate: {
+                path: "key",
+                model: "Product",
+                select: "name cost files",
+            },
+        });
+
+        if (!cart) {
+            throw new Error("Failed to update cart");
+        }
+
+        return cart;
+    } catch (error) {
+        console.error("Error adding products to cart: ", error);
+        throw new Error("Failed to add products to cart");
+    } finally {
+        await mongoose.connection.close();
+    }
+};
+
 // Remove a product from a cart
 export const removeProductFromCart = async (
     userId: string,

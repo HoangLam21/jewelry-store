@@ -1,71 +1,76 @@
 import TitleSession from "@/components/shared/label/TitleSession";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { ImportData, ProductsData } from "@/constants/data";
-import { format } from "date-fns";
+
+import { format, formatDate } from "date-fns";
 import InputEdit from "@/components/shared/input/InputEdit";
 import InputSelection from "@/components/shared/input/InputSelection";
 import LabelInformation from "@/components/shared/label/LabelInformation";
 import ImportCard from "@/components/shared/card/ImportCard";
-import { formatPrice } from "@/lib/utils";
-import ImportOrderCard from "@/components/shared/card/ImportOrderCard";
+import { formatCurrency, formatPrice } from "@/lib/utils";
+import ImportOrderCard, {
+  DetailProduct,
+} from "@/components/shared/card/ImportOrderCard";
 import TableSearch from "@/components/shared/table/TableSearch";
 import TableSearchNoFilter from "@/components/shared/table/TableSearchNoFilter";
 import PhoneNumberInput from "@/components/shared/input/PhoneInput";
 import Image from "next/image";
+import { FileContent, ProductResponse } from "@/dto/ProductDTO";
+import { fetchProduct } from "@/lib/service/product.service";
+import Product from "@/database/product.model";
+import { Variant } from "../product/ProductList";
+import { CreateOrder } from "@/dto/OrderDTO";
+import InputDate from "@/components/shared/input/InputDate";
+import AddDetailProduct from "./AddDetailProduct";
+import { groupVariants } from "../product/ProductEdit";
+import { createOrder } from "@/lib/service/order.service";
+import { fetchVoucher } from "@/lib/service/voucher.service";
+import InputNumberSelection from "@/components/shared/input/InputNumberSelection";
 
-interface Invoice {
-  id: string;
-  productName: string;
-  productImage: string;
-  unitPrice: number;
-  quantity: number;
-  discount: number;
-}
-
-interface Import {
-  id: string;
-  suplier: {
-    id: string;
-    phoneNumber: string;
-    fullname: string;
-    address: string;
-  };
-  invoice: Invoice[];
-  status: "Pending";
-  createAt: Date;
-  createBy: string;
-}
-
-interface Product {
+export interface Product {
   id: string;
   image: string;
+  imageInfo: FileContent[];
   productName: string;
   price: string;
-  material: string;
-  quantity: number;
+  collection: string;
+  description: string;
+  vouchers: string;
+  provider: string;
+  category: string;
+  variants: Variant[];
 }
-
-const stockInfTitle = "font-medium text-[16px] ";
 
 const AddOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [list, setList] = useState<Product[]>([]);
+  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
+  const [isProductOverlayOpen, setIsProductOverlayOpen] = useState(false);
+  const [voucherList, setVoucherList] = useState<
+    { name: string; discount: number }[]
+  >([]);
 
-  const [item, setItem] = useState<Import>({
+  const [productDetail, setProductDetail] = useState({
     id: "",
-    suplier: {
-      id: "",
-      phoneNumber: "",
-      fullname: "",
-      address: "",
-    },
-    invoice: [], // Khởi tạo mảng rỗng
-    status: "Pending",
-    createAt: new Date(), // Ngày hiện tại
-    createBy: "",
+    material: "",
+    size: "",
+    unitPrice: "",
+    quantity: 0,
+    discount: "0",
   });
 
-  if (!item || !item.invoice) {
+  const [item, setItem] = useState<CreateOrder>({
+    cost: 0, // Default to 0
+    discount: 0, // Default to 0
+    details: [],
+    status: "pending", // Default to an empty string
+    shippingMethod: "", // Default to an empty string
+    ETD: new Date(), // Default to the current date
+    customer: "", // Default to an empty string
+    staff: "6776bdd574de08ccc866a4b8", // Default to an empty string
+  });
+
+  if (!item) {
     return (
       <div className="flex w-full h-full items-center justify-center bg-white">
         <div className="loader"></div>
@@ -73,170 +78,234 @@ const AddOrder = () => {
     );
   }
 
-  // Handle saving the import
-  const handleSave = () => {
-    if (item) {
-      console.log("Saved product: ", item);
-    }
-  };
-
-  // Handle supplier field changes
-  const changeSuplierField = (
-    field: keyof Import["suplier"],
-    value: string
-  ) => {
-    setItem((prev) => ({
-      ...prev,
-      suplier: {
-        ...prev.suplier,
-        [field]: value,
-      },
-    }));
-  };
-
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [isValid, setIsValid] = useState(true);
-
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
-        setIsValid(false);
-      } else {
-        setIsValid(true);
+    const fetchData = async () => {
+      try {
+        const result: ProductResponse[] = await fetchProduct();
+        if (result) {
+          const data: Product[] = result.map((item) => ({
+            id: item._id,
+            image: item.files[0].url,
+            imageInfo: item.files,
+            productName: item.name,
+            price: formatCurrency(item.cost),
+            collection: item.collections,
+            description: item.description,
+            vouchers: item.vouchers?.[item.vouchers.length - 1]?._id || "",
+            provider: item.provider ? item.provider._id : "",
+            category: item.category,
+            variants: item.variants,
+          }));
+
+          setList(data);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
       }
-    }, 500); // Chờ 500ms sau lần nhập cuối cùng
+    };
 
-    return () => clearTimeout(timer);
-  }, [phoneNumber]);
+    const fetchDataVoucher = async () => {
+      try {
+        const result = await fetchVoucher();
 
-  const handleChange = (e: any) => {
-    setPhoneNumber(e.target.value);
-  };
+        console.log(result, "result");
 
-  const isValidPhoneNumber = (phoneNumber: string) => {
-    // Kiểm tra nếu phoneNumber chỉ chứa số và có độ dài 10
-    const phoneRegex = /^\d{10}$/;
-    return phoneRegex.test(phoneNumber);
-  };
-
-  const changeSuplierNumberPhoneField = (field: string, value: string) => {
-    if (field === "phoneNumber") {
-      if (isValidPhoneNumber(value)) {
-        // Cập nhật giá trị nếu hợp lệ
-        setItem((prevSuplier) => ({
-          ...prevSuplier,
-          [field]: value,
-        }));
-      } else {
-        // Hiển thị thông báo lỗi nếu không hợp lệ
-        alert("Số điện thoại phải là số và có đúng 10 chữ số.");
+        if (result) {
+          const formattedVouchers = result.map((voucher: any) => ({
+            name: voucher.name,
+            discount: voucher.discount,
+          }));
+          setVoucherList(formattedVouchers);
+        }
+      } catch (err: any) {
+        console.error("Error fetching vouchers:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching vouchers: ${errorMessage}`);
       }
-    } else {
-      // Xử lý cho các trường khác
-      setItem((prevSuplier) => ({
-        ...prevSuplier,
-        [field]: value,
-      }));
+    };
+
+    fetchData();
+    fetchDataVoucher();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (item) {
+      setItem({
+        ...item,
+        [e.target.name]: e.target.value,
+      });
     }
   };
 
-  const filterData = ProductsData.filter((item) => {
+  const formatDate = (date: Date | string): string => {
+    const parsedDate = new Date(date);
+    return parsedDate instanceof Date && !isNaN(parsedDate.getTime()) // Check for a valid date
+      ? parsedDate.toISOString()
+      : ""; // Return empty string if invalid date
+  };
+
+  const filterData = list.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
 
-    // Lọc theo searchQuery: fullname, email, và phone
     const matchesSearch =
       item.productName.toLowerCase().includes(lowerCaseQuery) ||
       item.price.toLowerCase().includes(lowerCaseQuery) ||
-      item.id.toLowerCase().includes(lowerCaseQuery) ||
-      item.quantity.toString().toLowerCase().includes(lowerCaseQuery);
+      item.id.toLowerCase().includes(lowerCaseQuery);
 
     // Lọc theo bộ lọc trạng thái (online/offline)
 
     return matchesSearch;
   });
 
-  // Function to add product to cart
-  const [cartItems, setCartItems] = useState<Product[]>([]); // State to store products in the cart
-
-  // Function to add product to cart
-
   const addToCart = (product: Product) => {
-    setCartItems((prev) => {
-      const exists = prev.find((item) => item.id === product.id);
-      if (exists) {
-        // Update quantity if item already exists in cart
-        return prev.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { ...product, quantity: 1 }];
+    console.log("Product added to cart:", product); // Debug log
+    setSelectedItem(product);
+    setProductDetail({
+      ...productDetail,
+      id: product.id,
+    });
+    setIsProductOverlayOpen(true); // Mở modal
+  };
+
+  const updateCart = (updatedItem: DetailProduct) => {
+    // Update the item details with the new quantity
+    const updatedDetails = item.details.map((detail) =>
+      detail.id === updatedItem.id
+        ? { ...detail, quantity: updatedItem.quantity } // Update the quantity
+        : detail
+    );
+    console.log(updatedDetails, "updatedDetails");
+    // Update the state with the new details
+    setItem({
+      ...item,
+      details: updatedDetails,
     });
   };
 
-  const updateCart = (updatedItem: Product) => {
-    setCartItems((prev) => {
-      if (updatedItem.quantity === 0) {
-        // Loại bỏ sản phẩm nếu số lượng bằng 0
-        return prev.filter((item) => item.id !== updatedItem.id);
-      }
-      // Cập nhật sản phẩm nếu số lượng lớn hơn 0
-      return prev.map((item) =>
-        item.id === updatedItem.id ? updatedItem : item
-      );
-    });
+  // Calculate the total price and discount
+  const calculateTotal = () => {
+    return item.details.reduce((total, detail) => {
+      const price = detail.unitPrice * detail.quantity;
+      const discountAmount = (price * parseFloat(detail.discount)) / 100;
+      return total + price - discountAmount;
+    }, 0);
   };
-  const totalAmount = cartItems.reduce(
-    (total, item) =>
-      total + parseFloat(item.price.replace("$", "")) * item.quantity,
-    0
-  );
 
-  const totalDiscount = cartItems.reduce(
-    (total, item) =>
-      total +
-      parseFloat(item.price.replace("$", "")) *
-        item.quantity *
-        (item.quantity / 100),
-    0
-  );
+  // Calculate discount for the cart (if any)
+  const calculateDiscount = () => {
+    return item.details.reduce((totalDiscount, detail) => {
+      const price = detail.unitPrice * detail.quantity;
+      const discountAmount = (price * parseFloat(detail.discount)) / 100;
+      return totalDiscount + discountAmount;
+    }, 0);
+  };
 
+  //SAVE
+  const handleSave = async () => {
+    if (item) {
+      // Tính tổng chi phí cuối cùng
+      const totalCost =
+        calculateTotal() - (calculateTotal() * item.discount) / 100;
+
+      // Cập nhật state của item với giá trị cost
+      setItem((prev) => ({
+        ...prev!,
+        cost: totalCost,
+      }));
+
+      const data: CreateOrder = {
+        cost: totalCost, // Gán cost với giá trị tổng cuối cùng
+        discount: item.discount, // Default to 0
+        details: item.details,
+        status: item.status, // Default to an empty string
+        shippingMethod: item.shippingMethod, // Default to an empty string
+        ETD: new Date(), // Default to the current date
+        customer: item.customer, // Default to an empty string
+        staff: "6776bdd574de08ccc866a4b8", // Default to an empty string
+      };
+
+      console.log(data);
+
+      try {
+        const result = await createOrder(data);
+        console.log(result);
+        alert("Order created successfully!");
+      } catch (error) {
+        console.error("Error creating order:", error);
+        alert("Failed to create order.");
+      }
+    } else {
+      alert("No information of customer to update");
+    }
+  };
+
+  console.log(item, "this is item to order");
   return (
     <div className="w-full h-full rounded-md shadow-md">
       <div className="p-4 flex flex-col gap-4">
         {/* Import Information */}
         <div className="w-full flex gap-20 items-center">
           <div className="rounded-lg w-28 h-20 flex items-center justify-center border">
-            <p>NH {item.id}</p>
+            <p>NH</p>
           </div>
           <div className="flex-1 grid grid-cols-1 gap-2">
             <LabelInformation
               title="Create At"
-              content={`${format(item.createAt, "PPP")}`}
+              content={`${format(new Date(), "PPP")}`}
             />
             <LabelInformation title="Status" content={item.status} />
-            <LabelInformation title="Staff id" content={item.createBy} />
+            <LabelInformation title="Staff id" content={item.staff} />
           </div>
         </div>
 
         {/* Supplier Information */}
         <TitleSession title="Supplier Information" />
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-2 gap-x-10 gap-y-4">
           <InputEdit
-            titleInput="Name"
-            value={item.suplier.fullname}
-            onChange={(e) => changeSuplierField("fullname", e.target.value)}
+            titleInput="CustomerId"
             width="w-full"
-            placeholder="Enter customer name..."
+            name="customer"
+            onChange={handleChange}
+            placeholder="Enter CustomerId"
+            value={item?.customer ?? ""}
           />
-          <PhoneNumberInput item={item} setItem={setItem} />
-          <InputEdit
-            titleInput="Address"
-            value={item.suplier.address}
-            onChange={(e) => changeSuplierField("address", e.target.value)}
+
+          <InputSelection
             width="w-full"
-            placeholder="Enter customer address..."
+            titleInput="Shipping method"
+            options={["Standard", "Express ", "Economy"]}
+            value={item?.shippingMethod ?? ""}
+            onChange={(value) => {
+              setItem((prev) => ({
+                ...prev!,
+                shippingMethod: value,
+              }));
+            }}
+          />
+
+          <InputDate
+            titleInput="ETD"
+            width="w-full"
+            value={item ? formatDate(item.ETD) : ""}
+            onChange={() => {}}
+          />
+
+          <InputNumberSelection
+            width="w-full"
+            titleInput="Voucher"
+            options={voucherList.map((voucher) => ({
+              name: voucher.name,
+              value: voucher.discount,
+            }))}
+            value={item?.discount ?? 0}
+            onChange={(value) => {
+              setItem((prev) => ({
+                ...prev!,
+                discount: value,
+              }));
+            }}
           />
         </div>
 
@@ -258,17 +327,21 @@ const AddOrder = () => {
           </div>
           {/* Cart Section */}
           <div className="flex flex-col md:w-2/5 w-2/3 lg:w-2/5 max-h-[400px]">
-            {cartItems.length > 0 ? (
+            {item.details.length > 0 ? (
               <div className="container w-full flex flex-col overflow-y-auto rounded-lg p-4 pt-2">
                 <h4 className="text-[18px] font-semibold">In cart:</h4>
                 <hr className="my-2" />
                 <div>
-                  {/* Map over cart items and display them */}
-                  {cartItems.map((cartItem) => (
-                    <div key={cartItem.id} className="flex flex-col gap-4">
+                  {item.details.map((cartItem) => (
+                    <div
+                      key={`${cartItem.id}-${cartItem.material}-${cartItem.size}`}
+                      className="flex flex-col gap-4"
+                    >
                       <ImportOrderCard
-                        item={cartItem}
-                        updateCart={updateCart}
+                        updateCart={() => updateCart(cartItem)}
+                        cartItem={cartItem}
+                        setItem={setItem}
+                        item={selectedItem}
                       />
                     </div>
                   ))}
@@ -276,31 +349,39 @@ const AddOrder = () => {
 
                 <hr className="my-2" />
 
-                {/* Cart summary section */}
+                {/* Cart summary */}
                 <div className="w-full flex flex-col gap-4 p-2">
-                  <div className="HDNH_maincontent_footer_total flex justify-between">
-                    <span className={stockInfTitle}>Sub total:</span>
-                    <div className="HDNH_total">{formatPrice(totalAmount)}</div>
+                  <div className="flex justify-between">
+                    <span>Sub total:</span>
+                    <div>{formatPrice(calculateTotal())}</div>
                   </div>
-                  <div className="HDNH_maincontent_footer_discount flex justify-between">
-                    <span className={stockInfTitle}>Discount:</span>
-                    <div className="HDNH_discount">
-                      {formatPrice(totalDiscount)}
+                  <div className="flex justify-between">
+                    <span>Discount:</span>
+                    <div>
+                      {item.discount
+                        ? `-${formatCurrency(
+                            (calculateTotal() * item.discount) / 100
+                          )}`
+                        : "-"}
                     </div>
                   </div>
                   <hr className="my-2" />
-                  <div className="HDNH_maincontent_footer_finaltotal flex justify-between">
+                  <div className="flex justify-between">
                     <span className="font-bold text-[16px]">Total:</span>
-                    <div className="HDNH_finaltotal font-bold">
-                      {formatPrice(totalAmount - totalDiscount)}
+                    <div className="font-bold">
+                      {formatCurrency(
+                        calculateTotal() -
+                          (calculateTotal() * item.discount) / 100
+                      )}
                     </div>
                   </div>
+                  <button onClick={handleSave}>Order</button>
                 </div>
               </div>
             ) : (
               <div className="flex-1 flex flex-col justify-start items-center font-medium text-[16px]">
                 Your cart is empty.
-                <div className="w-52 h-52 ">
+                <div className="w-52 h-52">
                   <Image
                     src={"/assets/images/EmptyCart.jpg"}
                     alt="empty cart"
@@ -314,6 +395,15 @@ const AddOrder = () => {
           </div>
         </div>
       </div>
+      {isProductOverlayOpen && (
+        <AddDetailProduct
+          isProductOverlayOpen={isProductOverlayOpen}
+          setIsProductOverlayOpen={setIsProductOverlayOpen}
+          selectedProduct={selectedItem}
+          item={item}
+          setItem={setItem}
+        />
+      )}
     </div>
   );
 };

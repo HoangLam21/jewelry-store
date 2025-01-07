@@ -6,51 +6,40 @@ import TitleSession from "@/components/shared/label/TitleSession";
 import TableImport from "@/components/shared/table/TableImport";
 import { format } from "date-fns";
 import Image from "next/image";
-
-interface Invoice {
-  id: string;
-  productName: string;
-  unitPrice: number;
-  quantity: number;
-  discount: number;
-}
-
-interface Import {
-  id: string;
-  suplier: {
-    id: string;
-    phoneNumber: string;
-    fullname: string;
-    address: string;
-  };
-  invoice: Invoice[];
-  status: boolean;
-  createAt: Date;
-  createBy: string;
-}
+import { getOrderById } from "@/lib/service/order.service";
+import { DetailOrder, Order } from "@/dto/OrderDTO";
 
 const columns = [
-  { header: "Products", accessor: "products" },
-  { header: "Products Name", accessor: "productName" },
-  { header: "Unit price", accessor: "unitPrice" },
+  { header: "Product Image", accessor: "productImage" },
+  { header: "Product Name", accessor: "productName" },
+  { header: "Material", accessor: "material" },
+  { header: "Size", accessor: "size" },
   { header: "Quantity", accessor: "quantity" },
-  { header: "Amount", accessor: "amount" },
+  { header: "Unit Price", accessor: "unitPrice" },
+  { header: "Order Status", accessor: "orderStatus" },
 ];
 
 const OrderDetail = () => {
   const { id } = useParams() as { id: string };
-  const [isImport, setIsImport] = useState<Import | null>(null);
+  const [orderDetail, setOrderDetail] = useState<any | null>(null);
 
   useEffect(() => {
-    if (id) {
-      const foundItem = ImportData.find((item) => item.id === id);
-      if (foundItem) {
-        setIsImport(foundItem);
+    const fetchStaffData = async () => {
+      try {
+        if (id) {
+          const foundItem = await getOrderById(id);
+          console.log(foundItem, "setail order");
+          setOrderDetail(foundItem);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin nhân viên:", error);
       }
-    }
+    };
+
+    fetchStaffData();
   }, [id]);
 
-  if (!isImport || !isImport.invoice) {
+  if (!orderDetail) {
     return (
       <div className="flex w-full h-full items-center justify-center bg-white">
         <div className="loader"></div>
@@ -58,68 +47,75 @@ const OrderDetail = () => {
     );
   }
 
-  const renderRow = (it: Invoice) => (
-    <>
-      <tr
-        key={it.id}
-        className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
-      >
-        <td className="px-4 py-2">
-          <div className="flex items-center">
-            <div className="w-[50px] h-115px ">
-              <Image
-                src="https://i.pinimg.com/736x/4f/2c/33/4f2c33c135491cf44af2685e5cca8902.jpg"
-                alt="productImage"
-                width={50}
-                height={115}
-                className="rounded-md object-cover w-full h-full"
-              />
-            </div>
+  const processedData = orderDetail.products.map((product: any) => ({
+    productImage: product.product.files[0]?.url || "",
+    productName: product.product.name,
+    material: product.material,
+    size: product.size,
+    quantity: product.quantity,
+    unitPrice: product.product.cost,
+    discount: product.discount,
+    orderId: orderDetail.order._id,
+    orderStatus: orderDetail.order.status,
+  }));
+
+  // const renderRow = (it: any) => (
+  //   <>
+  //     <tr
+  //       key={it.id}
+  //       className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
+  //     >
+  //       <td className="px-4 py-2">
+  //         <div className="flex items-center">
+  //           <div className="w-[50px] h-115px ">
+  //             <Image
+  //               src={it.products.product.files.url}
+  //               alt="productImage"
+  //               width={50}
+  //               height={115}
+  //               className="rounded-md object-cover w-full h-full"
+  //             />
+  //           </div>
+  //         </div>
+  //       </td>
+  //       <td className="px-4 py-2">{it.products.product.name}</td>
+  //       <td className="px-4 py-2">{it.order.details.id}</td>
+  //       <td className="px-4 py-2">{it.order.details.material}</td>
+  //       <td className="px-4 py-2">{it.order.details.size}</td>
+  //       <td className="px-4 py-2">{it.order.details.quantity}</td>
+  //       <td className="px-4 py-2">{it.order.details.unitPrice}</td>
+  //       <td className="px-4 py-2">{it.order.details.discount}</td>
+  //     </tr>
+  //   </>
+  // );
+
+  const renderRow = (item: any) => (
+    <tr
+      key={item.orderId + item.productName}
+      className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
+    >
+      <td className="px-4 py-2">
+        <div className="flex items-center">
+          <div className="w-[50px] h-115px">
+            <Image
+              src={item.productImage}
+              alt="productImage"
+              width={50}
+              height={115}
+              className="rounded-md object-cover w-full h-full"
+            />
           </div>
-        </td>
-        <td className="px-4 py-2">{it.productName}</td>
-        <td className="px-4 py-2">{it.unitPrice}</td>
-        <td className="px-4 py-2">{it.quantity}</td>
-        <td className="px-4 py-2 hidden md:table-cell">
-          {`${(it.quantity * it.unitPrice).toLocaleString("vi-VN")} VND`}
-        </td>
-      </tr>
-    </>
-  );
-
-  const calculateTotal = (invoiceItems: any[]) => {
-    let subtotal = 0;
-    let totalDiscount = 0;
-
-    // Calculate the subtotal and discount for each product in the invoice
-    invoiceItems.forEach((item: any) => {
-      const itemSubtotal = item.unitPrice * item.quantity; // Total price before discount
-      const itemDiscount = (itemSubtotal * item.discount) / 100; // Discount amount
-
-      subtotal += itemSubtotal;
-      totalDiscount += itemDiscount;
-    });
-
-    // Calculate the total after discount
-    const total = subtotal - totalDiscount;
-
-    return {
-      subtotal,
-      totalDiscount,
-      total,
-    };
-  };
-
-  // Calculate the grand total for all invoices in the data
-  const grandTotal = isImport.invoice.reduce(
-    (acc, item) => {
-      const { subtotal, totalDiscount, total } = calculateTotal([item]);
-      acc.subtotal += subtotal;
-      acc.totalDiscount += totalDiscount;
-      acc.total += total;
-      return acc;
-    },
-    { subtotal: 0, totalDiscount: 0, total: 0 }
+        </div>
+      </td>
+      <td className="px-4 py-2">{item.productName}</td>
+      <td className="px-4 py-2">{item.material}</td>
+      <td className="px-4 py-2">{item.size}</td>
+      <td className="px-4 py-2">{item.quantity}</td>
+      <td className="px-4 py-2">
+        {item.unitPrice.toLocaleString("vi-VN")} VND
+      </td>
+      <td className="px-4 py-2">{item.orderStatus}</td>
+    </tr>
   );
 
   return (
@@ -127,21 +123,19 @@ const OrderDetail = () => {
       <div className="p-4 flex flex-col gap-4">
         {/* Import Information */}
         <div className="w-full flex gap-20 items-center">
-          <div className="rounded-lg w-28 h-20 flex items-center justify-center border">
-            <p># {id}</p>
-          </div>
           <div className="flex-1 grid grid-cols-1">
+            <LabelInformation title="Id" content={`# ${id}`} />
             <LabelInformation
               title="Create At"
-              content={`${format(isImport.createAt, "PPP")}`}
+              content={`${format(orderDetail.order.createAt, "PPP")}`}
             />
             <LabelInformation
               title="Status"
-              content={`${isImport.status ? "Done" : "Pending"}`}
+              content={`${orderDetail.order.status}`}
             />
             <LabelInformation
               title="Created By"
-              content={`${isImport.createBy}`}
+              content={`${orderDetail.order.staff._id}`}
             />
           </div>
         </div>
@@ -151,15 +145,15 @@ const OrderDetail = () => {
         <div className="grid grid-cols-1 gap-2 ">
           <LabelInformation
             title="Name"
-            content={`${isImport.suplier.fullname}`}
+            content={`${orderDetail.order.staff.fullName}`}
           />
           <LabelInformation
             title="Phone number"
-            content={`${isImport.suplier.phoneNumber}`}
+            content={`${orderDetail.order.staff.phoneNumber}`}
           />
           <LabelInformation
             title="Address"
-            content={`${isImport.suplier.address}`}
+            content={`${orderDetail.order.staff.address}`}
           />
         </div>
 
@@ -169,27 +163,33 @@ const OrderDetail = () => {
         <p className="font-semibold text-[16px]">Purchased product</p>
         <TableImport
           columns={columns}
-          data={isImport.invoice}
+          data={processedData}
           renderRow={renderRow}
         />
 
-        <div className=" w-full flex flex-col justify-start items-end py-8">
+        <div className="w-full flex flex-col justify-start items-end py-8">
           <div className="w-1/3 flex justify-between">
-            <h3 className="font-semibold text-[20px]">Sub Total:</h3>
+            <h3 className="font-semibold text-[20px]">
+              Sub Total (Before Discount):
+            </h3>
             <p className="text-[16px]">
-              {grandTotal.subtotal.toLocaleString("vi-VN")} VND
+              {(
+                orderDetail.order.cost /
+                (1 - orderDetail.order.discount / 100)
+              ).toLocaleString("vi-VN")}{" "}
+              VND
             </p>
           </div>
           <div className="w-1/3 flex justify-between">
             <h3 className="font-semibold text-[20px]">Discount:</h3>
-            <p className="text-[16px]">
-              {grandTotal.totalDiscount.toLocaleString("vi-VN")} VND
-            </p>
+            <p className="text-[16px]">{orderDetail.order.discount}%</p>
           </div>
           <div className="w-1/3 flex justify-between">
-            <h3 className="font-semibold text-[20px]">Total:</h3>
+            <h3 className="font-semibold text-[20px]">
+              Total (After Discount):
+            </h3>
             <p className="text-[16px]">
-              {grandTotal.total.toLocaleString("vi-VN")} VND
+              {orderDetail.order.cost.toLocaleString("vi-VN")} VND
             </p>
           </div>
         </div>
