@@ -7,7 +7,7 @@ import { ObjectId } from "mongodb";
 import ProductProvider from "@/database/provider.model";
 import Staff from "@/database/staff.model";
 import File from "@/database/file.model";
-import Voucher from "@/database/voucher.model";
+import mongoose from "mongoose";
 
 // Tạo nhập hàng mới
 export const createImport = async (data: {
@@ -130,174 +130,6 @@ export const verifyImport = async (id: string) => {
     } catch (error) {
         console.log("Error verifying Import: ", error);
         throw new Error("Failed to verify import");
-    }
-};
-
-// Các interfaces cho response
-interface ImportResponse {
-    id: string;
-    supplier: {
-        id: string;
-        phoneNumber: string;
-        fullname: string;
-        address: string;
-    };
-    invoice: {
-        id: string;
-        productName: string;
-        productImage: string | null;
-        unitPrice: number;
-        quantity: number;
-        discount: number;
-    }[];
-    status: boolean;
-    createAt: Date;
-    createBy: string;
-}
-
-// Interface cho populated documents
-interface ImportDetail {
-    id: ObjectId;
-    material: string;
-    size: string;
-    unitPrice: number;
-    quantity: number;
-    discount: string;
-}
-
-interface StaffDocument {
-    _id: ObjectId;
-    fullName: string;
-}
-
-interface ProviderDocument {
-    _id: ObjectId;
-    phoneNumber: string;
-    fullname: string;
-    address: string;
-}
-
-interface ProductDocument {
-    _id: ObjectId;
-    name: string;
-    provider: ProviderDocument;
-    files: ObjectId[];
-}
-
-interface FileDocument {
-    _id: ObjectId;
-    url: string;
-}
-
-interface ImportDocument {
-    _id: ObjectId;
-    staff: StaffDocument;
-    details: ImportDetail[];
-    status: boolean;
-    createdAt: Date;
-}
-
-export const getImports = async (): Promise<ImportResponse[]> => {
-    try {
-        await connectToDatabase();
-
-        // Get imports with populated staff
-        const rawImports = await Import.find().populate("staff").lean();
-
-        // Type assertion với unknown trung gian
-        const imports = rawImports as unknown as ImportDocument[];
-
-        const result = await Promise.all(
-            imports.map(async (importData) => {
-                try {
-                    // Validate staff
-                    if (!importData.staff || !importData.details?.length) {
-                        throw new Error(
-                            `Invalid import data for ${importData._id}`
-                        );
-                    }
-
-                    // Get first product with populated provider
-                    const rawProduct = await Product.findById(
-                        importData.details[0].id
-                    )
-                        .populate("provider")
-                        .lean();
-
-                    // Type assertion với unknown trung gian
-                    const firstProduct =
-                        rawProduct as unknown as ProductDocument;
-
-                    if (!firstProduct?.provider) {
-                        throw new Error(
-                            `Product or provider not found for import ${importData._id}`
-                        );
-                    }
-
-                    // Process invoice details
-                    const invoices = await Promise.all(
-                        importData.details.map(async (detail) => {
-                            const rawProduct = await Product.findById(
-                                detail.id
-                            ).lean();
-
-                            // Type assertion với unknown trung gian
-                            const product =
-                                rawProduct as unknown as ProductDocument;
-
-                            if (!product) {
-                                throw new Error(
-                                    `Product not found: ${detail.id}`
-                                );
-                            }
-
-                            let productImage: string | null = null;
-                            if (product.files?.length) {
-                                const rawFile = await File.findById(
-                                    product.files[0]
-                                ).lean();
-                                const file = rawFile as unknown as FileDocument;
-                                productImage = file?.url || null;
-                            }
-
-                            return {
-                                id: product._id.toString(),
-                                productName: product.name,
-                                productImage,
-                                unitPrice: detail.unitPrice,
-                                quantity: detail.quantity,
-                                discount: Number(detail.discount) || 0,
-                            };
-                        })
-                    );
-
-                    return {
-                        id: importData._id.toString(),
-                        supplier: {
-                            id: firstProduct.provider._id.toString(),
-                            phoneNumber: firstProduct.provider.phoneNumber,
-                            fullname: firstProduct.provider.fullname,
-                            address: firstProduct.provider.address,
-                        },
-                        invoice: invoices,
-                        status: importData.status,
-                        createAt: importData.createdAt,
-                        createBy: importData.staff.fullName,
-                    };
-                } catch (error) {
-                    console.error(
-                        `Error processing import ${importData._id}:`,
-                        error
-                    );
-                    return null;
-                }
-            })
-        );
-
-        return result.filter((item): item is ImportResponse => item !== null);
-    } catch (error) {
-        console.error("Error fetching Imports: ", error);
-        throw new Error("Failed to fetch imports");
     }
 };
 
@@ -453,5 +285,222 @@ export const getAllImportsOfStaff = async (staffId: string) => {
     } catch (error) {
         console.log("Error fetching Imports of Staff: ", error);
         throw new Error("Failed to fetch imports of staff");
+    }
+};
+
+// Response interfaces
+interface ImportResponse {
+    id: string;
+    supplier: {
+        id: string;
+        phoneNumber: string;
+        fullname: string;
+        address: string;
+    };
+    invoice: {
+        id: string;
+        productName: string;
+        productImage: string | null;
+        unitPrice: number;
+        quantity: number;
+        discount: number;
+    }[];
+    status: boolean;
+    createAt: Date;
+    createBy: string;
+}
+
+// Raw document interfaces
+interface RawImport {
+    _id: mongoose.Types.ObjectId;
+    staff: mongoose.Types.ObjectId;
+    details: {
+        id: mongoose.Types.ObjectId;
+        material: string;
+        size: string;
+        unitPrice: number;
+        quantity: number;
+        discount: string;
+    }[];
+    status: boolean;
+    createdAt: Date;
+}
+
+interface RawProduct {
+    _id: mongoose.Types.ObjectId;
+    name: string;
+    provider: mongoose.Types.ObjectId;
+    files: mongoose.Types.ObjectId[];
+}
+
+interface RawStaff {
+    _id: mongoose.Types.ObjectId;
+    fullName: string;
+}
+
+interface RawProvider {
+    _id: mongoose.Types.ObjectId;
+    phoneNumber: string;
+    fullname: string;
+    address: string;
+}
+
+interface RawFile {
+    _id: mongoose.Types.ObjectId;
+    url: string;
+}
+
+export const getImports = async (): Promise<ImportResponse[]> => {
+    try {
+        await connectToDatabase();
+
+        // Get all imports
+        const imports = (await Import.find().lean()) as unknown as RawImport[];
+
+        // Extract all needed IDs
+        const staffIds = new Set<string>();
+        const productIds = new Set<string>();
+        const fileIds = new Set<string>();
+        const providerIds = new Set<string>();
+
+        imports.forEach((importData) => {
+            staffIds.add(importData.staff.toString());
+            importData.details.forEach((detail) => {
+                productIds.add(detail.id.toString());
+            });
+        });
+
+        // Fetch all required data in parallel với type assertion
+        const [staffData, productsData] = await Promise.all([
+            Staff.find({
+                _id: { $in: Array.from(staffIds) },
+            })
+                .lean()
+                .then((data) => data as unknown as RawStaff[]),
+            Product.find({
+                _id: { $in: Array.from(productIds) },
+            })
+                .lean()
+                .then((data) => data as unknown as RawProduct[]),
+        ]);
+
+        // Get provider IDs from products
+        productsData.forEach((product) => {
+            if (product.provider) {
+                providerIds.add(product.provider.toString());
+            }
+            if (product.files?.length) {
+                product.files.forEach((fileId) => {
+                    fileIds.add(fileId.toString());
+                });
+            }
+        });
+
+        // Fetch providers and files với type assertion
+        const [providersData, filesData] = await Promise.all([
+            ProductProvider.find({
+                _id: { $in: Array.from(providerIds) },
+            })
+                .lean()
+                .then((data) => data as unknown as RawProvider[]),
+            File.find({
+                _id: { $in: Array.from(fileIds) },
+            })
+                .lean()
+                .then((data) => data as unknown as RawFile[]),
+        ]);
+
+        // Create lookup maps
+        const staffMap = new Map(
+            staffData.map((staff) => [staff._id.toString(), staff])
+        );
+        const productMap = new Map(
+            productsData.map((product) => [product._id.toString(), product])
+        );
+        const providerMap = new Map(
+            providersData.map((provider) => [provider._id.toString(), provider])
+        );
+        const fileMap = new Map(
+            filesData.map((file) => [file._id.toString(), file])
+        );
+
+        // Transform imports data
+        const result = imports.map((importData) => {
+            try {
+                const staff = staffMap.get(importData.staff.toString());
+                if (!staff || !importData.details?.length) {
+                    throw new Error(
+                        `Invalid import data for ${importData._id}`
+                    );
+                }
+
+                // Get first product for supplier info
+                const firstProduct = productMap.get(
+                    importData.details[0].id.toString()
+                );
+                if (!firstProduct?.provider) {
+                    throw new Error(
+                        `Product or provider not found for import ${importData._id}`
+                    );
+                }
+
+                const provider = providerMap.get(
+                    firstProduct.provider.toString()
+                );
+                if (!provider) {
+                    throw new Error(
+                        `Provider not found for import ${importData._id}`
+                    );
+                }
+
+                // Process invoice details
+                const invoices = importData.details.map((detail) => {
+                    const product = productMap.get(detail.id.toString());
+                    if (!product) {
+                        throw new Error(`Product not found: ${detail.id}`);
+                    }
+
+                    let productImage: string | null = null;
+                    if (product.files?.length) {
+                        const file = fileMap.get(product.files[0].toString());
+                        productImage = file?.url || null;
+                    }
+
+                    return {
+                        id: product._id.toString(),
+                        productName: product.name,
+                        productImage,
+                        unitPrice: detail.unitPrice,
+                        quantity: detail.quantity,
+                        discount: Number(detail.discount) || 0,
+                    };
+                });
+
+                return {
+                    id: importData._id.toString(),
+                    supplier: {
+                        id: provider._id.toString(),
+                        phoneNumber: provider.phoneNumber,
+                        fullname: provider.fullname,
+                        address: provider.address,
+                    },
+                    invoice: invoices,
+                    status: importData.status,
+                    createAt: importData.createdAt,
+                    createBy: staff.fullName,
+                };
+            } catch (error) {
+                console.error(
+                    `Error processing import ${importData._id}:`,
+                    error
+                );
+                return null;
+            }
+        });
+
+        return result.filter((item): item is ImportResponse => item !== null);
+    } catch (error) {
+        console.error("Error fetching Imports: ", error);
+        throw new Error("Failed to fetch imports");
     }
 };
