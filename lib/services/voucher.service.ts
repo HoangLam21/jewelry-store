@@ -15,53 +15,16 @@ export async function fetchVoucher(): Promise<[]> {
   }
 }
 
-export async function deleteVoucher(voucherId: string) {
+export async function getVoucherById(id: string) {
   try {
-    console.log(`/api/voucher/delete?id=${voucherId}`, "delete ");
-    const response = await fetch(`/api/voucher/delete?id=${voucherId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
+    const response = await fetch(`/api/voucher/id?id=${id}`);
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error deleting post");
+      throw new Error("Error fetching voucher");
     }
-
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Failed to delete post:", error);
-    throw error;
-  }
-}
-
-export async function createVoucher(
-  params: CreateVoucher
-  // token: string
-): Promise<Voucher> {
-  try {
-    console.log(params, "param");
-    const response = await fetch(`/api/voucher/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: `${token}`,
-      },
-      body: JSON.stringify(params),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Error creating media");
-    }
-
-    const data: Voucher = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Failed to create media:", error);
+    console.error("Failed to fetch voucher:", error);
     throw error;
   }
 }

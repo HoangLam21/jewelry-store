@@ -73,9 +73,7 @@ const Page = () => {
               width="24"
               height="16"
             />
-            <Link href="/category">
-              <span className="text-primary-100">{category.name}</span>
-            </Link>
+            <span className="text-primary-100">{category?.name}</span>
           </div>
         </div>
       </div>
