@@ -3,6 +3,8 @@ import Category from "@/database/category.model";
 import Product from "@/database/product.model";
 import mongoose, { ObjectId } from "mongoose";
 import { connectToDatabase } from "../mongoose";
+import File from "@/database/file.model";
+import ProductProvider from "@/database/provider.model";
 
 // Create a new category
 export const createCategory = async (data: {
@@ -61,117 +63,6 @@ export const getCategories = async () => {
     console.log("Error fetching categories: ", error);
     await mongoose.connection.close();
     throw new Error("Failed to fetch categories");
-  } finally {
-    await mongoose.connection.close();
-  }
-};
-
-// Interface cho Product sau khi populate
-interface ProductPopulated {
-  _id: ObjectId;
-  fullName: string;
-  cost: number;
-  files: {
-    _id: ObjectId;
-    url: string;
-  }[];
-  description: string;
-  vouchers: ObjectId[];
-  provider: {
-    _id: ObjectId;
-    fullname: string;
-    phoneNumber: string;
-    address: string;
-  };
-  category: ObjectId;
-  collections: string;
-  variants: {
-    material: string;
-    sizes: {
-      size: string;
-      stock: number;
-    }[];
-    addOn: number;
-  }[];
-  sales: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Interface cho Category sau khi populate products
-interface CategoryPopulated {
-  _id: ObjectId;
-  name: string;
-  hot: boolean;
-  products: ProductPopulated[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export const getCategoryById = async (id: string) => {
-  try {
-    await connectToDatabase();
-
-    // Populate toàn bộ thông tin sản phẩm và các relationships của sản phẩm
-    const rawCategory = await Category.findById(id)
-      .populate({
-        path: "products",
-        populate: [
-          {
-            path: "files",
-            select: "url" // Chỉ lấy url của file
-          },
-          {
-            path: "provider",
-            select: "fullname phoneNumber address" // Lấy thông tin cần thiết của provider
-          }
-        ]
-      })
-      .lean();
-    // Type assertion
-    const category = rawCategory as unknown as CategoryPopulated;
-
-    if (!category) {
-      throw new Error("Category not found");
-    }
-
-    // Transform dữ liệu trước khi trả về nếu cần
-    return {
-      id: category._id.toString(),
-      name: category.name,
-      hot: category.hot,
-      products: category.products.map((product) => ({
-        id: product._id.toString(),
-        name: product.fullName,
-        cost: product.cost,
-
-        images: product.files
-          ? product.files.map((file) => ({
-              id: file._id.toString(),
-              url: file.url
-            }))
-          : [],
-        description: product.description,
-        provider: product.provider
-          ? {
-              id: product.provider._id.toString(),
-              fullname: product.provider.fullname,
-              phoneNumber: product.provider.phoneNumber,
-              address: product.provider.address
-            }
-          : null,
-        variants: product.variants,
-        sales: product.sales,
-        collections: product.collections,
-        createdAt: product.createdAt,
-        updatedAt: product.updatedAt
-      })),
-      createdAt: category.createdAt,
-      updatedAt: category.updatedAt
-    };
-  } catch (error) {
-    console.log("Error fetching category: ", error);
-    throw new Error("Failed to fetch category");
   } finally {
     await mongoose.connection.close();
   }
@@ -315,5 +206,190 @@ export const editProductCategory = async (
     console.log("Error editing product category: ", error);
     await mongoose.connection.close();
     throw new Error("Failed to edit product category");
+  }
+};
+
+interface MongoDocument {
+  _id: mongoose.Types.ObjectId;
+  __v: number;
+  [key: string]: any;
+}
+
+interface ProductPopulated extends MongoDocument {
+  name: string;
+  cost: number;
+  files: {
+    _id: mongoose.Types.ObjectId;
+    url: string;
+  }[];
+  description: string;
+  vouchers: mongoose.Types.ObjectId[];
+  provider: {
+    _id: mongoose.Types.ObjectId;
+    fullname: string;
+    phoneNumber: string;
+    address: string;
+  };
+  category: mongoose.Types.ObjectId;
+  collections: string;
+  variants: {
+    material: string;
+    sizes: {
+      size: string;
+      stock: number;
+    }[];
+    addOn: number;
+  }[];
+  sales: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface CategoryPopulated extends MongoDocument {
+  name: string;
+  hot: boolean;
+  products: ProductPopulated[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface RawProduct extends MongoDocument {
+  name: string;
+  cost: number;
+  files?: mongoose.Types.ObjectId[];
+  description: string;
+  vouchers?: mongoose.Types.ObjectId[];
+  provider?: mongoose.Types.ObjectId;
+  category: mongoose.Types.ObjectId;
+  collections: string;
+  variants: {
+    material: string;
+    sizes: {
+      size: string;
+      stock: number;
+    }[];
+    addOn: number;
+  }[];
+  sales: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface RawCategory extends MongoDocument {
+  name: string;
+  hot: boolean;
+  products: mongoose.Types.ObjectId[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface FileDocument {
+  _id: mongoose.Types.ObjectId;
+  url: string;
+}
+
+interface ProviderDocument {
+  _id: mongoose.Types.ObjectId;
+  fullname: string;
+  phoneNumber: string;
+  address: string;
+}
+
+export const getCategoryById = async (
+  id: string
+): Promise<CategoryPopulated> => {
+  try {
+    await connectToDatabase();
+
+    const category = (await Category.findById(
+      id
+    ).lean()) as unknown as RawCategory;
+    if (!category) {
+      throw new Error("Category not found");
+    }
+
+    const rawProducts = (await Product.find({
+      _id: { $in: category.products }
+    }).lean()) as unknown as RawProduct[];
+
+    const fileIds: mongoose.Types.ObjectId[] = [];
+    const providerIds: mongoose.Types.ObjectId[] = [];
+
+    rawProducts.forEach((product) => {
+      if (Array.isArray(product.files)) {
+        fileIds.push(...product.files);
+      }
+      if (product.provider) {
+        providerIds.push(product.provider);
+      }
+    });
+
+    const [filesData, providersData] = await Promise.all([
+      File.find({ _id: { $in: fileIds } })
+        .select("_id url")
+        .lean()
+        .then((files) => files as unknown as FileDocument[]),
+      ProductProvider.find({ _id: { $in: providerIds } })
+        .select("_id fullname phoneNumber address")
+        .lean()
+        .then((providers) => providers as unknown as ProviderDocument[])
+    ]);
+
+    const fileMap = new Map(
+      filesData.map((file) => [file._id.toString(), file])
+    );
+
+    const providerMap = new Map(
+      providersData.map((provider) => [provider._id.toString(), provider])
+    );
+
+    const populatedProducts: ProductPopulated[] = rawProducts.map((product) => {
+      const productFiles = (product.files || [])
+        .map((fileId) => fileMap.get(fileId.toString()))
+        .filter((file): file is FileDocument => !!file);
+
+      const provider = product.provider
+        ? providerMap.get(product.provider.toString())
+        : null;
+
+      return {
+        _id: product._id,
+        __v: product.__v,
+        name: product.name,
+        cost: product.cost,
+        files: productFiles,
+        description: product.description,
+        vouchers: product.vouchers || [],
+        provider: provider || {
+          _id: new mongoose.Types.ObjectId(),
+          fullname: "",
+          phoneNumber: "",
+          address: ""
+        },
+        category: product.category,
+        collections: product.collections,
+        variants: product.variants,
+        sales: product.sales,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt
+      };
+    });
+
+    const populatedCategory: CategoryPopulated = {
+      _id: category._id,
+      __v: category.__v,
+      name: category.name,
+      hot: category.hot,
+      products: populatedProducts,
+      createdAt: category.createAt,
+      updatedAt: category.updatedAt
+    };
+
+    return populatedCategory;
+  } catch (error) {
+    console.error("Error fetching category: ", error);
+    throw new Error("Failed to fetch category");
+  } finally {
+    await mongoose.connection.close();
   }
 };

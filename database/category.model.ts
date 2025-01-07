@@ -11,7 +11,7 @@ export interface ICategory extends Document, IAudit {
 const CategorySchema = new Schema<ICategory>({
   name: { type: String, required: true },
   hot: { type: Boolean, required: true, default: false },
-  products: { type: [Schema.Types.ObjectId], required: false, ref: Product }
+  products: { type: [Schema.Types.ObjectId], required: false, ref: "Product" }
 });
 
 CategorySchema.add(AuditSchema);

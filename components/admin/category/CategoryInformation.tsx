@@ -51,16 +51,16 @@ const CategoryInformation = () => {
         if (id) {
           const result = await getDetailCategory(id);
           const data: CategoryResponse = {
-            _id: result.id,
+            _id: result._id,
             name: result.name,
             hot: result.hot,
             description: result.description,
             products: result.products.map((item: any, index: number) => ({
-              _id: item.id,
+              _id: item._id,
               fullName: item.name ? item.name : "Unknown name",
               cost: item.cost ? item.cost : 0
             })),
-            createAt: result.createAt
+            createAt: result.createdAt
           };
           console.log(result);
           setDetail(data);
