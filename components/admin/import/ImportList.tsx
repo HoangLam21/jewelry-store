@@ -152,32 +152,6 @@ const ImportList = ({
   };
 
   const renderRow = (item: any) => {
-    const handleStatusChange = async (
-      event: React.ChangeEvent<HTMLSelectElement>,
-      orderId: string
-    ) => {
-      const newStatus = event.target.value;
-      try {
-        const response = await fetch(`/api/order/${orderId}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status: newStatus }),
-        });
-        if (response.ok) {
-          alert("Status updated successfully!");
-          // Optionally reload the table or re-fetch data here
-        } else {
-          console.error("Failed to update status");
-          alert("Failed to update status");
-        }
-      } catch (error) {
-        console.error("Error updating status:", error);
-        alert("An error occurred while updating status");
-      }
-    };
-
     return (
       <tr
         key={item._id}
@@ -194,17 +168,7 @@ const ImportList = ({
         <td className="px-4 py-2 hidden md:table-cell">
           {formatPrice(item.totalCost)}
         </td>
-        <td className="px-4 py-2">
-          <select
-            value={item.status}
-            onChange={(event) => handleStatusChange(event, item._id)}
-            className="border rounded px-2 py-1 text-sm"
-          >
-            <option value="pending">Pending</option>
-            <option value="done">Done</option>
-            {/* Add more status options as needed */}
-          </select>
-        </td>
+        <td className="px-4 py-2">{item.status ? "Delivered" : "Pending"}</td>
         <td className="px-4 py-2 hidden lg:table-cell">
           <div className="flex items-center gap-2">
             <Link href={`/admin/import/${item._id}`}>
@@ -217,16 +181,6 @@ const ImportList = ({
                 />
               </div>
             </Link>
-            {/* <Link href={`/admin/import/edit/${item._id}`}>
-              <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
-                <Icon
-                  icon="tabler:edit"
-                  width={24}
-                  height={24}
-                  className="text-white dark:bg-dark-150 bg-dark-green rounded-md p-1 hover:cursor-pointer"
-                />
-              </div>
-            </Link> */}
             <div
               className="w-7 h-7 flex items-center justify-center rounded-full"
               onClick={() => setDeleteImportId(item._id)}

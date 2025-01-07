@@ -109,18 +109,18 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
 
 export async function updatedStatusOrder(
   orderId: string,
-  params: UpdateStatusOrder
+  status: string
   // token: string
 ): Promise<Order> {
   try {
-    console.log(params, "param");
+    console.log(orderId, status, "param");
     const response = await fetch(`/api/order/update?id=${orderId}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         // Authorization: `${token}`,
       },
-      body: JSON.stringify(params),
+      body: JSON.stringify({ status }),
     });
 
     if (!response.ok) {

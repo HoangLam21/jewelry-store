@@ -97,3 +97,32 @@ export async function getImportById(importId: string): Promise<Order | null> {
     throw error;
   }
 }
+
+export async function updatedStatusOrder(
+  orderId: string,
+  status: string
+  // token: string
+): Promise<Order> {
+  try {
+    console.log(orderId, status, "param");
+    const response = await fetch(`/api/import/update?id=${orderId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `${token}`,
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error creating media");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to create media:", error);
+    throw error;
+  }
+}
