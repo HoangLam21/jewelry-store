@@ -33,9 +33,7 @@ export async function getStaffById(staffId: string): Promise<Staff | null> {
   }
 }
 
-export async function getAllImportsOfStaff(
-  staffId: string
-): Promise<Import[] | []> {
+export async function getAllImportsOfStaff(staffId: string): Promise<[] | []> {
   // const token = localStorage.getItem("token");
   // if (!token) {
   //   console.error("Không tìm thấy token");

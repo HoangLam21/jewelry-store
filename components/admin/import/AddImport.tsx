@@ -50,7 +50,8 @@ const stockInfTitle = "font-medium text-[16px] ";
 
 const AddImport = () => {
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isValid, setIsValid] = useState(true);
   const [item, setItem] = useState<Import>({
     id: "",
     suplier: {
@@ -94,9 +95,6 @@ const AddImport = () => {
     }));
   };
 
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [isValid, setIsValid] = useState(true);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       if (phoneNumber && !isValidPhoneNumber(phoneNumber)) {
@@ -109,35 +107,10 @@ const AddImport = () => {
     return () => clearTimeout(timer);
   }, [phoneNumber]);
 
-  const handleChange = (e: any) => {
-    setPhoneNumber(e.target.value);
-  };
-
   const isValidPhoneNumber = (phoneNumber: string) => {
     // Kiểm tra nếu phoneNumber chỉ chứa số và có độ dài 10
     const phoneRegex = /^\d{10}$/;
     return phoneRegex.test(phoneNumber);
-  };
-
-  const changeSuplierNumberPhoneField = (field: string, value: string) => {
-    if (field === "phoneNumber") {
-      if (isValidPhoneNumber(value)) {
-        // Cập nhật giá trị nếu hợp lệ
-        setItem((prevSuplier) => ({
-          ...prevSuplier,
-          [field]: value,
-        }));
-      } else {
-        // Hiển thị thông báo lỗi nếu không hợp lệ
-        alert("Số điện thoại phải là số và có đúng 10 chữ số.");
-      }
-    } else {
-      // Xử lý cho các trường khác
-      setItem((prevSuplier) => ({
-        ...prevSuplier,
-        [field]: value,
-      }));
-    }
   };
 
   const filterData = ProductsData.filter((item) => {

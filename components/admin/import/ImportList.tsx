@@ -1,6 +1,6 @@
 "use client";
 import TableSearch from "@/components/shared/table/TableSearch";
-import { ImportData } from "@/constants/data";
+// import { ImportData } from "@/constants/data";
 import { PaginationProps } from "@/types/pagination";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useState } from "react";
@@ -10,6 +10,7 @@ import PaginationUI from "@/types/pagination/Pagination";
 import { format } from "date-fns";
 import MyButton from "@/components/shared/button/MyButton";
 import LabelStatus from "@/components/shared/label/LabelStatus";
+import { Import } from "@/dto/ImportDTO";
 
 interface Staff {
   id: string;
@@ -54,11 +55,17 @@ const columns = [
   { header: "Action", accessor: "action" },
 ];
 
-const ImportList = () => {
+const ImportList = ({
+  importData,
+  setImportData,
+}: {
+  importData: Import[];
+  setImportData: any;
+}) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-  const totalResult = ImportData.length;
+  const totalResult = importData.length;
   const [filterOption, setFilterOption] = useState("");
 
   const [sortConfig, setSortConfig] = useState<{
@@ -70,7 +77,7 @@ const ImportList = () => {
   });
   type SortableKeys = "id" | "fullname" | "total" | "status" | "number";
 
-  const getValueByKey = (item: (typeof ImportData)[0], key: SortableKeys) => {
+  const getValueByKey = (item: Import, key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
@@ -85,7 +92,7 @@ const ImportList = () => {
     }
   };
 
-  const sorted = [...ImportData].sort((a, b) => {
+  const sorted = [...importData].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 

@@ -1,4 +1,6 @@
-export async function fetchImport(): Promise<[]> {
+import { Import } from "@/dto/ImportDTO";
+
+export async function fetchImport(): Promise<Import[]> {
   try {
     const response = await fetch(`/api/import/all`);
     if (!response.ok) {
@@ -23,7 +25,7 @@ export async function getImportById(importId: string): Promise<Import | null> {
   try {
     const response = await fetch(`/api/import/${importId}`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `${token}`,
       },
     });
 

@@ -1,61 +1,105 @@
+import { CreateOrder } from "@/dto/OrderDTO";
 import { formatPrice } from "@/lib/utils";
-import React from "react";
+import { useState } from "react";
+import { Product } from "./ImportCard";
 
-interface Product {
+export interface DetailProduct {
   id: string;
-  image: string;
-  productName: string;
-  price: string;
   material: string;
-  quantity: number; // Fixed typo here
+  size: string;
+  unitPrice: number;
+  quantity: number;
+  discount: string;
 }
 
 const ImportOrderCard = ({
-  item,
   updateCart,
+  cartItem,
+  setItem,
+  item,
 }: {
-  item: Product;
-  updateCart: (updatedItem: Product) => void;
+  cartItem: DetailProduct;
+  updateCart: (updatedItem: DetailProduct) => void;
+  setItem: any;
+  item: Product | null;
 }) => {
-  const handleQuantityChange = (newQuantity: string) => {
-    const quantity = parseInt(newQuantity, 10);
-    if (isNaN(quantity)) return; // Bỏ qua nếu giá trị không hợp lệ
-    const updatedItem = { ...item, quantity }; // Cập nhật số lượng
-    updateCart(updatedItem); // Gửi thông tin mới về cho cha
+  const [quantity, setQuantity] = useState(cartItem.quantity);
+
+  const updateQuantity = (newQuantity: number) => {
+    if (newQuantity < 0) return; // Đảm bảo số lượng không nhỏ hơn 0
+
+    if (newQuantity === 0) {
+      // Xóa sản phẩm khỏi giỏ hàng
+      setItem((prevItem: any) => {
+        const updatedDetails = prevItem.details.filter(
+          (detail: any) =>
+            !(
+              detail.id === cartItem.id &&
+              detail.material === cartItem.material &&
+              detail.size === cartItem.size
+            )
+        );
+        return { ...prevItem, details: updatedDetails };
+      });
+    } else {
+      setQuantity(newQuantity);
+
+      // Tạo đối tượng mới để cập nhật giỏ hàng
+      const updatedItem = { ...cartItem, quantity: newQuantity };
+      updateCart(updatedItem);
+
+      // Cập nhật state giỏ hàng cha
+      setItem((prevItem: any) => {
+        const updatedDetails = prevItem.details.map((detail: any) => {
+          if (
+            detail.id === cartItem.id &&
+            detail.material === cartItem.material &&
+            detail.size === cartItem.size
+          ) {
+            return { ...detail, quantity: newQuantity };
+          }
+          return detail;
+        });
+        return { ...prevItem, details: updatedDetails };
+      });
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    if (isNaN(value) || value < 1) return; // Kiểm tra giá trị hợp lệ
+    updateQuantity(value);
   };
 
   return (
     <div
-      key={item.id}
+      key={cartItem.id}
       className="w-full h-full flex flex-row items-center justify-between py-3"
     >
       <div className="flex w-full h-full gap-4 items-center py-3">
         <div className="h-14 w-14 rounded-lg bg-cover bg-no-repeat bg-center">
-          <img src={item.image || ""} alt="avatar" className="rounded-lg" />
+          <img src={item?.image || ""} alt="avatar" className="rounded-lg" />
         </div>
         <div className="flex flex-col w-3/5">
-          <span className="text-xs font-bold">{item.productName}</span>
-          <span className="text-xs">{formatPrice(item.price)}</span>
+          <span className="text-sm font-bold">{item?.productName}</span>
+          <span className="text-xs">{formatPrice(cartItem.unitPrice)}</span>
         </div>
       </div>
       <div className="flex w-2/5 pt-4 gap-2">
         <button
-          onClick={() => handleQuantityChange((item.quantity - 1).toString())}
+          onClick={() => updateQuantity(quantity - 1)}
+          disabled={quantity <= 0} // Không cho giảm nhỏ hơn 0
         >
           -
         </button>
         <input
           type="text"
-          value={item.quantity}
-          onChange={(e) => handleQuantityChange(e.target.value)}
-          min={1}
+          value={quantity}
+          onChange={handleInputChange}
+          // min={1}
           className="w-16 h-6 border border-gray-300 rounded-md self-center text-sm focus:outline-none text-center"
         />
-        <button
-          onClick={() => handleQuantityChange((item.quantity + 1).toString())}
-        >
-          +
-        </button>
+        <button onClick={() => updateQuantity(quantity + 1)}>+</button>
       </div>
     </div>
   );
