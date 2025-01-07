@@ -23,7 +23,7 @@ export const createCategory = async (data: {
     await mongoose.connection.close();
     throw new Error("Failed to create category");
   } finally {
-    await mongoose.connection.close();
+    //await mongoose.connection.close();
   }
 };
 
@@ -64,7 +64,7 @@ export const getCategories = async () => {
     await mongoose.connection.close();
     throw new Error("Failed to fetch categories");
   } finally {
-    await mongoose.connection.close();
+    // await mongoose.connection.close();
   }
 };
 
@@ -73,7 +73,7 @@ export const updateCategory = async (
   id: string,
   data: Partial<{
     name: string;
-    description: string;
+    hot: boolean;
   }>
 ) => {
   try {
@@ -94,7 +94,7 @@ export const updateCategory = async (
     await mongoose.connection.close();
     throw new Error("Failed to update category");
   } finally {
-    await mongoose.connection.close();
+    // await mongoose.connection.close();
   }
 };
 
@@ -112,14 +112,14 @@ export const deleteCategory = async (id: string) => {
     await mongoose.connection.close();
     throw new Error("Failed to delete category");
   } finally {
-    await mongoose.connection.close();
+    //await mongoose.connection.close();
   }
 };
 
 // Add a product to a category
 export const addProductToCategory = async (
   categoryId: string,
-  productId: string
+  productId: string[]
 ) => {
   try {
     await connectToDatabase();
@@ -131,7 +131,7 @@ export const addProductToCategory = async (
     if (!product) {
       throw new Error("Product not found");
     }
-    category.products.push(productId);
+    category.products = productId;
     product.category = categoryId;
     await category.save();
     await product.save();
@@ -139,7 +139,7 @@ export const addProductToCategory = async (
     return { category, product };
   } catch (error) {
     console.log("Error adding product to category: ", error);
-    await mongoose.connection.close();
+    //await mongoose.connection.close();
     throw new Error("Failed to add product to category");
   }
 };
@@ -390,6 +390,6 @@ export const getCategoryById = async (
     console.error("Error fetching category: ", error);
     throw new Error("Failed to fetch category");
   } finally {
-    await mongoose.connection.close();
+    //await mongoose.connection.close();
   }
 };

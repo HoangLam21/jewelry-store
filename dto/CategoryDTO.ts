@@ -13,10 +13,10 @@ export interface CategoryResponse {
 
 export interface CreateCategory {
   name: string;
-  description: string;
+  hot: boolean;
 }
 
 export interface ProductAdditionToCategory {
   categoryId: string;
-  productId: string;
+  productId: string[];
 }

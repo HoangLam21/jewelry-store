@@ -4,13 +4,13 @@ export async function fetchProduct(): Promise<ProductResponse[]> {
   try {
     const response = await fetch(`/api/product/all`);
     if (!response.ok) {
-      throw new Error("Error fetching customer");
+      throw new Error("Error fetching data");
     }
     const data: ProductResponse[] = await response.json();
 
     return data;
   } catch (error) {
-    console.error("Failed to fetch customers:", error);
+    console.error("Failed to fetch data:", error);
     throw error;
   }
 }

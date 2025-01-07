@@ -36,8 +36,8 @@ export async function getDetailCategory(id: string) {
 
 export async function deleteCategoryById(id: string) {
   try {
-    console.log(`/api/category/remove?id=${id}`, "delete ");
-    const response = await fetch(`/api/category/remove?id=${id}`, {
+    console.log(`/api/category/remove?categoryId=${id}`, "delete ");
+    const response = await fetch(`/api/category/delete?categoryId=${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
@@ -70,7 +70,7 @@ export async function createCategory(
       },
       body: JSON.stringify({
         name: params.name,
-        description: params.description
+        hot: params.hot
       })
     });
 
@@ -94,14 +94,14 @@ export async function updateInfoCategory(
   try {
     console.log(id, params, "update params");
 
-    const response = await fetch(`/api/category/update?id=${id}`, {
+    const response = await fetch(`/api/category/update?categoryId=${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
         name: params.name,
-        description: params.description
+        hot: params.hot
       })
     });
 
