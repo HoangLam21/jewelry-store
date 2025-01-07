@@ -32,6 +32,7 @@ export default function Page() {
 
     fetchAndSaveUser();
   }, []);
+
   useEffect(() => {
     let isMounted = true;
     const getAllProducts = async () => {
