@@ -47,8 +47,8 @@ export const createProduct = async (data: {
       files: imageIds,
       description: data.description,
       vouchers: voucherIds,
-      provider: provider? provider._id:undefined ,
-      category: category? category._id:undefined ,
+      provider: provider ? provider._id : undefined,
+      category: category ? category._id : undefined,
       variants: data.variants,
       collections: data.collections,
     });
@@ -116,8 +116,8 @@ export const updateProduct = async (
     images: formidable.File[];
     description: string;
     vouchers: string[];
-    provider: string;
-    category: string;
+    provider?: string;
+    category?: string;
     collections?: string;
     variants: {
       material: string;
@@ -139,28 +139,36 @@ export const updateProduct = async (
         updateImageIds.push(createdImage._id);
       }
     }
-    console.log("createdImage: ", updateImageIds);
+    const provider = await ProductProvider.findById(data.provider);
+    const category = await Category.findById(data.category);
+    const voucherIds = [];
+    const vouchers = [];
+    for (const id of data.vouchers!) {
+      const voucher = await Voucher.findById(id);
+      if (voucher) {
+        voucherIds.push(voucher._id);
+        vouchers.push(voucher);
+      }
+    }
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
         ...data,
+        vouchers: voucherIds,
+        provider: provider ? provider._id : undefined,
+        category: category ? category._id : undefined,
         files: updateImageIds,
       },
       { new: true }
     );
     const files = await File.find({ _id: { $in: updatedProduct.files } });
-    const vouchers = await Voucher.find({
-      _id: { $in: updatedProduct.vouchers },
-    });
-    const provider = await ProductProvider.findById(updatedProduct.provider);
-    if (!updatedProduct) {
-      throw new Error("Product not found");
-    }
+
     return {
       ...updatedProduct.toObject(),
       files: files,
       vouchers: vouchers,
       provider: provider,
+      catgory: category,
     };
   } catch (error) {
     console.log("Error updating Product: ", error);
