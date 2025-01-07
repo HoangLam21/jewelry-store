@@ -133,55 +133,6 @@ export const verifyImport = async (id: string) => {
     }
 };
 
-// Đọc nhập hàng theo ID
-export const getImportById = async (id: string) => {
-    try {
-        connectToDatabase();
-        const importData = await Import.findById(id);
-        if (!importData) {
-            throw new Error("Import not found");
-        }
-        const staff = await Staff.findById(importData.staff);
-        const provider = await ProductProvider.findById(
-            (
-                await Product.findById(importData.details[0].id)
-            ).provider
-        );
-        const invoices = await Promise.all(
-            importData.details.map(async (detail: any) => {
-                const product = await Product.findById(detail.id);
-                const file = (
-                    await File.find({ _id: { $in: product.files } })
-                )[0];
-                return {
-                    id: product._id.toString(),
-                    productName: product.name,
-                    productImage: file.url,
-                    unitPrice: detail.unitPrice,
-                    quantity: detail.quantity,
-                    discount: Number(detail.discount),
-                };
-            })
-        );
-        return {
-            id: importData._id.toString(),
-            suplier: {
-                id: provider._id.toString(),
-                phoneNumber: provider.phoneNumber,
-                fullname: provider.fullname,
-                address: provider.address,
-            },
-            invoice: invoices,
-            status: importData.status,
-            createAt: importData.createdAt,
-            createBy: staff.fullName,
-        };
-    } catch (error) {
-        console.log("Error fetching Import: ", error);
-        throw new Error("Failed to fetch import");
-    }
-};
-
 // Lấy tất cả nhập hàng của một nhà cung cấp
 export const getAllImportsOfProvider = async (providerId: string) => {
     try {
@@ -234,57 +185,6 @@ export const getAllImportsOfProvider = async (providerId: string) => {
     } catch (error) {
         console.log("Error fetching Imports of Provider: ", error);
         throw new Error("Failed to fetch imports of provider");
-    }
-};
-
-// Lấy tất cả nhập hàng của một nhân viên
-export const getAllImportsOfStaff = async (staffId: string) => {
-    try {
-        connectToDatabase();
-        const imports = await Import.find({ staff: new ObjectId(staffId) });
-        const result = await Promise.all(
-            imports.map(async (importData) => {
-                const staff = await Staff.findById(importData.staff);
-                const provider = await ProductProvider.findById(
-                    (
-                        await Product.findById(importData.details[0].id)
-                    ).provider
-                );
-                const invoices = await Promise.all(
-                    importData.details.map(async (detail: any) => {
-                        const product = await Product.findById(detail.id);
-                        const file = (
-                            await File.find({ _id: { $in: product.files } })
-                        )[0];
-                        return {
-                            id: product._id.toString(),
-                            productName: product.name,
-                            productImage: file.url,
-                            unitPrice: detail.unitPrice,
-                            quantity: detail.quantity,
-                            discount: Number(detail.discount),
-                        };
-                    })
-                );
-                return {
-                    id: importData._id.toString(),
-                    suplier: {
-                        id: provider._id.toString(),
-                        phoneNumber: provider.phoneNumber,
-                        fullname: provider.fullname,
-                        address: provider.address,
-                    },
-                    invoice: invoices,
-                    status: importData.status,
-                    createAt: importData.createdAt,
-                    createBy: staff.fullName,
-                };
-            })
-        );
-        return result;
-    } catch (error) {
-        console.log("Error fetching Imports of Staff: ", error);
-        throw new Error("Failed to fetch imports of staff");
     }
 };
 
@@ -349,6 +249,211 @@ interface RawFile {
     _id: mongoose.Types.ObjectId;
     url: string;
 }
+
+export const getImportById = async (id: string): Promise<ImportResponse> => {
+    try {
+        await connectToDatabase();
+
+        // Fetch import data
+        const rawImport = await Import.findById(id).lean();
+        const importData = rawImport as unknown as RawImport;
+        if (!importData) {
+            throw new Error("Import not found");
+        }
+
+        // Get all required IDs
+        const productIds = importData.details.map((detail) => detail.id);
+
+        // Fetch staff, products in parallel with proper type assertions
+        const [rawStaff, rawProducts] = await Promise.all([
+            Staff.findById(importData.staff).lean(),
+            Product.find({ _id: { $in: productIds } }).lean(),
+        ]);
+
+        const staff = rawStaff as unknown as RawStaff;
+        const products = rawProducts as unknown as RawProduct[];
+
+        if (!staff) throw new Error("Staff not found");
+        if (!products.length) throw new Error("Products not found");
+
+        // Get provider and files IDs
+        const providerId = products[0].provider;
+        const fileIds = products.reduce(
+            (acc: mongoose.Types.ObjectId[], product) => {
+                if (product.files?.[0]) acc.push(product.files[0]);
+                return acc;
+            },
+            []
+        );
+
+        // Fetch provider and files with proper type assertions
+        const [rawProvider, rawFiles] = await Promise.all([
+            ProductProvider.findById(providerId).lean(),
+            File.find({ _id: { $in: fileIds } }).lean(),
+        ]);
+
+        const provider = rawProvider as unknown as RawProvider;
+        const files = rawFiles as unknown as RawFile[];
+
+        if (!provider) throw new Error("Provider not found");
+
+        // Create lookup maps
+        const productMap = new Map(products.map((p) => [p._id.toString(), p]));
+        const fileMap = new Map(files.map((f) => [f._id.toString(), f]));
+
+        // Build invoice data
+        const invoices = importData.details.map((detail) => {
+            const product = productMap.get(detail.id.toString());
+            if (!product) throw new Error(`Product not found: ${detail.id}`);
+
+            const productImage = product.files?.[0]
+                ? fileMap.get(product.files[0].toString())?.url || null
+                : null;
+
+            return {
+                id: product._id.toString(),
+                productName: product.name,
+                productImage,
+                unitPrice: detail.unitPrice,
+                quantity: detail.quantity,
+                discount: Number(detail.discount),
+            };
+        });
+
+        return {
+            id: importData._id.toString(),
+            supplier: {
+                id: provider._id.toString(),
+                phoneNumber: provider.phoneNumber,
+                fullname: provider.fullname,
+                address: provider.address,
+            },
+            invoice: invoices,
+            status: importData.status,
+            createAt: importData.createdAt,
+            createBy: staff.fullName,
+        };
+    } catch (error) {
+        console.error("Error fetching Import: ", error);
+        throw new Error("Failed to fetch import");
+    }
+};
+
+export const getAllImportsOfStaff = async (
+    staffId: string
+): Promise<ImportResponse[]> => {
+    try {
+        await connectToDatabase();
+
+        // Fetch all imports for staff with proper type assertions
+        const rawImports = await Import.find({
+            staff: new mongoose.Types.ObjectId(staffId),
+        }).lean();
+        const imports = rawImports as unknown as RawImport[];
+
+        if (!imports.length) return [];
+
+        // Collect all IDs we need
+        const productIds = new Set<string>();
+        imports.forEach((imp) => {
+            imp.details.forEach((detail) => {
+                productIds.add(detail.id.toString());
+            });
+        });
+
+        // Fetch staff and products first with proper type assertions
+        const [rawStaff, rawProducts] = await Promise.all([
+            Staff.findById(staffId).lean(),
+            Product.find({ _id: { $in: Array.from(productIds) } }).lean(),
+        ]);
+
+        const staff = rawStaff as unknown as RawStaff;
+        const products = rawProducts as unknown as RawProduct[];
+
+        if (!staff) throw new Error("Staff not found");
+
+        // Get provider and files IDs
+        const providerIds = new Set<string>();
+        const fileIds = new Set<string>();
+        products.forEach((product) => {
+            if (product.provider) providerIds.add(product.provider.toString());
+            if (product.files?.[0]) fileIds.add(product.files[0].toString());
+        });
+
+        // Fetch providers and files with proper type assertions
+        const [rawProviders, rawFiles] = await Promise.all([
+            ProductProvider.find({
+                _id: { $in: Array.from(providerIds) },
+            }).lean(),
+            File.find({ _id: { $in: Array.from(fileIds) } }).lean(),
+        ]);
+
+        const providers = rawProviders as unknown as RawProvider[];
+        const files = rawFiles as unknown as RawFile[];
+
+        // Create lookup maps
+        const productMap = new Map(products.map((p) => [p._id.toString(), p]));
+        const providerMap = new Map(
+            providers.map((p) => [p._id.toString(), p])
+        );
+        const fileMap = new Map(files.map((f) => [f._id.toString(), f]));
+
+        // Transform imports
+        return imports.map((importData) => {
+            const firstProduct = productMap.get(
+                importData.details[0].id.toString()
+            );
+            if (!firstProduct?.provider) {
+                throw new Error(
+                    `Product or provider not found for import ${importData._id}`
+                );
+            }
+
+            const provider = providerMap.get(firstProduct.provider.toString());
+            if (!provider) {
+                throw new Error(
+                    `Provider not found for import ${importData._id}`
+                );
+            }
+
+            const invoices = importData.details.map((detail) => {
+                const product = productMap.get(detail.id.toString());
+                if (!product)
+                    throw new Error(`Product not found: ${detail.id}`);
+
+                const productImage = product.files?.[0]
+                    ? fileMap.get(product.files[0].toString())?.url || null
+                    : null;
+
+                return {
+                    id: product._id.toString(),
+                    productName: product.name,
+                    productImage,
+                    unitPrice: detail.unitPrice,
+                    quantity: detail.quantity,
+                    discount: Number(detail.discount),
+                };
+            });
+
+            return {
+                id: importData._id.toString(),
+                supplier: {
+                    id: provider._id.toString(),
+                    phoneNumber: provider.phoneNumber,
+                    fullname: provider.fullname,
+                    address: provider.address,
+                },
+                invoice: invoices,
+                status: importData.status,
+                createAt: importData.createdAt,
+                createBy: staff.fullName,
+            };
+        });
+    } catch (error) {
+        console.error("Error fetching Imports of Staff: ", error);
+        throw new Error("Failed to fetch imports of staff");
+    }
+};
 
 export const getImports = async (): Promise<ImportResponse[]> => {
     try {
