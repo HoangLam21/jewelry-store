@@ -276,17 +276,19 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
 
   const handleSave = async () => {
     if (item) {
-      const data: CreateProduct = {
-        name: item.productName,
-        cost: parseCurrency(item.price),
-        description: item.description,
-        images: imageList,
-        vouchers: item.vouchers,
-        provider: item.provider,
-        category: detailProduct.category,
-        collections: item.collection,
-        variants: groupVariants(combinedData)
-      };
+      const data: CreateProduct = Object.fromEntries(
+        Object.entries({
+          name: item.productName,
+          cost: parseCurrency(item.price),
+          description: item.description,
+          images: imageList,
+          vouchers: item.vouchers,
+          provider: item.provider || undefined,
+          category: detailProduct.category || undefined,
+          collections: item.collection,
+          variants: groupVariants(combinedData)
+        }).filter(([_, value]) => value !== undefined)
+      ) as unknown as CreateProduct;
       console.log(data);
       const result = await updateInfoProduct(detailProduct.id, data);
       console.log(result);
@@ -388,6 +390,17 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                       value={detailProduct.category}
                       width="w-full"
                     />
+                    <InputEdit
+                      titleInput="Collection"
+                      onChange={(e) =>
+                        handleChangeProductInputFields(
+                          "collection",
+                          e.target.value
+                        )
+                      }
+                      width="w-full"
+                      placeholder="Enter collection"
+                    />
                   </div>
                   <div className="w-1/2 h-fit gap-4 flex flex-col">
                     <InputSelection
@@ -410,21 +423,19 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                       width="w-full"
                       placeholder={detailProduct.price}
                     />
+                    <InputSelection
+                      width="w-full"
+                      titleInput="Provider"
+                      options={providerList}
+                      value={item?.provider ?? "None"}
+                      onChange={(value) => {
+                        setItem((prev) => ({
+                          ...prev!,
+                          provider: value
+                        }));
+                      }}
+                    />
                   </div>
-                </div>
-                <div className="flex w-full h-fit">
-                  <InputSelection
-                    width="w-full"
-                    titleInput="Provider"
-                    options={providerList}
-                    value={item?.provider ?? "None"}
-                    onChange={(value) => {
-                      setItem((prev) => ({
-                        ...prev!,
-                        provider: value
-                      }));
-                    }}
-                  />
                 </div>
                 <div className="flex w-full h-fit">
                   <InputEdit

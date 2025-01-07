@@ -84,13 +84,17 @@ const AddCategoryInformation = () => {
   };
   const handleSelect = (isChecked: CheckedState, id: string) => {
     const checked = Boolean(isChecked);
-    if (checked) {
-      // Thêm ID vào danh sách
-      setSelectedIds((prev) => [...prev, id]);
-    } else {
-      // Loại bỏ ID khỏi danh sách
-      setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id));
-    }
+
+    setSelectedIds((prev) => {
+      const updatedIds = checked
+        ? [...prev, id] // Thêm ID nếu được chọn
+        : prev.filter((selectedId) => selectedId !== id); // Loại bỏ ID nếu bỏ chọn
+
+      // Cập nhật quantity dựa trên danh sách mới
+      setQuantity(updatedIds.length);
+
+      return updatedIds;
+    });
   };
 
   const formatDate = (date: Date | string): string => {
@@ -202,18 +206,16 @@ const AddCategoryInformation = () => {
     try {
       const params: CreateCategory = {
         name: newDetail.name,
-        description: newDetail.description
+        hot: newDetail.hot
       };
       const result = await createCategory(params);
       if (result) {
-        for (const item of selectedIds) {
-          const param: ProductAdditionToCategory = {
-            categoryId: result._id,
-            productId: item
-          };
-          const addedProduct = await addProductToCategory(param);
-          console.log("Added product:", addedProduct.product);
-        }
+        const param: ProductAdditionToCategory = {
+          categoryId: result._id,
+          productId: selectedIds
+        };
+        const addedProduct = await addProductToCategory(param);
+        console.log("Added product:", addedProduct.product);
         alert("Create category successfully.");
       } else {
         alert("Can't create category.");
@@ -271,14 +273,14 @@ const AddCategoryInformation = () => {
               value={formatDate(newDetail.createAt)}
             />
           </div>
-          <div className="flex w-full h-fit">
+          {/* <div className="flex w-full h-fit">
             <InputEdit
               titleInput="Description"
               width="w-full"
               onChange={handleChange}
               placeholder="Enter description..."
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Product Information */}

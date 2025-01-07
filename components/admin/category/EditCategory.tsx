@@ -84,17 +84,37 @@ const EditCategoryInformation = () => {
   type SortableKeys = "id" | "name" | "createAt";
 
   useEffect(() => {
-    if (id) {
-      const foundItem = categoryData.find((item) => item._id === id);
-      if (foundItem) {
-        setCategory(foundItem);
-        setUpdateCategory(foundItem);
-        const preId: string[] = foundItem.products.map((item) => item._id);
-        setSelectedIds(preId);
-      }
-    }
-
     const fetchData = async () => {
+      try {
+        if (id) {
+          const result = await getDetailCategory(id);
+          const data: CategoryResponse = {
+            _id: result._id,
+            name: result.name,
+            hot: result.hot,
+            description: result.description,
+            products: result.products.map((item: any, index: number) => ({
+              _id: item._id,
+              fullName: item.name ? item.name : "Unknown name",
+              cost: item.cost ? item.cost : 0
+            })),
+            createAt: result.createdAt
+          };
+          console.log(result);
+          setCategory(data);
+          setUpdateCategory(data);
+          const preId: string[] = data.products.map((item) => item._id);
+          setSelectedIds(preId);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin nhân viên:", error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+  useEffect(() => {
+    const fetchDataProduct = async () => {
       try {
         const result: ProductResponse[] = await fetchProduct();
         if (result) {
@@ -120,26 +140,8 @@ const EditCategoryInformation = () => {
         alert(`Error fetching data: ${errorMessage}`);
       }
     };
-
-    fetchData();
-    //     const fetchDetail = async () => {
-    //   if (id) {
-    //     try {
-    //       const result: CategoryResponse = await getDetailCategory(id);
-    //       if (result) {
-    //         setCategory(result);
-    //       } else {
-    //         alert("Can't get detail category.");
-    //       }
-    //     } catch (err: any) {
-    //       console.error("Error get detail data:", err);
-    //       const errorMessage = err?.message || "An unexpected error occurred.";
-    //       alert(`Error get detail data: ${errorMessage}`);
-    //     }
-    //   }
-    // };
-    // fetchDetail();
-  }, [id]);
+    fetchDataProduct();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (updateCategory) {
@@ -232,18 +234,17 @@ const EditCategoryInformation = () => {
     try {
       const params: CreateCategory = {
         name: updateCategory.name,
-        description: updateCategory.description
+        hot: updateCategory.hot
       };
-      const result = await updateInfoCategory(updateCategory._id, params);
+      const result = await updateInfoCategory(id, params);
       if (result) {
-        for (const item of selectedIds) {
-          const param: ProductAdditionToCategory = {
-            categoryId: result._id,
-            productId: item
-          };
-          const addedProduct = await addProductToCategory(param);
-          console.log("Added product:", addedProduct.product);
-        }
+        const param: ProductAdditionToCategory = {
+          categoryId: result._id,
+          productId: selectedIds
+        };
+        const addedProduct = await addProductToCategory(param);
+        console.log("Added product:", addedProduct.product);
+        console.log(selectedIds);
         alert("Update category successfully.");
       } else {
         alert("Can't update category.");
@@ -280,7 +281,7 @@ const EditCategoryInformation = () => {
         <div className="w-full p-6 flex flex-col gap-6 ">
           <div className="w-full flex">
             <div className="w-full grid grid-rows-3 gap-2">
-              <LabelInformation content={category._id} title="ID" />
+              <LabelInformation content={id} title="ID" />
               <div className="flex flex-row gap-5">
                 <InputEdit
                   titleInput="Name"
@@ -291,7 +292,7 @@ const EditCategoryInformation = () => {
                 />
                 <InputSelection
                   width="w-full"
-                  titleInput="Provider"
+                  titleInput="Hot Category"
                   options={["Best Category", "Normal"]}
                   value={category.hot ? "Best Category" : "Normal"}
                   onChange={(value) => {
@@ -302,7 +303,7 @@ const EditCategoryInformation = () => {
                   }}
                 />
               </div>
-              <div className="flex w-full h-fit">
+              {/* <div className="flex w-full h-fit">
                 <InputEdit
                   titleInput="Description"
                   width="w-full"
@@ -314,15 +315,15 @@ const EditCategoryInformation = () => {
                       : "Enter description..."
                   }
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
-        <TitleSession icon="humbleicons:money" title="Number of salesitems" />
+        <TitleSession icon="" title="Product List" />
 
-        <div className="flex flex-col gap-6 w-full pt-6">
+        <div className="flex flex-col gap-6 w-full p-2">
           <TableSearch onSearch={setSearchQuery} onSort={handleSort} />
-          <div className="flex flex-col gap-6 w-full p-6">
+          <div className="flex flex-col gap-6 w-full">
             <Table
               columns={columns}
               data={paginatedproducts}

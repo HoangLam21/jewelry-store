@@ -8,15 +8,15 @@ export interface CategoryResponse {
     fullName: string;
     cost: number;
   }[];
-  createAt: string;
+  createAt: Date;
 }
 
 export interface CreateCategory {
   name: string;
-  description: string;
+  hot: boolean;
 }
 
 export interface ProductAdditionToCategory {
   categoryId: string;
-  productId: string;
+  productId: string[];
 }
