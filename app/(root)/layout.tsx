@@ -7,7 +7,7 @@ import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  const isAdmin = pathname.startsWith("/admin");
+  const isAdmin = pathname?.startsWith("/admin");
 
   const links = isAdmin ? true : false;
   return (
