@@ -30,18 +30,22 @@ const page = () => {
   const [selectedMaterial, setSelectedMaterial] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const { dispatch } = useCart();
-  if (selectedMaterial && selectedSize) {
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: {
-        ...product,
-        selectedMaterial,
-        selectedSize,
-        quantity: 1
-      }
-    });
-    setIsModalOpen(false);
-  }
+
+  const handleAddToCart = () => {
+    if (selectedMaterial && selectedSize) {
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: {
+          ...product
+        }
+      });
+      alert("Add to cart!");
+      setIsModalOpen(false);
+    } else {
+      alert("Please select both material and size before adding to cart!");
+    }
+  };
+
   useEffect(() => {
     const getProduct = async () => {
       const data = await getProductById(id);
@@ -69,10 +73,6 @@ const page = () => {
   // };
 
   const handleBuyNow = () => {
-    console.log("add to cart");
-  };
-
-  const handleAddToCart = () => {
     console.log("add to cart");
   };
 

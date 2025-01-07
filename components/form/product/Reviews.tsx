@@ -5,6 +5,7 @@ import { getReviewById } from "@/lib/services/rating.service";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import CreateReview from "./CreateReview";
+import { getOrderById } from "@/lib/actions/order.action";
 
 export interface CommentData {
   id: string;
@@ -53,6 +54,37 @@ const Reviews = () => {
     };
     getReview();
   }, [id]);
+
+  // useEffect(() => {
+  //   let userId = localStorage.getItem("userId");
+  //   //if(!userId) return;
+  //   if (!userId) userId = "676c26abbc53a1913f2c9581";
+  //   const getDetailOrderById = async () => {
+  //     const data = await ();
+  //     const reviews: CommentData[] = data.map((item: any) => ({
+  //       id: item._id,
+  //       userId: item.userId ? item.userId._id : "",
+  //       userName: item.userId ? item.userId.fullName : "Unknown Name",
+  //       avatar:
+  //         item.userId && item.userId.avatar
+  //           ? item.userId.avatar
+  //           : "/assets/images/avatar.jpg",
+  //       productId: item.productId,
+  //       rating: item.point,
+  //       createAt: new Date(item.createAt),
+  //       productName: "", // Sửa "productNamme" thành "productName"
+  //       size: "",
+  //       material: "",
+  //       comment: item.content ? item.content : "No comment",
+  //       image: item.images.map((image: any) => image.url)
+  //     }));
+
+  //     setComments(reviews);
+
+  //     console.log(data);
+  //   };
+  //   getReview();
+  // }, []);
 
   const handleCreateReview = () => {
     setOpenReview(true);
