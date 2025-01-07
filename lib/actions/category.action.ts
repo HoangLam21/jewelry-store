@@ -128,10 +128,9 @@ export const getCategoryById = async (id: string) => {
         ]
       })
       .lean();
-
     // Type assertion
     const category = rawCategory as unknown as CategoryPopulated;
-    console.log(category._id.toString());
+
     if (!category) {
       throw new Error("Category not found");
     }

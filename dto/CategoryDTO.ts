@@ -8,7 +8,7 @@ export interface CategoryResponse {
     fullName: string;
     cost: number;
   }[];
-  createAt: string;
+  createAt: Date;
 }
 
 export interface CreateCategory {

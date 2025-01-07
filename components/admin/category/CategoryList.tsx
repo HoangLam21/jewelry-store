@@ -44,7 +44,7 @@ export const defaultCategory: CategoryResponse = {
       cost: 0
     }
   ],
-  createAt: new Date().toISOString()
+  createAt: new Date()
 };
 
 const CategoryList = () => {
