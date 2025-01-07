@@ -82,8 +82,8 @@ export default function Page() {
               <span className="text-[20px] font-normal jost">SUBTOTAL</span>
             </div>
           </div>
-          {state.items.map((item) => (
-            <CartCard key={item._id} item={item} />
+          {state.items.map((item, index) => (
+            <CartCard key={item._id + index} item={item} />
           ))}
           <div className="mt-10 w-full flex flex-col">
             <div className="text-[20px] font-normal jost">

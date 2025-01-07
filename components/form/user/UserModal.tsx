@@ -2,6 +2,7 @@ import { updateInfoCustomer } from "@/lib/service/customer.service";
 import React, { useEffect, useState } from "react";
 import EditModal from "./EditModal";
 import Avatar from "./Avatar";
+import { fetchOrder } from "@/lib/service/order.service";
 interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,6 +19,8 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<"info" | "history">("info");
   const [user, setUser] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [ordersData, setOrdersData] = useState<any[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
   const [editData, setEditData] = useState<CreateCustomer>({
     fullName: "",
     phoneNumber: "",
@@ -36,6 +39,36 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const getAllOrders = async () => {
+      try {
+        const data = await fetchOrder();
+        if (isMounted) {
+          setOrdersData(data);
+          console.log("orders", data);
+        }
+      } catch (error) {
+        console.error("Error loading posts:", error);
+      }
+    };
+    getAllOrders();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (user && user._id && ordersData.length > 0) {
+      console.log(user._id);
+      const filtered = ordersData.filter(
+        (order) => order.customer._id === user._id
+      );
+      setFilteredOrders(filtered);
+      console.log(filtered);
+    }
+  }, [user, ordersData]);
 
   const handleEditClick = () => {
     setEditData({
@@ -94,16 +127,11 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
       </div>
 
       <Avatar user={user} setProfileUser={setUser} />
-      {/* <img
-        src={user?.avatar}
-        alt={user?.fullName}
-        className="w-24 h-24 rounded-full mb-4"
-      /> */}
       <h2 className="text-2xl font-semibold mb-4">{user?.fullName}</h2>
 
       <button
         onClick={handleEditClick}
-        className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+        className="bg-primary-100 text-white px-4 py-2 rounded mb-4"
       >
         Edit Info
       </button>
@@ -121,6 +149,52 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
           <p className="mt-3">
             <strong className="text-gray-200">Address:</strong> {user?.address}
           </p>
+        </div>
+      )}
+
+      {activeTab === "history" && (
+        <div className="w-full pl-5 overflow-y-auto">
+          {filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
+              <div
+                key={order._id}
+                className="p-4 mb-4 bg-gray-100 rounded-lg shadow-md"
+              >
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Order ID: {order._id}
+                </h3>
+                <p>
+                  <strong>Status:</strong> {order.status}
+                </p>
+                <p>
+                  <strong>Cost:</strong> ${order.cost.toLocaleString()}
+                </p>
+                <p>
+                  <strong>Discount:</strong> {order.discount}%
+                </p>
+                <p>
+                  <strong>Shipping Method:</strong> {order.shippingMethod}
+                </p>
+                <p>
+                  <strong>ETD:</strong>{" "}
+                  {new Date(order.ETD).toLocaleDateString()}
+                </p>
+                <div>
+                  <strong>Products:</strong>
+                  <ul className="mt-2 ml-4 list-disc">
+                    {order.details.map((item: any) => (
+                      <li key={item?._id}>
+                        {item?.material} (Size: {item?.size}, Quantity:{" "}
+                        {item?.quantity}, Discount: {item?.discount}%)
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No purchase history found.</p>
+          )}
         </div>
       )}
 
