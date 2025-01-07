@@ -1,4 +1,4 @@
-import { CreateOrder, Order } from "@/dto/OrderDTO";
+import { CreateOrder, Order, UpdateStatusOrder } from "@/dto/OrderDTO";
 
 export async function fetchOrder(): Promise<[]> {
   try {
@@ -103,6 +103,35 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
     return data;
   } catch (error) {
     console.error("Lỗi khi lấy thông tin order:", error);
+    throw error;
+  }
+}
+
+export async function updatedStatusOrder(
+  orderId: string,
+  status: string
+  // token: string
+): Promise<Order> {
+  try {
+    console.log(orderId, status, "param");
+    const response = await fetch(`/api/order/update?id=${orderId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `${token}`,
+      },
+      body: JSON.stringify({ status }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error creating media");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to create media:", error);
     throw error;
   }
 }

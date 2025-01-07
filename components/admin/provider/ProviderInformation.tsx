@@ -1,129 +1,77 @@
-import LabelInformation from "@/components/shared/label/LabelInformation";
-import TitleSession from "@/components/shared/label/TitleSession";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
 import { format } from "date-fns";
-import { useParams, useRouter } from "next/navigation";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import Link from "next/link";
-import { PaginationProps } from "@/types/pagination";
+import TitleSession from "@/components/shared/label/TitleSession";
+import LabelInformation from "@/components/shared/label/LabelInformation";
 import TableSearch from "@/components/shared/table/TableSearch";
 import Table from "@/components/shared/table/Table";
-import PaginationUI from "@/types/pagination/Pagination";
-import LabelStatus from "@/components/shared/label/LabelStatus";
-import { getProviderById } from "@/lib/service/provider.service";
+import {
+  getAllImportsOfProvider,
+  getProviderById,
+} from "@/lib/service/provider.service";
 import { Provider } from "@/dto/ProviderDTO";
-import { Providers } from "@/constants/data";
-import { Import } from "@/dto/ImportDTO";
-import { getAllImportsOfStaff } from "@/lib/actions/import.action";
+import PaginationUI from "@/types/pagination/Pagination";
+import { PaginationProps } from "@/types/pagination";
 
 const columns = [
-  { header: "ID", accessor: "id" },
-  {
-    header: "CreateAt",
-    accessor: "createAt",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "CreateBy",
-    accessor: "createBy",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Total",
-    accessor: "invoice",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Status",
-    accessor: "status",
-    className: "hidden md:table-cell",
-  },
+  { header: "Product Image", accessor: "productImage" },
+  { header: "Product Name", accessor: "productName" },
+  { header: "Material", accessor: "material" },
+  { header: "Size", accessor: "size" },
+  { header: "Quantity", accessor: "quantity" },
+  { header: "Unit Price", accessor: "unitPrice" },
+  { header: "Import Status", accessor: "importStatus" },
 ];
 
 const ProviderInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
-  const [provider, setProvider] = useState<Provider | null>(null); // Store Provider data safely
+  const [provider, setProvider] = useState<Provider | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-  const [importOfProvider, setImportOfProvider] = useState<Import[]>([]); // Store staff data safely
-
-  const [sortConfig, setSortConfig] = useState<{
-    key: SortableKeys;
-    direction: "ascending" | "descending";
-  }>({
-    key: "id",
-    direction: "ascending",
-  });
-  type SortableKeys = "id" | "fullname" | "total" | "status";
-
-  const getValueByKey = (item: Import, key: SortableKeys) => {
-    switch (key) {
-      case "id":
-        return item.id;
-      case "fullname":
-        return item.createBy;
-      case "status":
-        return item.status;
-      case "total":
-        return item.invoice.map((it) => it.quantity * it.unitPrice);
-      default:
-        return "";
-    }
-  };
+  const [importOfProvider, setImportOfProvider] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchImportData = async () => {
       try {
         if (id) {
-          const foundItem = await getProviderById(id);
-          setProvider(foundItem);
-          const foundInvoice = await getAllImportsOfStaff(id);
-          setImportOfProvider(foundInvoice);
+          const foundProvider = await getProviderById(id);
+          setProvider(foundProvider);
+          const foundImports = await getAllImportsOfProvider(id);
+          setImportOfProvider(foundImports);
         }
       } catch (error) {
-        console.error("Lỗi khi lấy thông tin provider:", error);
+        console.error("Error fetching provider information:", error);
       }
     };
     fetchImportData();
   }, [id]);
 
-  if (!provider) {
-    return <p>Loading provider information...</p>;
-  }
-
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
+  const handleSearch = (query: string) => {
+    setSearchQuery(query.toLowerCase());
   };
 
-  const requestSort = (key: SortableKeys) => {
-    let direction: "ascending" | "descending" = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-  };
-
-  const filteredInvoices = importOfProvider.filter((invoice) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      invoice.createBy.toLowerCase().includes(query) ||
-      invoice.createAt.toISOString().toLowerCase().includes(query) ||
-      invoice.id.toString().includes(query)
-    );
-  });
+  const filteredInvoices = importOfProvider.flatMap((item) =>
+    item.invoice.filter((invoice: any) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        invoice.productName.toLowerCase().includes(lowerCaseQuery) ||
+        invoice.material.toLowerCase().includes(lowerCaseQuery) ||
+        invoice.size.toLowerCase().includes(lowerCaseQuery)
+      );
+    })
+  );
 
   const totalPages = Math.ceil(filteredInvoices.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const dataLength = filteredInvoices.length;
-  const itemsPerPage = 8;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const paginatedInvoices = filteredInvoices.slice(
     startIndex,
     startIndex + rowsPerPage
   );
+  const itemsPerPage = 8;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   const paginationUI: PaginationProps = {
     currentPage,
@@ -131,61 +79,52 @@ const ProviderInformation = () => {
     indexOfLastItem,
     indexOfFirstItem,
     totalPages,
-    dataLength,
+    dataLength: filteredInvoices.length,
   };
 
+  const renderRow = (item: any) => {
+    return (
+      <tr
+        key={item.id}
+        className="border-t border-gray-300 text-sm dark:text-dark-360"
+      >
+        <td className="px-4 py-2">
+          <div className="w-[100px] h-[105px] overflow-hidden">
+            <Image
+              src={item?.productImage || "/assets/images/avatar.jpg"}
+              alt={item?.productName || "Product Image"}
+              layout="responsive"
+              width={100}
+              height={105}
+              className="rounded-md object-cover"
+            />
+          </div>
+        </td>
+        <td className="px-4 py-2">{item.productName || "N/A"}</td>
+        <td className="px-4 py-2">{item.material || "N/A"}</td>
+        <td className="px-4 py-2">{item.size || "N/A"}</td>
+        <td className="px-4 py-2">{item.quantity || 0}</td>
+        <td className="px-4 py-2">{item.unitPrice || 0} VND</td>
+        <td className="px-4 py-2">{item.importStatus ? "Done" : "Pending"}</td>
+      </tr>
+    );
+  };
+
+  if (!provider) {
+    return <p>Loading provider information...</p>;
+  }
   const handleSort = () => {
     console.log("this is sort");
   };
-
-  const renderRow = (invoice: Import) => (
-    <tr
-      key={invoice.id}
-      className="border-t border-gray-300 text-sm dark:text-dark-360"
-    >
-      <td className="px-4 py-2 hidden md:table-cell">{invoice.id}</td>
-      <td className="hidden px-4 py-2 md:table-cell">
-        {format(new Date(invoice.createAt), "PPP")}
-      </td>
-      <td className="px-4 py-2">{invoice.createBy}</td>
-      {/* <td className="hidden px-4 py-2 lg:table-cell">
-        {formatCurrency(invoice.invoice.map((it) => (it.quantity*it.unitPrice)))}
-      </td> */}
-      <td className="px-4 py-2">
-        {invoice.status === false ? (
-          <LabelStatus
-            background="bg-light-red"
-            text_color="text-dark-red"
-            title="Just created"
-          />
-        ) : invoice.status === true ? (
-          <LabelStatus
-            background="bg-light-blue"
-            text_color="text-accent-blue"
-            title="In progress"
-          />
-        ) : (
-          <LabelStatus
-            background="bg-custom-green"
-            text_color="text-dark-green"
-            title="Done"
-          />
-        )}
-      </td>
-    </tr>
-  );
-
   return (
     <div className="w-full flex flex-col p-4 rounded-md shadow-md">
       {/* General Information */}
-
       <TitleSession
         icon="flowbite:profile-card-outline"
         title="General Information"
       />
-
-      <div className="w-full p-6 flex flex-col gap-6 ">
-        <div className="w-full flex">
+      <div className="w-full p-6 flex flex-col gap-6">
+        <div className="flex">
           <div className="w-1/5">
             <Image
               alt="avatar"
@@ -195,40 +134,30 @@ const ProviderInformation = () => {
               className="rounded-md"
             />
           </div>
-
           <div className="w-full grid grid-cols-2 gap-5">
-            <div className="flex flex-col gap-5">
-              <LabelInformation content={provider._id} title="ID" />
-              <LabelInformation content={provider.name} title="Fullname" />
-              {/* <LabelInformation content={provider.email} title="Email" /> */}
-            </div>
-            <div className="flex flex-col gap-5">
-              <LabelInformation
-                content={provider.representativeName}
-                title="Representative"
-              />
-              <LabelInformation
-                content={provider.contact}
-                title="Phone Number"
-              />
-            </div>
+            <LabelInformation content={provider._id || ""} title="ID" />
+            <LabelInformation content={provider.name || ""} title="Fullname" />
+            <LabelInformation
+              content={provider.representativeName || ""}
+              title="Representative"
+            />
+            <LabelInformation
+              content={provider.contact || ""}
+              title="Phone Number"
+            />
           </div>
         </div>
-
-        <div className="w-full grid grid-cols-3 gap-4">
-          <LabelInformation content={provider.address} title="Address" />
-          <LabelInformation content={provider.city} title="City" />
-          <LabelInformation content={provider.country} title="Country" />
+        <div className="grid grid-cols-3 gap-4">
+          <LabelInformation content={provider.address || ""} title="Address" />
+          <LabelInformation content={provider.city || ""} title="City" />
+          <LabelInformation content={provider.country || ""} title="Country" />
         </div>
-        {/* <LabelInformation content={Provider.experience} title="Experience" /> */}
       </div>
 
       {/* Number of sales invoices */}
-
       <TitleSession icon="humbleicons:money" title="Number of sales invoices" />
-
       <div className="flex flex-col gap-6 w-full pt-6">
-        <TableSearch onSearch={setSearchQuery} onSort={handleSort} />
+        <TableSearch onSearch={handleSearch} />
         <div className="flex flex-col gap-6 w-full p-6">
           <Table
             columns={columns}

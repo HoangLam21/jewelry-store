@@ -56,45 +56,45 @@ export const getOrders = async () => {
 };
 
 export const createOrder = async (data: {
-    cost: number;
-    discount: number;
-    details: {
-        id: string;
-        material: string;
-        size: string;
-        unitPrice: number;
-        quantity: number;
-        discount: string;
-    }[];
-    status: string;
-    shippingMethod: string;
-    ETD: Date;
-    customer?: string;
-    phoneNumber?:string;
-    note?:string;
-    address?:string;
-    staff: string;
+  cost: number;
+  discount: number;
+  details: {
+    id: string;
+    material: string;
+    size: string;
+    unitPrice: number;
+    quantity: number;
+    discount: string;
+  }[];
+  status: string;
+  shippingMethod: string;
+  ETD: Date;
+  customer?: string;
+  phoneNumber?: string;
+  note?: string;
+  address?: string;
+  staff: string;
 }) => {
-    try {
-        connectToDatabase();
-        const newOrder = await Order.create({
-            cost: data.cost,
-            discount: data.discount,
-            details: data.details,
-            status: data.status,
-            shippingMethod: data.shippingMethod,
-            ETD: data.ETD,
-            customer: new ObjectId(data.customer),
-            phoneNumber:data.phoneNumber,
-            note:data.note,
-            address:data.address,
-            staff: new ObjectId(data.staff),
-        });
-        return newOrder;
-    } catch (error) {
-        console.log("Error creating Order: ", error);
-        throw new Error("Failed to create order");
-    }
+  try {
+    connectToDatabase();
+    const newOrder = await Order.create({
+      cost: data.cost,
+      discount: data.discount,
+      details: data.details,
+      status: data.status,
+      shippingMethod: data.shippingMethod,
+      ETD: data.ETD,
+      customer: new ObjectId(data.customer),
+      phoneNumber: data.phoneNumber,
+      note: data.note,
+      address: data.address,
+      staff: new ObjectId(data.staff),
+    });
+    return newOrder;
+  } catch (error) {
+    console.log("Error creating Order: ", error);
+    throw new Error("Failed to create order");
+  }
 };
 
 // Hủy đơn hàng
@@ -136,37 +136,98 @@ export const deleteOrder = async (id: string) => {
 };
 
 // Cập nhật trạng thái đơn hàng
+// export const updateOrderStatus = async (id: string, status: string) => {
+//   try {
+//     connectToDatabase();
+//     const order = await Order.findById(id);
+//     if (!order) {
+//       throw new Error("Order not found");
+//     }
+//     if (status === "delivered") {
+//       const orderDetails = order.details;
+//       for (const detail of orderDetails) {
+//         const product = await Product.findById(detail.id.toString());
+//         if (!product) {
+//           throw new Error("Product not found");
+//         }
+//         for (const variant of product.variants) {
+//           if (variant.material === detail.material) {
+//             for (const size of variant.sizes) {
+//               if (size.size === detail.size) {
+//                 size.stock -= detail.quantity;
+//               }
+//             }
+//           }
+//         }
+//         product.sales += detail.quantity;
+//         await product.save();
+//       }
+//     }
+//     await Order.findByIdAndUpdate(id, { status: status }, { new: true });
+//     return true;
+//   } catch (error) {
+//     console.log("Error updating Order status: ", error);
+//     throw new Error("Failed to update order status");
+//   }
+// };
+// Cập nhật trạng thái đơn hàng
+
 export const updateOrderStatus = async (id: string, status: string) => {
   try {
+    // Kết nối cơ sở dữ liệu
     connectToDatabase();
+    console.log(id, status, "statussssssss");
+    // Lấy thông tin đơn hàng
     const order = await Order.findById(id);
     if (!order) {
       throw new Error("Order not found");
     }
+
+    // Nếu trạng thái mới là 'delivered', cập nhật kho hàng và số lượng bán
     if (status === "delivered") {
-      const orderDetails = order.details;
-      for (const detail of orderDetails) {
-        const product = await Product.findById(detail.id.toString());
+      for (const detail of order.details) {
+        const product = await Product.findById(detail.id);
         if (!product) {
-          throw new Error("Product not found");
+          throw new Error(`Product with ID ${detail.id} not found`);
         }
-        for (const variant of product.variants) {
-          if (variant.material === detail.material) {
-            for (const size of variant.sizes) {
-              if (size.size === detail.size) {
-                size.stock -= detail.quantity;
-              }
-            }
-          }
+
+        // Cập nhật tồn kho và số lượng bán
+        const variant = product.variants.find(
+          (v: any) => v.material === detail.material
+        );
+        if (!variant) {
+          throw new Error(
+            `Variant with material ${detail.material} not found in product ${product.name}`
+          );
         }
+
+        const sizeDetail = variant.sizes.find(
+          (s: any) => s.size === detail.size
+        );
+        if (!sizeDetail) {
+          throw new Error(
+            `Size ${detail.size} not found in material ${variant.material}`
+          );
+        }
+
+        if (sizeDetail.stock < detail.quantity) {
+          throw new Error(
+            `Not enough stock for product ${product.name}, material ${variant.material}, size ${sizeDetail.size}`
+          );
+        }
+
+        sizeDetail.stock -= detail.quantity;
         product.sales += detail.quantity;
         await product.save();
       }
     }
-    await Order.findByIdAndUpdate(id, { status: status }, { new: true });
-    return true;
+
+    // Cập nhật trạng thái đơn hàng
+    await Order.findByIdAndUpdate(id, { status }, { new: true });
+
+    return { success: true, message: "Order status updated successfully" };
   } catch (error) {
-    console.log("Error updating Order status: ", error);
+    console.error("Error updating order status:", error);
     throw new Error("Failed to update order status");
   }
 };
