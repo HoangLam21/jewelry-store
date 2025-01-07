@@ -9,7 +9,7 @@ import React, { Provider, useEffect, useState } from "react";
 
 const Page = () => {
   const router = useRouter();
-  const [importData, setImportData] = useState<Import[] | null>([]);
+  const [importData, setImportData] = useState<[] | null>([]);
 
   useEffect(() => {
     let isMounted = true;

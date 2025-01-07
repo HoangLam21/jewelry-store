@@ -3,8 +3,8 @@ import { formatPrice } from "@/lib/utils";
 import { useState } from "react";
 import { Product } from "./ImportCard";
 
-export interface DetailProduct {
-  id: string;
+export interface DetailImportProduct {
+  productId: string;
   material: string;
   size: string;
   unitPrice: number;
@@ -18,8 +18,8 @@ const ImportOrderCard = ({
   setItem,
   item,
 }: {
-  cartItem: DetailProduct;
-  updateCart: (updatedItem: DetailProduct) => void;
+  cartItem: DetailImportProduct;
+  updateCart: (updatedItem: DetailImportProduct) => void;
   setItem: any;
   item: Product | null;
 }) => {
@@ -31,15 +31,15 @@ const ImportOrderCard = ({
     if (newQuantity === 0) {
       // Xóa sản phẩm khỏi giỏ hàng
       setItem((prevItem: any) => {
-        const updatedDetails = prevItem.details.filter(
+        const updatedDetails = prevItem.invoice.filter(
           (detail: any) =>
             !(
-              detail.id === cartItem.id &&
+              detail.productId === cartItem.productId &&
               detail.material === cartItem.material &&
               detail.size === cartItem.size
             )
         );
-        return { ...prevItem, details: updatedDetails };
+        return { ...prevItem, invoice: updatedDetails };
       });
     } else {
       setQuantity(newQuantity);
@@ -50,9 +50,9 @@ const ImportOrderCard = ({
 
       // Cập nhật state giỏ hàng cha
       setItem((prevItem: any) => {
-        const updatedDetails = prevItem.details.map((detail: any) => {
+        const updatedDetails = prevItem.invoice.map((detail: any) => {
           if (
-            detail.id === cartItem.id &&
+            detail.productId === cartItem.productId &&
             detail.material === cartItem.material &&
             detail.size === cartItem.size
           ) {
@@ -60,7 +60,7 @@ const ImportOrderCard = ({
           }
           return detail;
         });
-        return { ...prevItem, details: updatedDetails };
+        return { ...prevItem, invoice: updatedDetails };
       });
     }
   };
@@ -73,7 +73,7 @@ const ImportOrderCard = ({
 
   return (
     <div
-      key={cartItem.id}
+      key={cartItem.productId}
       className="w-full h-full flex flex-row items-center justify-between py-3"
     >
       <div className="flex w-full h-full gap-4 items-center py-3">

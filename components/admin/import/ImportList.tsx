@@ -11,23 +11,9 @@ import { format } from "date-fns";
 import MyButton from "@/components/shared/button/MyButton";
 import LabelStatus from "@/components/shared/label/LabelStatus";
 import { Import } from "@/dto/ImportDTO";
-
-interface Staff {
-  id: string;
-  createAt: string;
-  createBy: string;
-  createName: string;
-  invoice: [
-    {
-      id: string;
-      productName: string;
-      unitPrice: number;
-      quantity: number;
-      discount: number;
-    }
-  ];
-  status: boolean;
-}
+import { deleteImport } from "@/lib/service/import.service";
+import { formatPrice } from "@/lib/utils";
+import Format from "@/components/shared/card/ConfirmCard";
 
 const columns = [
   { header: "ID", accessor: "id" },
@@ -59,7 +45,7 @@ const ImportList = ({
   importData,
   setImportData,
 }: {
-  importData: Import[];
+  importData: any[];
   setImportData: any;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,6 +53,7 @@ const ImportList = ({
   const rowsPerPage = 8;
   const totalResult = importData.length;
   const [filterOption, setFilterOption] = useState("");
+  const [deleteOrderId, setDeleteImportId] = useState<string | null>(null);
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -75,18 +62,18 @@ const ImportList = ({
     key: "id",
     direction: "ascending",
   });
-  type SortableKeys = "id" | "fullname" | "total" | "status" | "number";
+  type SortableKeys = "id" | "createBy" | "total" | "status" | "number";
 
-  const getValueByKey = (item: Import, key: SortableKeys) => {
+  const getValueByKey = (item: (typeof importData)[0], key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
-      case "fullname":
+      case "createBy":
         return item.createBy;
       case "status":
         return item.status;
       case "total":
-        return item.invoice.map((it) => it.quantity * it.unitPrice);
+        return item.cost;
       default:
         return "";
     }
@@ -117,13 +104,9 @@ const ImportList = ({
     const lowerCaseQuery = searchQuery.toLowerCase();
     // Lọc theo searchQuery
     const matchesSearch =
-      item.createBy.toLowerCase().includes(lowerCaseQuery) ||
-      item.createBy.toLowerCase().includes(lowerCaseQuery) ||
-      item.invoice
-        .map((it) => it.quantity * it.unitPrice)
-        .toString()
-        .toLowerCase()
-        .includes(lowerCaseQuery);
+      item.staff?.fullName.toLowerCase().includes(lowerCaseQuery) ||
+      item.createAt.toLowerCase().includes(lowerCaseQuery) ||
+      item.cost.toString().toLowerCase().includes(lowerCaseQuery);
 
     return matchesSearch;
   });
@@ -150,28 +133,46 @@ const ImportList = ({
     console.log("this is sort");
   };
 
-  const renderRow = (item: Staff) => (
+  const handleDeleteOrder = async (id: string) => {
+    console.log("davo");
+    try {
+      const result = await deleteImport(id);
+      if (result) {
+        setImportData((prev: any[]) =>
+          prev.filter((item: any) => item._id !== id)
+        );
+        () => setDeleteImportId(null);
+        alert("Delete order successfully.");
+      } else {
+        alert("Can't delete order.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
+  };
+
+  const renderRow = (item: any) => (
     <tr
-      key={item.id}
+      key={item._id}
       className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
     >
       <td className="px-4 py-2">
         <div className="flex flex-col">
           <p>Import Id</p>
-          <p>#00{item.id}</p>
+          <p>#00{item._id}</p>
         </div>
       </td>
       <td className="px-4 py-2">{format(item.createAt, "PPP")}</td>
-      <td className="px-4 py-2">{item.createBy}</td>
+      <td className="px-4 py-2">{item.staff?.fullName || ""}</td>
 
       <td className="px-4 py-2 hidden md:table-cell">
         {" "}
-        {`${item.invoice
-          .map((it) => it.quantity * it.unitPrice)
-          .toLocaleString("vi-VN")} VND`}
+        {formatPrice(item.cost)}
       </td>
       <td className="px-4 py-2">
-        {item.status ? (
+        {item.status === "done" ? (
           <LabelStatus
             title="Done"
             background="bg-custom-green"
@@ -187,7 +188,7 @@ const ImportList = ({
       </td>
       <td className="px-4 py-2 hidden lg:table-cell">
         <div className="flex items-center gap-2">
-          <Link href={`/admin/import/${item.id}`}>
+          <Link href={`/admin/import/${item._id}`}>
             <div className="w-7 h-7 flex items-center justify-center rounded-full">
               <Icon
                 icon="tabler:eye"
@@ -197,26 +198,40 @@ const ImportList = ({
               />
             </div>
           </Link>
-          <Link href={`/admin/import/edit/${item.id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full">
+          <Link href={`/admin/import/edit/${item._id}`}>
+            <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
               <Icon
                 icon="tabler:edit"
                 width={24}
                 height={24}
-                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1"
+                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1 hover:cursor-pointer"
               />
             </div>
           </Link>
-          <div className="w-7 h-7 flex items-center justify-center rounded-full">
+          <div
+            className="w-7 h-7 flex items-center justify-center rounded-full"
+            onClick={() => setDeleteImportId(item._id)}
+          >
             <Icon
               icon="tabler:trash"
               width={24}
               height={24}
-              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1"
+              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1 hover:cursor-pointer"
             />
           </div>
         </div>
       </td>
+      {deleteOrderId === item._id && (
+        <td colSpan={columns.length}>
+          <Format
+            onClose={() => setDeleteImportId(null)}
+            content={`delete: `}
+            label={"Delete order"}
+            userName={item._id}
+            onConfirmDelete={() => handleDeleteOrder(item._id)}
+          />
+        </td>
+      )}
     </tr>
   );
   return (

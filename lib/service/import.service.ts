@@ -1,6 +1,6 @@
-import { Import } from "@/dto/ImportDTO";
+import { CreateImport, Import } from "@/dto/ImportDTO";
 
-export async function fetchImport(): Promise<Import[]> {
+export async function fetchImport(): Promise<[]> {
   try {
     const response = await fetch(`/api/import/all`);
     if (!response.ok) {
@@ -15,28 +15,85 @@ export async function fetchImport(): Promise<Import[]> {
   }
 }
 
-export async function getImportById(importId: string): Promise<Import | null> {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    console.error("Không tìm thấy token");
-    throw new Error("Thiếu token xác thực.");
-  }
-
+export async function deleteImport(importId: string) {
   try {
-    const response = await fetch(`/api/import/${importId}`, {
+    console.log(`/api/import/delete?id=${importId}`, "delete ");
+    const response = await fetch(`/api/import/delete?id=${importId}`, {
+      method: "DELETE",
       headers: {
-        Authorization: `${token}`,
+        "Content-Type": "application/json",
       },
     });
 
     if (!response.ok) {
-      throw new Error("Không thể lấy thông tin nhân viên.");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error deleting order");
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Lỗi khi lấy thông tin nhân viên:", error);
+    console.error("Failed to delete order:", error);
+    throw error;
+  }
+}
+
+export async function createImport(params: CreateImport): Promise<Order> {
+  try {
+    console.log(params, "update params");
+
+    // Validate and prepare details array
+    const invoice = params.invoice.map((detail) => ({
+      productId: detail.productId,
+      material: detail.material,
+      size: detail.size,
+      unitPrice: detail.unitPrice,
+      quantity: detail.quantity,
+      discount: detail.discount,
+    }));
+    // Prepare the body in JSON format
+    const body = JSON.stringify({
+      invoice,
+      provider: params.provider,
+      staff: params.staff,
+    });
+
+    console.log(body, "Prepared request body");
+
+    const response = await fetch(`/api/import/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: body,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Error creating import");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Failed to create import:", error);
+    throw error;
+  }
+}
+
+export async function getImportById(importId: string): Promise<Order | null> {
+  try {
+    console.log(`/api/import/id/${importId}`, "this is order ");
+    const response = await fetch(`/api/import/id?id=${importId}`);
+
+    if (!response.ok) {
+      throw new Error("Không thể lấy thông tin order.");
+    }
+
+    const data: Order = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin order:", error);
     throw error;
   }
 }

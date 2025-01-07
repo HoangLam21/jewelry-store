@@ -47,3 +47,8 @@ export interface DetailOrder {
   quantity: number;
   discount: string;
 }
+
+export interface UpdateStatusOrder {
+  orderId: string;
+  status: string;
+}

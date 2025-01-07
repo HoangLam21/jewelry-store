@@ -27,3 +27,16 @@ export interface Invoice {
   quantity: number;
   discount: number;
 }
+
+export interface CreateImport {
+  staff: string;
+  provider: string;
+  invoice: {
+    productId: string;
+    material: string;
+    size: string;
+    unitPrice: number;
+    quantity: number;
+    discount: string;
+  }[];
+}
