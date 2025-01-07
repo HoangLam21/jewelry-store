@@ -8,8 +8,12 @@ export default async function handler(
 ) {
   if (req.method === "GET") {
     try {
-      const id = req.query.id;
-      const category = await getCategoryById(id as string);
+      const { id } = req.query; // Lấy ID từ query params
+
+      if (!id || typeof id !== "string") {
+        return res.status(400).json({ error: "Invalid or missing staff ID" });
+      }
+      const category = await getCategoryById(id);
       return res.status(200).json(category);
     } catch (error) {
       console.error("Error fetching category: ", error);
