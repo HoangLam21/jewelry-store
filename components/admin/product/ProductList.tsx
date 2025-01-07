@@ -38,19 +38,19 @@ export const defaultDetailProduct: Product = {
   id: "",
   image: "",
   imageInfo: [],
-  productName: "Unknown Product",
+  productName: "",
   price: "0",
   collection: "",
-  description: "No description available.",
-  vouchers: "No vouchers",
-  provider: "Unknown Provider",
-  category: "Uncategorized",
+  description: "",
+  vouchers: "",
+  provider: "",
+  category: "",
   variants: [
     {
-      material: "Unknown Material",
+      material: "",
       sizes: [
         {
-          size: "Unknown Size",
+          size: "",
           stock: 0
         }
       ],

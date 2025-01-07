@@ -18,11 +18,12 @@ import { PaginationProps } from "@/types/pagination";
 import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import { Button } from "@/components/ui/button";
-import { fetchCategory } from "@/lib/service/category.service";
+import {
+  deleteCategoryById,
+  fetchCategory
+} from "@/lib/service/category.service";
 import { CategoryResponse } from "@/dto/CategoryDTO";
-import { categoryData } from "@/constants/data";
 import Format from "@/components/shared/card/ConfirmCard";
-// import { fetchUsers } from "@/lib/services/user.service";
 
 const columns = [
   { header: "Category ID", accessor: "categoryId" },
@@ -35,6 +36,7 @@ export const defaultCategory: CategoryResponse = {
   _id: "default_id",
   name: "Default Category",
   hot: false,
+  description: "",
   products: [
     {
       _id: "product_1",
@@ -42,28 +44,27 @@ export const defaultCategory: CategoryResponse = {
       cost: 0
     }
   ],
-  createAt: new Date().toISOString()
+  createAt: new Date()
 };
 
 const CategoryList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [onDelete, setOnDelete] = useState(false);
-  const [category, setCategory] = useState<CategoryResponse[]>(categoryData);
+  const [categoryList, setCategoryList] = useState<CategoryResponse[]>([]);
 
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   const fetchDataCategory = async () => {
-  //     const data = await fetchCategory();
-  //     if (isMounted) {
-  //       setCategory(data);
-  //     }
-  //   };
-  //   fetchDataCategory();
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, []);
-  // console.log(category);
+  useEffect(() => {
+    let isMounted = true;
+    const fetchDataCategory = async () => {
+      const data = await fetchCategory();
+      if (isMounted) {
+        setCategoryList(data);
+      }
+    };
+    fetchDataCategory();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -73,12 +74,7 @@ const CategoryList = () => {
     direction: "ascending"
   });
 
-  type SortableKeys =
-    | "_id"
-    | "name"
-    // | "createdBy"
-    | "hot"
-    | "createdAt";
+  type SortableKeys = "_id" | "name" | "hot" | "createdAt";
 
   const getValueByKey = (item: CategoryResponse, key: SortableKeys) => {
     switch (key) {
@@ -95,7 +91,7 @@ const CategoryList = () => {
     }
   };
 
-  const sorted = [...category].sort((a, b) => {
+  const sorted = [...categoryList].sort((a, b) => {
     const aValue = getValueByKey(a, sortConfig.key);
     const bValue = getValueByKey(b, sortConfig.key);
 
@@ -121,8 +117,6 @@ const CategoryList = () => {
 
   const filterData = sorted.filter((item) => {
     const lowerCaseQuery = searchQuery.toLowerCase();
-
-    // Lọc theo searchQuery: fullname, email, và phone
     const matchesSearch =
       item.name.toLowerCase().includes(lowerCaseQuery) ||
       item._id.toLowerCase().includes(lowerCaseQuery);
@@ -131,17 +125,12 @@ const CategoryList = () => {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 8;
-  // const totalPages = Math.ceil(userData.length / rowsPerPage);
-  // const totalResult = filterData.length;
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const currentData = filterData.slice(startIndex, endIndex);
   const [isMounted, setIsMounted] = useState(false);
 
   const itemsPerPage = 8;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = filterData.slice(indexOfFirstItem, indexOfLastItem);
   const paginationUI: PaginationProps = {
     currentPage,
     setCurrentPage,
@@ -152,28 +141,28 @@ const CategoryList = () => {
   };
 
   const handleDelete = async (id: string) => {
-    // try {
-    //   const result = await deleteCustomer(id);
-    //   if (result) {
-    //     setOnDelete(false);
-    //     setDisplayedList((prev) => prev.filter((item) => item.id !== id));
-    //     alert("Delete customer successfully.");
-    //   } else {
-    //     alert("Can't delete customer.");
-    //   }
-    // } catch (err: any) {
-    //   console.error("Error delete data:", err);
-    //   const errorMessage = err?.message || "An unexpected error occurred.";
-    //   alert(`Error delete data: ${errorMessage}`);
-    // }
-    const detail = category.filter((item) => item._id !== id);
-    if (detail) setCategory(detail);
+    try {
+      const result = await deleteCategoryById(id);
+      if (result) {
+        setOnDelete(false);
+        setCategoryList((prev) => prev.filter((item) => item._id !== id));
+        alert("Delete customer successfully.");
+      } else {
+        alert("Can't delete customer.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
+    const detail = categoryList.filter((item) => item._id !== id);
+    if (detail) setCategoryList(detail);
     setOnDelete(false);
   };
   const [detailItem, setDetailItem] =
     useState<CategoryResponse>(defaultCategory);
   const handleConfirmDelete = (id: string) => {
-    const detail = category.find((item) => item._id === id);
+    const detail = categoryList.find((item) => item._id === id);
     if (detail) setDetailItem(detail);
     setOnDelete(true);
   };

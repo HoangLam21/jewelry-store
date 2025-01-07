@@ -182,53 +182,6 @@ export const verifyImport = async (id: string) => {
   }
 };
 
-// Đọc nhập hàng theo ID
-// export const getImportById = async (id: string) => {
-//   try {
-//     connectToDatabase();
-//     const importData = await Import.findById(id);
-//     if (!importData) {
-//       throw new Error("Import not found");
-//     }
-//     const staff = await Staff.findById(importData.staff);
-//     const provider = await ProductProvider.findById(
-//       (
-//         await Product.findById(importData.details[0].id)
-//       ).provider
-//     );
-//     const invoices = await Promise.all(
-//       importData.details.map(async (detail: any) => {
-//         const product = await Product.findById(detail.id);
-//         const file = (await File.find({ _id: { $in: product.files } }))[0];
-//         return {
-//           id: product._id.toString(),
-//           productName: product.name,
-//           productImage: file.url,
-//           unitPrice: detail.unitPrice,
-//           quantity: detail.quantity,
-//           discount: Number(detail.discount),
-//         };
-//       })
-//     );
-//     return {
-//       id: importData._id.toString(),
-//       suplier: {
-//         id: provider._id.toString(),
-//         phoneNumber: provider.phoneNumber,
-//         fullname: provider.fullname,
-//         address: provider.address,
-//       },
-//       invoice: invoices,
-//       status: importData.status,
-//       createAt: importData.createdAt,
-//       createBy: staff.fullName,
-//     };
-//   } catch (error) {
-//     console.log("Error fetching Import: ", error);
-//     throw new Error("Failed to fetch import");
-//   }
-// };
-
 export const getImportById = async (id: string) => {
   try {
     connectToDatabase();
