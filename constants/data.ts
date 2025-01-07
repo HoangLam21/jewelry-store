@@ -1407,6 +1407,7 @@ export const categoryData: CategoryResponse[] = [
       { _id: "1", fullName: "Gold Ring", cost: 100 },
       { _id: "2", fullName: "Silver Ring", cost: 50 }
     ],
+    description: "",
     createAt: "2025-01-01T08:00:00Z"
   },
   {
@@ -1417,11 +1418,13 @@ export const categoryData: CategoryResponse[] = [
       { _id: "1", fullName: "Diamond Necklace", cost: 500 },
       { _id: "2", fullName: "Pearl Necklace", cost: 200 }
     ],
+    description: "",
     createAt: "2025-01-02T09:00:00Z"
   },
   {
     _id: "3",
     name: "Bracelets",
+    description: "",
     hot: false,
     products: [
       { _id: "1", fullName: "Leather Bracelet", cost: 30 },
@@ -1431,6 +1434,7 @@ export const categoryData: CategoryResponse[] = [
   },
   {
     _id: "4",
+    description: "",
     name: "Earrings",
     hot: true,
     products: [
@@ -1441,6 +1445,7 @@ export const categoryData: CategoryResponse[] = [
   },
   {
     _id: "5",
+    description: "",
     name: "Watches",
     hot: false,
     products: [
@@ -1451,6 +1456,7 @@ export const categoryData: CategoryResponse[] = [
   },
   {
     _id: "6",
+    description: "",
     name: "Brooches",
     hot: true,
     products: [
@@ -1461,6 +1467,7 @@ export const categoryData: CategoryResponse[] = [
   },
   {
     _id: "7",
+    description: "",
     name: "Pendants",
     hot: false,
     products: [
@@ -1471,6 +1478,7 @@ export const categoryData: CategoryResponse[] = [
   },
   {
     _id: "8",
+    description: "",
     name: "Cufflinks",
     hot: true,
     products: [
@@ -1481,6 +1489,7 @@ export const categoryData: CategoryResponse[] = [
   },
   {
     _id: "9",
+    description: "",
     name: "Charms",
     hot: false,
     products: [
@@ -1491,6 +1500,7 @@ export const categoryData: CategoryResponse[] = [
   },
   {
     _id: "10",
+    description: "",
     name: "Anklets",
     hot: true,
     products: [

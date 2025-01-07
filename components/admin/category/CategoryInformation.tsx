@@ -1,3 +1,4 @@
+"use client";
 import LabelInformation from "@/components/shared/label/LabelInformation";
 import TitleSession from "@/components/shared/label/TitleSession";
 import Image from "next/image";
@@ -14,6 +15,8 @@ import LabelStatus from "@/components/shared/label/LabelStatus";
 import { getProviderById } from "@/lib/service/provider.service";
 import { categoryData, Providers } from "@/constants/data";
 import { CategoryResponse } from "@/dto/CategoryDTO";
+import { getDetailCategory } from "@/lib/service/category.service";
+import { defaultCategory } from "./CategoryList";
 
 interface productProp {
   _id: string;
@@ -36,30 +39,43 @@ const columns = [
 ];
 
 const CategoryInformation = () => {
-  const { id } = useParams<{ id: string }>() as { id: string };
-  const [detail, setDetail] = useState<CategoryResponse | null>(null); // Store Provider data safely
+  const { id } = useParams() as { id: string };
+  const [detail, setDetail] = useState<CategoryResponse>(defaultCategory); // Store Provider data safely
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
 
-  // useEffect(() => {
-  //   const fetchStaffData = async () => {
-  //     try {
-  //       if (id) {
-  //         const foundItem = await getProviderById(id);
-  //         setProvider(foundItem);
-  //       }
-  //     } catch (error) {
-  //       console.error("Lỗi khi lấy thông tin nhân viên:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (id) {
+          const result = await getDetailCategory(id);
+          const data: CategoryResponse = {
+            _id: result._id,
+            name: result.name,
+            hot: result.hot,
+            description: result.description,
+            products: result.products.map((item: any, index: number) => ({
+              _id: item._id,
+              fullName: item.name ? item.name : "Unknown name",
+              cost: item.cost ? item.cost : 0
+            })),
+            createAt: result.createdAt
+          };
+          console.log(result);
+          setDetail(data);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy thông tin nhân viên:", error);
+      }
+    };
 
-  //   fetchStaffData();
-  // }, []);
+    fetchData();
+  }, [id]);
 
-  // if (!provider) {
-  //   return <p>Loading staff information...</p>;
-  // }
+  if (!detail) {
+    return <p>Loading category information...</p>;
+  }
 
   const [sortConfig, setSortConfig] = useState<{
     key: SortableKeys;
@@ -83,29 +99,12 @@ const CategoryInformation = () => {
     }
   };
 
-  useEffect(() => {
-    if (id) {
-      const foundItem = categoryData.find((item) => item._id === id);
-      if (foundItem) {
-        setDetail(foundItem);
-      }
-    }
-  }, [id]);
-
   if (!detail) {
     return <p>Loading category information...</p>;
   }
 
   const formatCurrency = (value: number): string => {
     return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
-  };
-
-  const requestSort = (key: SortableKeys) => {
-    let direction: "ascending" | "descending" = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
   };
 
   const filteredproducts = detail.products.filter((item) => {
@@ -136,9 +135,15 @@ const CategoryInformation = () => {
     totalPages,
     dataLength
   };
-
-  const handleSort = () => {
-    console.log("this is sort");
+  const requestSort = (key: SortableKeys) => {
+    let direction: "ascending" | "descending" = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+  const handleSort = (key: SortableKeys) => {
+    requestSort(key);
   };
 
   const renderRow = (product: productProp) => (
@@ -153,7 +158,6 @@ const CategoryInformation = () => {
       </td>
     </tr>
   );
-
   return (
     <div className="w-full flex flex-col p-4 rounded-md shadow-md">
       {/* General Information */}
@@ -165,23 +169,23 @@ const CategoryInformation = () => {
 
       <div className="w-full p-6 flex flex-col gap-6 ">
         <div className="w-full flex">
-          <div className="w-1/5">
-            <Image
-              alt="avatar"
-              src="/assets/images/avatar.jpg"
-              width={115}
-              height={130}
-              className="rounded-md"
-            />
-          </div>
-
           <div className="w-full grid grid-cols-2 gap-5">
             <div className="flex flex-col gap-5">
               <LabelInformation content={detail._id} title="ID" />
-              <LabelInformation content={detail.name} title="Fullname" />
+              <LabelInformation content={detail.name} title="Name" />
               <LabelInformation
-                content={detail.hot ? "Best category" : ""}
+                content={detail.hot ? "Best category" : "Normal"}
                 title="Hot"
+              />
+            </div>
+            <div className="flex flex-col gap-5">
+              <LabelInformation
+                content={detail.description || "No description"}
+                title="Description"
+              />
+              <LabelInformation
+                content={new Date(detail.createAt).toDateString()}
+                title="Create at"
               />
             </div>
           </div>
@@ -191,13 +195,20 @@ const CategoryInformation = () => {
       <TitleSession icon="humbleicons:money" title="Number of salesitems" />
 
       <div className="flex flex-col gap-6 w-full pt-6">
-        <TableSearch onSearch={setSearchQuery} onSort={handleSort} />
-        <div className="flex flex-col gap-6 w-full p-6">
+        <TableSearch
+          onSearch={setSearchQuery}
+          onSort={(searchQuery: string) =>
+            handleSort(searchQuery as SortableKeys)
+          }
+        />
+        <div className="flex flex-col gap-6 w-full">
           <Table
             columns={columns}
             data={paginatedproducts}
             renderRow={renderRow}
-            onSort={handleSort}
+            onSort={(searchQuery: string) =>
+              handleSort(searchQuery as SortableKeys)
+            }
           />
           <div className="p-4 mt-4 text-sm flex items-center justify-center md:justify-between text-gray-500 dark:text-dark-360">
             <PaginationUI paginationUI={paginationUI} />

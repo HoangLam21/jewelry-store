@@ -1,9 +1,13 @@
-import { CategoryResponse, CreateCategory } from "@/dto/CategoryDTO";
+import {
+  CategoryResponse,
+  CreateCategory,
+  ProductAdditionToCategory
+} from "@/dto/CategoryDTO";
 import { CreateProduct, ProductResponse } from "@/dto/ProductDTO";
 
 export async function fetchCategory(): Promise<CategoryResponse[]> {
   try {
-    const response = await fetch(`/api/category/all`);
+    const response = await fetch(`/api/category/all-category`);
     if (!response.ok) {
       throw new Error("Error fetching category");
     }
@@ -15,21 +19,8 @@ export async function fetchCategory(): Promise<CategoryResponse[]> {
   }
 }
 
-export async function getDetailCategory(
-  id: string
-): Promise<CategoryResponse | null> {
-  // const token = localStorage.getItem("token");
-  // if (!token) {
-  //   console.error("Không tìm thấy token");
-  //   throw new Error("Thiếu token xác thực.");
-  // }
-
+export async function getDetailCategory(id: string) {
   try {
-    // const response = await fetch(`/api/customer/${customerId}`, {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`
-    //   }
-    // });
     const response = await fetch(`/api/category/get?id=${id}`);
     if (!response.ok) {
       throw new Error("Không thể lấy thông tin loai hang.");
@@ -45,8 +36,8 @@ export async function getDetailCategory(
 
 export async function deleteCategoryById(id: string) {
   try {
-    console.log(`/api/category/remove?id=${id}`, "delete ");
-    const response = await fetch(`/api/category/remove?id=${id}`, {
+    console.log(`/api/category/remove?categoryId=${id}`, "delete ");
+    const response = await fetch(`/api/category/delete?categoryId=${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
@@ -68,7 +59,6 @@ export async function deleteCategoryById(id: string) {
 
 export async function createCategory(
   params: CreateCategory
-  // token: string
 ): Promise<CategoryResponse> {
   try {
     console.log(params, "param");
@@ -80,7 +70,7 @@ export async function createCategory(
       },
       body: JSON.stringify({
         name: params.name,
-        description: params.description
+        hot: params.hot
       })
     });
 
@@ -104,14 +94,14 @@ export async function updateInfoCategory(
   try {
     console.log(id, params, "update params");
 
-    const response = await fetch(`/api/category/update?id=${id}`, {
+    const response = await fetch(`/api/category/update?categoryId=${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
         name: params.name,
-        description: params.description
+        hot: params.hot
       })
     });
 
@@ -128,4 +118,94 @@ export async function updateInfoCategory(
   }
 }
 
-export async function getProductFromCategory() {}
+export async function fetchProductsOfCategory(categoryId: string) {
+  try {
+    const response = await fetch(`/api/category/get-product?id=${categoryId}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching products of category:", error);
+    throw error;
+  }
+}
+
+export async function editProductCategory(
+  productId: string,
+  newCategoryId: string
+) {
+  try {
+    const response = await fetch(`/api/category/edit-product`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ productId, newCategoryId })
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to edit product category: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error editing product category:", error);
+    throw error;
+  }
+}
+
+export async function removeProductFromCategory(
+  categoryId: string,
+  productId: string
+) {
+  try {
+    const response = await fetch(`/api/category/remove-product`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ categoryId, productId })
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to remove product from category: ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error removing product from category:", error);
+    throw error;
+  }
+}
+
+export const addProductToCategory = async (
+  param: ProductAdditionToCategory
+) => {
+  try {
+    const response = await fetch("/api/category/add-product", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(param)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to add product to category");
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    console.error("Error adding product to category:", error);
+    throw new Error(error.message || "Failed to add product to category");
+  }
+};

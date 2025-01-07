@@ -40,7 +40,7 @@ export default async function handler(
         : [];
       console.log("parsedimge: ", images);
 
-      if (!name || !cost || !description || !provider || !collections) {
+      if (!name || !cost || !description) {
         return res.status(400).json({ error: "Missing required fields" });
       }
 
@@ -74,16 +74,18 @@ export default async function handler(
             ? description[0]
             : (description as string),
           vouchers: parsedVouchers.map((voucher) => String(voucher)),
-          provider: String(
-            Array.isArray(provider) ? provider[0] : (provider as string)
-          ),
+
+          provider: provider
+            ? String(
+                Array.isArray(provider) ? provider[0] : (provider as string)
+              )
+            : undefined,
           category: category
             ? String(
                 Array.isArray(category) ? category[0] : (category as string)
               )
             : undefined,
-          collections:
-            typeof collections === "string" ? collections : collections[0],
+          collections: typeof collections === "string" ? collections : "",
           variants: parsedVariants
         };
         console.log(productData, "fields");

@@ -4,13 +4,13 @@ export async function fetchProduct(): Promise<ProductResponse[]> {
   try {
     const response = await fetch(`/api/product/all`);
     if (!response.ok) {
-      throw new Error("Error fetching customer");
+      throw new Error("Error fetching data");
     }
     const data: ProductResponse[] = await response.json();
 
     return data;
   } catch (error) {
-    console.error("Failed to fetch customers:", error);
+    console.error("Failed to fetch data:", error);
     throw error;
   }
 }
@@ -77,9 +77,13 @@ export async function createProduct(
     formData.append("name", params.name);
     formData.append("cost", params.cost.toString());
     formData.append("description", params.description);
-    formData.append("provider", params.provider);
-    formData.append("category", params.category || "");
-    formData.append("collections", params.collections);
+    if (params.provider) {
+      formData.append("provider", params.provider);
+    }
+    if (params.category) {
+      formData.append("category", params.category);
+    }
+    formData.append("collections", params.collections || "");
 
     // Thêm các tệp vào FormData
     if (params.images && params.images.length > 0) {
@@ -108,7 +112,7 @@ export async function createProduct(
 
     if (params.vouchers) {
       if (Array.isArray(params.vouchers)) {
-        params.vouchers.forEach((voucher) => {
+        params.vouchers.forEach((voucher: any) => {
           formData.append("vouchers", voucher);
         });
       } else {
@@ -150,9 +154,13 @@ export async function updateInfoProduct(
     formData.append("name", params.name);
     formData.append("cost", params.cost.toString());
     formData.append("description", params.description);
-    formData.append("provider", params.provider);
-    formData.append("category", params.category || "");
-    formData.append("collections", params.collections);
+    if (params.provider) {
+      formData.append("provider", params.provider);
+    }
+    if (params.category) {
+      formData.append("category", params.category);
+    }
+    formData.append("collections", params.collections || "");
 
     // Thêm các tệp vào FormData
     if (params.images && params.images.length > 0) {
