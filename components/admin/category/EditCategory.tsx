@@ -211,7 +211,7 @@ const EditCategoryInformation = () => {
   const renderRow = (item: ProductData) => (
     <tr key={item.id} className="my-4 border-t border-gray-300 text-sm">
       <td className="px-4 py-2">
-        <h3 className="text-base">{item.price}</h3>
+        <h3 className="text-base">{item.id}</h3>
       </td>
       <td className="hidden px-4 py-2 lg:table-cell">
         <p className="text-base">{item.productName}</p>

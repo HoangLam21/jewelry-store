@@ -1,12 +1,12 @@
 import { CreateProduct, FileContent, ProductResponse } from "@/dto/ProductDTO";
 
-export async function fetchProduct(): Promise<ProductResponse[]> {
+export async function fetchProduct() {
   try {
     const response = await fetch(`/api/product/all`);
     if (!response.ok) {
       throw new Error("Error fetching data");
     }
-    const data: ProductResponse[] = await response.json();
+    const data = await response.json();
 
     return data;
   } catch (error) {
