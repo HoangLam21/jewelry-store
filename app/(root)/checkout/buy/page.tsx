@@ -16,9 +16,31 @@ function addDays(days: number) {
   result.setDate(result.getDate() + days);
   return result;
 }
+interface BuyNowItem {
+  _id: string;
+  name: string;
+  images: string;
+  cost: number;
+  quantity: number;
+  vouchers: any[];
+  variants: any[];
+  selectedMaterial: string;
+  selectedSize: string;
+}
+const defaultBuyNowItem: BuyNowItem = {
+  _id: "",
+  name: "",
+  images: "",
+  cost: 0,
+  quantity: 0,
+  vouchers: [],
+  variants: [],
+  selectedMaterial: "",
+  selectedSize: ""
+};
 
 export default function Page() {
-  const { stateBuyNow } = useBuyNow();
+  const { stateBuyNow, dispatchBuyNow } = useBuyNow();
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [totalFinalPrice, setTotalFinalPrice] = useState(0);
@@ -30,55 +52,51 @@ export default function Page() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
   const router = useRouter();
+  const [lastItem, setLastItem] = useState<BuyNowItem>(defaultBuyNowItem);
 
   useEffect(() => {
-    const { originalPrice, discount, finalPrice } = stateBuyNow.items.reduce(
-      (totals, item) => {
-        const selectedVariant = item.variants.find(
-          (variant) => variant.material === item.selectedMaterial
-        );
+    const lastItem = stateBuyNow.items[stateBuyNow.items.length - 1];
 
-        const sizeStock = selectedVariant?.sizes.find(
-          (size: any) => size.size === item.selectedSize
-        );
+    if (lastItem) {
+      setLastItem(lastItem);
+      const selectedVariant = lastItem.variants.find(
+        (variant) => variant.material === lastItem.selectedMaterial
+      );
 
-        const basePrice = item.cost * item.quantity;
+      const sizeStock = selectedVariant?.sizes.find(
+        (size: any) => size.size === lastItem.selectedSize
+      );
 
-        const addOnPrice = (selectedVariant?.addOn || 0) * item.quantity;
+      const basePrice = lastItem.cost * lastItem.quantity;
 
-        const voucher = item.vouchers?.[0];
-        const voucherDiscount = voucher
-          ? (basePrice + addOnPrice) * (voucher.discount / 100)
-          : 0;
+      const addOnPrice = (selectedVariant?.addOn || 0) * lastItem.quantity;
 
-        return {
-          originalPrice: totals.originalPrice + basePrice + addOnPrice,
-          discount: totals.discount + voucherDiscount,
-          finalPrice:
-            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount)
-        };
-      },
-      { originalPrice: 0, discount: 0, finalPrice: 0 }
-    );
+      const voucher = lastItem.vouchers?.[0];
+      const voucherDiscount = voucher
+        ? (basePrice + addOnPrice) * (voucher.discount / 100)
+        : 0;
 
-    setTotalOriginalPrice(originalPrice);
-    setTotalDiscount(discount);
-    setTotalFinalPrice(finalPrice);
+      setTotalOriginalPrice(basePrice + addOnPrice);
+      setTotalDiscount(voucherDiscount);
+      setTotalFinalPrice(basePrice + addOnPrice - voucherDiscount);
+    }
   }, [stateBuyNow.items]);
 
   const handleOrder = async () => {
-    const details = stateBuyNow.items.map((item: any) => ({
-      id: item._id,
-      material: item.selectedMaterial,
-      size: item.selectedSize,
-      unitPrice: item.cost,
-      quantity: item.quantity,
-      discount: item.vouchers?.[0]?.discount || "0"
-    }));
+    const details = [
+      {
+        id: lastItem._id,
+        material: lastItem.selectedMaterial,
+        size: lastItem.selectedSize,
+        unitPrice: lastItem.cost,
+        quantity: lastItem.quantity,
+        discount: lastItem.vouchers?.[0]?.discount || "0"
+      }
+    ];
 
     const orderData: CreateOrder = {
       cost: totalFinalPrice + shippingFee,
-      discount: stateBuyNow.items[0].vouchers[0].discount,
+      discount: lastItem?.vouchers?.[0]?.discount || 0, // Lấy discount từ lastItem
       details,
       status: "pending",
       shippingMethod: deliveryMethod,
@@ -100,10 +118,11 @@ export default function Page() {
       if (!response.ok) {
         alert("Order can't create. Please try again.");
       }
-      alert("Order created!");
       const data = await response.json();
+      alert("Order created!");
+      dispatchBuyNow({ type: "RESET_BUY_NOW" });
+      router.push("/product");
       console.log("Order created:", data);
-      router.push("/");
     } catch (error: any) {
       console.error("Error creating order:", error.message);
     }
@@ -149,7 +168,7 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-5">
             SHIPPING INFOMATION
           </h2>
-          <form className="flex flex-col space-y-4">
+          <div className="flex flex-col space-y-4">
             <ShippingInfomation
               city={city}
               setCity={setCity}
@@ -158,13 +177,12 @@ export default function Page() {
               setNote={setNote}
             />
             <button
-              type="submit"
               onClick={handleOrder}
-              className="bg-primary-100 text-white p-3  hover:bg-primary-200"
+              className="bg-primary-100 text-white p-3 hover:bg-primary-200"
             >
               Confirm & Proceed to Payment
             </button>
-          </form>
+          </div>
         </div>
         <div className="lg:w-[50%] w-full p-5 rounded-lg">
           <h2 className="text-[30px] font-normal jost mb-10">
