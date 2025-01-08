@@ -38,6 +38,7 @@ export interface ProductData {
   provider: string;
   category: string;
   variants: Variant[];
+  categoryId: string;
 }
 
 export const defaultDetailProduct: ProductData = {
@@ -51,6 +52,7 @@ export const defaultDetailProduct: ProductData = {
   vouchers: "",
   provider: "",
   category: "",
+  categoryId: "",
   variants: [
     {
       material: "",
@@ -139,6 +141,7 @@ const ProductList = ({ list, setList }: props) => {
             vouchers: item.vouchers?.[item.vouchers.length - 1]?._id || "",
             provider: item.provider ? item.provider._id : "",
             category: item.category ? item.category.name : "No category",
+            categoryId: item.category ? item.category._id : "No category",
             variants: item.variants
           }));
           setList(data);
@@ -205,6 +208,7 @@ const ProductList = ({ list, setList }: props) => {
         vouchers: detail.vouchers,
         provider: detail.provider,
         category: detail.category,
+        categoryId: detail.categoryId,
         variants: detail.variants
       };
       setDetailItem(item);
