@@ -10,7 +10,7 @@ import {
   MenubarSeparator,
 } from "@radix-ui/react-menubar";
 import { Button } from "@/components/ui/button";
-import { Icon } from "@iconify/react/dist/iconify";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const TableSearch = ({
   onSearch,
