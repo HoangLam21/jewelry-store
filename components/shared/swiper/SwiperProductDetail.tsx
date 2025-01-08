@@ -4,14 +4,20 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
+import { ProductData } from "@/components/admin/product/ProductList";
+import { useRouter } from "next/navigation";
 
 interface SwiperProductProps {
-  urlImage: string[]; // Danh sách hình ảnh
+  relatedProduct: ProductData[];
   width?: string; // Chiều rộng hình ảnh
   height?: string; // Chiều cao hình ảnh
 }
 
-const SwiperProduct = ({ urlImage, width, height }: SwiperProductProps) => {
+const SwiperProductDetail = ({
+  relatedProduct,
+  width,
+  height
+}: SwiperProductProps) => {
   const [isPrevDisabled, setIsPrevDisabled] = useState(true); // prevDisabled
   const [isNextDisabled, setIsNextDisabled] = useState(false); // nextDisabled
 
@@ -32,54 +38,68 @@ const SwiperProduct = ({ urlImage, width, height }: SwiperProductProps) => {
   };
   const imageWidth = width ? `w-[${width}px]` : "w-[80px]";
   const imageHeight = height ? `h-[${height}px]` : "h-[80px]";
+  const router = useRouter();
+  const handleLink = (id: string) => {
+    router.push(`/product/${id}`);
+  };
   return (
-    <div className="swiper-container relative">
+    <div className="swiper-container1 relative">
       <Swiper
-        className="mySwiper"
+        className="mySwiper1"
         navigation={{
           prevEl: ".swiper-button-prev",
           nextEl: ".swiper-button-next"
         }} // Sử dụng class cho các nút
         modules={[Navigation]}
-        slidesPerView={2}
-        spaceBetween={16}
+        slidesPerView={5}
+        spaceBetween={32}
         onSlideChange={handleSlideChange}
       >
-        {urlImage.map((item, index) => (
-          <SwiperSlide key={index} className="flex justify-center items-center">
-            <div className={`flex ${imageWidth} ${imageHeight}`}>
+        {relatedProduct.map((item, index) => (
+          <SwiperSlide
+            key={index}
+            className="swiper-slide1"
+            style={{ width: "auto", marginRight: 0 }}
+          >
+            <div
+              className={`flex ${imageWidth} ${imageHeight}`}
+              onClick={() => handleLink(item.id)}
+            >
               <Image
-                src={item}
+                src={item.image}
                 alt={`urlImage-${index}`}
-                width={80}
-                height={80}
+                width={Number(width)}
+                height={Number(height)}
                 className="rounded-lg object-cover"
               />
             </div>
+            <p className=" text-lg jost capitalize font-nomal mt-2 text-dark100_light500">
+              {item.price}
+            </p>
           </SwiperSlide>
         ))}
       </Swiper>
 
       {/* Custom navigation buttons */}
       <div
-        className="swiper-button-prev absolute top-1/2 left-0 transform -translate-y-1/2 z-10"
+        className="swiper-button-prev1 absolute top-1/2 left-0 transform -translate-y-1/2 z-10"
         onClick={(e) => isPrevDisabled && e.preventDefault()}
       >
         <Icon
           icon="ooui:previous-ltr"
-          width={28}
-          height={28}
+          width={40}
+          height={40}
           className="text-primary-100"
         />
       </div>
       <div
-        className="swiper-button-next absolute top-1/2 right-0 transform -translate-y-1/2 z-10"
+        className="swiper-button-next1 absolute top-1/2 right-0 transform -translate-y-1/2 z-10"
         onClick={(e) => isNextDisabled && e.preventDefault()}
       >
         <Icon
           icon="ooui:previous-rtl"
-          width={28}
-          height={28}
+          width={40}
+          height={40}
           className="text-primary-100"
         />
       </div>
@@ -87,4 +107,4 @@ const SwiperProduct = ({ urlImage, width, height }: SwiperProductProps) => {
   );
 };
 
-export default SwiperProduct;
+export default SwiperProductDetail;

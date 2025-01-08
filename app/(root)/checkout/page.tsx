@@ -6,9 +6,11 @@ import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ShippingInfomation from "@/components/form/checkout/ShippingInfomation";
 import { useRouter } from "next/navigation";
+import { useBuyNow } from "@/contexts/BuyNowContext";
 
 export default function Page() {
   const { state } = useCart();
+  const { stateBuyNow } = useBuyNow();
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [totalFinalPrice, setTotalFinalPrice] = useState(0);
@@ -20,8 +22,12 @@ export default function Page() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
   const router = useRouter();
+  const cartState =
+    stateBuyNow && stateBuyNow.items.length > 0 ? stateBuyNow : state;
+
+  console.log(cartState);
   useEffect(() => {
-    const { originalPrice, discount, finalPrice } = state.items.reduce(
+    const { originalPrice, discount, finalPrice } = cartState.items.reduce(
       (totals, item) => {
         const selectedVariant = item.variants.find(
           (variant) => variant.material === item.selectedMaterial
@@ -44,7 +50,7 @@ export default function Page() {
           originalPrice: totals.originalPrice + basePrice + addOnPrice,
           discount: totals.discount + voucherDiscount,
           finalPrice:
-            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount),
+            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount)
         };
       },
       { originalPrice: 0, discount: 0, finalPrice: 0 }
@@ -62,7 +68,7 @@ export default function Page() {
       size: item.selectedSize,
       unitPrice: item.cost,
       quantity: item.quantity,
-      discount: item.vouchers?.[0]?.discount || "0",
+      discount: item.vouchers?.[0]?.discount || "0"
     }));
 
     const orderData = {
@@ -76,7 +82,7 @@ export default function Page() {
       customer: "6776bd0974de08ccc866a4ab",
       phoneNumber: phoneNumber,
       note: note,
-      staff: "6776bd0974de08ccc866a4ab", // Thay bằng ID nhân viên hiện tại
+      staff: "6776bd0974de08ccc866a4ab" // Thay bằng ID nhân viên hiện tại
     };
 
     try {
@@ -84,9 +90,9 @@ export default function Page() {
       const response = await fetch("/api/order/create", {
         method: "POST", // HTTP method
         headers: {
-          "Content-Type": "application/json", // Định dạng dữ liệu
+          "Content-Type": "application/json" // Định dạng dữ liệu
         },
-        body: JSON.stringify(orderData), // Dữ liệu gửi đi
+        body: JSON.stringify(orderData) // Dữ liệu gửi đi
       });
 
       if (!response.ok) {
@@ -163,7 +169,7 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-10">
             ORDER INFOMATION
           </h2>
-          {state.items.map((item: any) => (
+          {cartState.items.map((item: any) => (
             <div
               key={item._id}
               className="flex items-center justify-between mb-4 border-b pb-4"
