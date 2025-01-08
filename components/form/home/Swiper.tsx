@@ -14,7 +14,7 @@ const swiper = ({ productsData }: { productsData: any[] }) => {
   const sortedProducts = productsData
     .sort(
       (a: any, b: any) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
     )
     .slice(0, 3);
 
@@ -39,7 +39,7 @@ const swiper = ({ productsData }: { productsData: any[] }) => {
                   <p className="jost text-[83px] text-black font-light">
                     NEW ITEMS
                   </p>
-                  <p className="jost text-[20px] font-normal text-primary-100 w-[70%] mt-2">
+                  <p className="jost text-[20px] font-normal text-primary-100 mt-2">
                     {item.name}
                   </p>
                   <div className="w-44 mt-5">

@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import ProductCard from "@/components/card/product/ProductCard";
 
-const Products = ({ productsData }: any) => {
+const Products = ({ productsData }: { productsData: any[] }) => {
   const [active, setActive] = useState("newArrivals");
 
   const newArrivals = productsData
@@ -79,20 +79,24 @@ const Products = ({ productsData }: any) => {
           </div>
         </div>
       </div>
-      <Swiper
+      {/* <Swiper
         spaceBetween={20}
         slidesPerView={4}
         // navigation={true}
         pagination={{ clickable: true }}
         modules={[Navigation, Pagination]}
         className="mt-[30px] w-full "
-      >
+      > */}
+      <div className="flex w-full overflow-x-auto space-x-7 mt-4">
         {getProducts().map((product) => (
-          <SwiperSlide key={product._id}>
-            <ProductCard item={product} />
-          </SwiperSlide>
+          <div key={product._id} className="min-w-[250px]">
+            {/* Adjust width to your needs */}
+            <ProductCard key={product._id} item={product} />
+          </div>
         ))}
-      </Swiper>
+      </div>
+
+      {/* </Swiper> */}
     </div>
   );
 };

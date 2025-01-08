@@ -288,7 +288,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                   description: item.description,
                   vouchers: item.vouchers,
                   provider: item.provider,
-                  category: detailProduct.category,
+                  category: detailProduct.category || "",
                   variants: groupVariants(combinedData)
                 }
               : product
@@ -369,7 +369,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                     />
                     <InputUnEdit
                       titleInput="Category"
-                      value={detailProduct.category}
+                      value={detailProduct.category || ""}
                       width="w-full"
                     />
                     {/* <InputEdit

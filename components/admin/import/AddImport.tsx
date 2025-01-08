@@ -19,6 +19,7 @@ import { CreateImport } from "@/dto/ImportDTO";
 import { fetchProduct } from "@/lib/service/product.service";
 import { createImport } from "@/lib/service/import.service";
 import AddDetailImport from "./AddDetailImport";
+import { verifyImport } from "@/lib/actions/import.action";
 
 export interface Product {
   id: string;
@@ -175,6 +176,7 @@ const AddImport = () => {
 
       try {
         const result = await createImport(data);
+        await verifyImport(result._id);
         if (result) {
           console.log(result, "rs of impirt");
           alert("Order created successfully!");
@@ -234,7 +236,7 @@ const AddImport = () => {
               />
             ))}
           </div>
-          {/* Cart Section */}
+
           {/* Cart Section */}
           <div className="flex flex-col md:w-2/5 w-2/3 lg:w-2/5 max-h-[400px]">
             {item.details.length > 0 ? (

@@ -1,4 +1,4 @@
-import { Product } from "@/components/admin/product/ProductList";
+import { Product } from "@/components/admin/order/AddOrder";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import React from "react";
@@ -7,7 +7,7 @@ const ProductFrame = ({
   param,
   onDelete,
   onEdit,
-  onDetail
+  onDetail,
 }: {
   param: Product;
   onDelete: (id: string) => void;

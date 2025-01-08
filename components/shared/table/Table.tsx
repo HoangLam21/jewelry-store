@@ -7,11 +7,13 @@ const Table = ({
   renderRow,
   data,
   onSort,
+  index,
 }: {
   columns: { header: string; accessor: string; className?: string }[];
   renderRow: (item: any) => React.ReactNode;
   data: any[];
   onSort: (key: string) => void; // Accept string as SortableKey
+  index?: number;
 }) => {
   return (
     <table className="w-full border-collapse">
@@ -41,7 +43,7 @@ const Table = ({
         </tr>
       </thead>
       <tbody>
-        {data.map((item) => (
+        {data.map((item, index) => (
           <React.Fragment key={item.id || JSON.stringify(item)}>
             {renderRow(item)}
           </React.Fragment>

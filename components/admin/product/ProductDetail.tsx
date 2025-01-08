@@ -163,7 +163,7 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
                   />
                   <InputUnEdit
                     titleInput="Category"
-                    value={detailProduct.category}
+                    value={detailProduct.category || ""}
                     width="w-full"
                   />
                 </div>

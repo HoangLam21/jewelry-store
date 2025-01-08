@@ -20,7 +20,7 @@ export const createCustomer = async (data: {
       address: data.address,
       gender: data.gender,
       birthday: data.birthday,
-      createAt: new Date(),
+      createAt: new Date()
     });
     return newCustomer;
   } catch (error) {
@@ -32,7 +32,8 @@ export const createCustomer = async (data: {
 export const getCustomers = async () => {
   try {
     connectToDatabase();
-    const customers = await Customer.find();
+    const customers = await Customer.find().populate("orders");
+    console.log(customers, "data");
     return customers;
   } catch (error) {
     console.log("Error fetching Customers: ", error);

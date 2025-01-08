@@ -15,7 +15,7 @@ export const createCategory = async (data: {
     await connectToDatabase();
     const newCategory = await Category.create({
       name: data.name,
-      description: data.description
+      description: data.description,
     });
     return newCategory;
   } catch (error) {
@@ -37,7 +37,7 @@ export const getProductsOfCategory = async (categoryId: string) => {
     }
     // Populate necessary fields
     const products = await Product.find({
-      _id: { $in: category.products }
+      _id: { $in: category.products },
     })
       .populate("files")
       .populate("vouchers")
@@ -58,6 +58,9 @@ export const getCategories = async () => {
   try {
     await connectToDatabase();
     const categories = await Category.find();
+    if (categories.length === 0) {
+      return [];
+    }
     return categories;
   } catch (error) {
     console.log("Error fetching categories: ", error);
@@ -81,7 +84,7 @@ export const updateCategory = async (
     const updatedCategory = await Category.findByIdAndUpdate(
       id,
       {
-        ...data
+        ...data,
       },
       { new: true }
     );
@@ -309,7 +312,7 @@ export const getCategoryById = async (
     }
 
     const rawProducts = (await Product.find({
-      _id: { $in: category.products }
+      _id: { $in: category.products },
     }).lean()) as unknown as RawProduct[];
 
     const fileIds: mongoose.Types.ObjectId[] = [];
@@ -332,7 +335,7 @@ export const getCategoryById = async (
       ProductProvider.find({ _id: { $in: providerIds } })
         .select("_id fullname phoneNumber address")
         .lean()
-        .then((providers) => providers as unknown as ProviderDocument[])
+        .then((providers) => providers as unknown as ProviderDocument[]),
     ]);
 
     const fileMap = new Map(
@@ -364,14 +367,14 @@ export const getCategoryById = async (
           _id: new mongoose.Types.ObjectId(),
           fullname: "",
           phoneNumber: "",
-          address: ""
+          address: "",
         },
         category: product.category,
         collections: product.collections,
         variants: product.variants,
         sales: product.sales,
         createdAt: product.createdAt,
-        updatedAt: product.updatedAt
+        updatedAt: product.updatedAt,
       };
     });
 
@@ -382,7 +385,7 @@ export const getCategoryById = async (
       hot: category.hot,
       products: populatedProducts,
       createdAt: category.createAt,
-      updatedAt: category.updatedAt
+      updatedAt: category.updatedAt,
     };
 
     return populatedCategory;

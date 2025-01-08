@@ -26,7 +26,7 @@ export const createProduct = async (data: {
   }[];
 }) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const imageIds: string[] = [];
     for (const image of data.images) {
       const createdImage = await createFile(image);
@@ -50,7 +50,7 @@ export const createProduct = async (data: {
       provider: provider ? provider._id : undefined,
       category: category ? category._id : undefined,
       variants: data.variants,
-      collections: data.collections
+      collections: data.collections,
     });
     return newProduct;
   } catch (error) {
@@ -61,20 +61,22 @@ export const createProduct = async (data: {
 
 export const getProducts = async () => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const products = await Product.find();
     const productResponse = [];
     for (const product of products) {
       const files = await File.find({ _id: { $in: product.files } });
       const vouchers = await Voucher.find({
-        _id: { $in: product.vouchers }
+        _id: { $in: product.vouchers },
       });
       const provider = await ProductProvider.findById(product.provider);
+      const category =await Category.findById(product.category);
       productResponse.push({
         ...product.toObject(),
+        category:category,
         vouchers: vouchers,
         provider: provider,
-        files: files
+        files: files,
       });
     }
     return productResponse;
@@ -86,7 +88,7 @@ export const getProducts = async () => {
 
 export const getProductById = async (id: string) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const product = await Product.findById(id);
 
     if (!product) {
@@ -95,12 +97,14 @@ export const getProductById = async (id: string) => {
     const files = await File.find({ _id: { $in: product.files } });
     const vouchers = await Voucher.find({ _id: { $in: product.vouchers } });
     const provider = await ProductProvider.findById(product.provider);
+    const category = await Category.findById(product.category);
     const productObject = product.toObject();
     return {
       ...productObject,
       files: files,
       vouchers: vouchers,
-      provider: provider
+      provider: provider,
+      category:category
     };
   } catch (error) {
     console.log("Error fetching Product by ID: ", error);
@@ -127,7 +131,7 @@ export const updateProduct = async (
   }>
 ) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const updateImageIds: string[] = [];
     const existProduct = await Product.findById(id);
     for (const id of existProduct.files) {
@@ -157,7 +161,7 @@ export const updateProduct = async (
         vouchers: voucherIds,
         provider: provider ? provider._id : undefined,
         category: category ? category._id : undefined,
-        files: updateImageIds
+        files: updateImageIds,
       },
       { new: true }
     );
@@ -168,7 +172,7 @@ export const updateProduct = async (
       files: files,
       vouchers: vouchers,
       provider: provider,
-      catgory: category
+      catgory: category,
     };
   } catch (error) {
     console.log("Error updating Product: ", error);
@@ -178,7 +182,7 @@ export const updateProduct = async (
 
 export const deleteProduct = async (id: string) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const deletedProduct = await Product.findByIdAndDelete(id);
     if (!deletedProduct) {
       throw new Error("Product not found");

@@ -12,6 +12,7 @@ import staff from "@/pages/api/import/staff";
 import provider from "@/pages/api/import/provider";
 import Voucher from "@/database/voucher.model";
 import Customer from "@/database/customer.model";
+import { createFinance } from "./finance.action";
 
 interface CreateImportInput {
   staff: string;
@@ -175,6 +176,11 @@ export const verifyImport = async (id: string) => {
       await product.save();
     }
     await Import.findByIdAndUpdate(id, { status: true }, { new: true });
+    await createFinance({
+      type: "outcome",
+      date: new Date(),
+      value: importData.totalCost, // Dùng giá trị cost của đơn hàng làm value
+    });
     return true;
   } catch (error) {
     console.log("Error verifying Import: ", error);
@@ -371,6 +377,10 @@ export const getImports = async () => {
     connectToDatabase();
     const imported = await Import.find().populate("provider").populate("staff");
     console.log(imported, "imported");
+
+    if (imported.length === 0) {
+      return [];
+    }
     const importsResponse = [];
 
     for (const imports of imported) {

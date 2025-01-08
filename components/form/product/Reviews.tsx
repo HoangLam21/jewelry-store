@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import CreateReview from "./CreateReview";
 import { fetchOrder, getOrderById } from "@/lib/service/order.service";
-import { Product } from "@/components/admin/product/ProductList";
+import { ProductData } from "@/components/admin/product/ProductList";
 import { ProductResponse } from "@/dto/ProductDTO";
 
 export interface CommentData {

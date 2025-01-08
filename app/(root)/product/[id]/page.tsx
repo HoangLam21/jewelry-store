@@ -1,11 +1,8 @@
 "use client";
-import { ProductsData } from "@/constants/data";
-import { Navigation, Pagination } from "swiper/modules";
 
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
 import MyButton from "@/components/shared/button/MyButton";
 import DetailProduct from "@/components/form/product/DetailProduct";
 import Categories from "@/components/form/home/Categories";
@@ -42,8 +39,8 @@ const page = () => {
       dispatch({
         type: "ADD_TO_CART",
         payload: {
-          ...product
-        }
+          ...product,
+        },
       });
       alert("Add to cart!");
       setIsModalOpen(false);
@@ -92,11 +89,11 @@ const page = () => {
           ...product,
           selectedMaterial,
           selectedSize,
-          quantity
-        }
+          quantity,
+        },
       });
       alert("Buy now!");
-      router.push("/checkout");
+      router.push("/checkout/buy");
       setIsModalOpen(false);
     } else {
       alert("Please select both material and size before adding to cart!");
@@ -137,27 +134,37 @@ const page = () => {
         </div>
 
         <div className="w-1/2 flex flex-col gap-6">
-          <p className="text-[30px] ">{product.name}</p>
+          <p className="text-[30px] text-dark100_light500">{product.name}</p>
           {/* <p className="text-[30px] ">{product.productName}</p> */}
           <p className="text-[40px] text-primary-100 ">
             {product.cost.toLocaleString()} VND
           </p>
-          <p className="text-[16px]">{product.description}</p>
-          <p className="underline text-[20px]">COLLECTIONS</p>
-          <p className="text-[16px]">{product.collections}</p>
+          <p className="text-[16px] text-dark100_light500">
+            {product.description}
+          </p>
+          <p className="underline text-[20px] text-dark100_light500">
+            COLLECTIONS
+          </p>
+          <p className="text-[16px] text-dark100_light500">
+            {product.collections}
+          </p>
 
           {/* <p className="underline text-[20px]">PROVIDER</p>
           <p className="text-[16px]">{product.provider?.name || "N/A"}</p> */}
 
-          <p className="underline text-[20px]">VARIANTS</p>
+          <p className="underline text-[20px] text-dark100_light500">
+            VARIANTS
+          </p>
           <div className="flex">
             {product.variants.map((variant: any, index: any) => (
               <div key={index}>
-                <p className="font-bold">Material: {variant.material}</p>
-                <p>Sizes:</p>
+                <p className="font-bold text-dark100_light500">
+                  Material: {variant.material}
+                </p>
+                <p className="text-dark100_light500">Sizes:</p>
                 <ul>
                   {variant.sizes.map((size: any, idx: any) => (
-                    <li key={idx}>
+                    <li key={idx} className="text-dark100_light500">
                       {size.size} - Stock: {size.stock}
                     </li>
                   ))}
@@ -166,16 +173,20 @@ const page = () => {
             ))}
           </div>
 
-          <p className="underline text-[20px]">VOUCHERS</p>
+          <p className="underline text-[20px] text-dark100_light500">
+            VOUCHERS
+          </p>
           <ul>
             {product.vouchers.map((voucher: any) => (
-              <li key={voucher._id}>
+              <li key={voucher._id} className="text-dark100_light500">
                 {voucher.name} - sale off {voucher.discount}%
               </li>
             ))}
           </ul>
 
-          <p className="text-[16px]">{product.sales} sales</p>
+          <p className="text-[16px] text-dark100_light500">
+            {product.sales} sales
+          </p>
           {/* <p className="text-[16px]">{product.quantity} in stocks</p>
           <div className="flex w-2/5 gap-2">
             <button
@@ -324,7 +335,7 @@ const page = () => {
             {/* Hiển thị Size dựa trên Material đã chọn*/}
             {selectedMaterial && (
               <div className="mb-4">
-                <p className="font-semibold text-[20px] jost">Size:</p>
+                <p className="font-semibold text-[20px] jost ">Size:</p>
                 {product.variants
                   .find((variant: any) => variant.material === selectedMaterial)
                   ?.sizes.filter((size: any) => size.stock > 0) // Chỉ hiển thị size có stock > 0

@@ -78,7 +78,7 @@ const Format = ({
           <div className="text-dark100_light500 flex items-center justify-between gap-4 px-8 py-4">
             <Button
               onClick={onClose}
-              className="h-[35px] w-32 bg-white text-xs shadow-md dark:border dark:bg-transparent md:text-sm text-dark-400"
+              className="h-[35px] w-32 bg-white text-xs shadow-md dark:border dark:bg-transparent md:text-sm text-black"
             >
               Cancel
             </Button>

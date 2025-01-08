@@ -2,53 +2,118 @@
 import CartCard from "@/components/card/cart/CartCard";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
+import { getCartByUserId } from "@/lib/services/cart.service";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Page() {
   const { state } = useCart();
   const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [cart, setCart] = useState<any[]>([]);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUser(parsedData);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const formatCartData = (cartData: any) => {
+      return cartData.details.map((detail: any) => ({
+        _id: detail.productId,
+        name: detail.productName,
+        images: detail.productFiles[0]?.url || "",
+        cost: detail.productCost,
+        quantity: detail.quantity,
+        vouchers: detail.productVouchers || [],
+        variants: detail.productVariants || [],
+        selectedMaterial: detail.selectedMaterial,
+        selectedSize: detail.selectedSize,
+      }));
+    };
+
+    let isMounted = true;
+    const getCart = async () => {
+      try {
+        if (user?._id) {
+          const data = await getCartByUserId(user?._id);
+          if (isMounted) {
+            const formattedData = formatCartData(data);
+            setCart(formattedData);
+            console.log("formattedData", formattedData);
+          }
+        } else if (state.items.length > 0) {
+          const formattedState = state.items.map((detail: any) => ({
+            _id: detail._id,
+            name: detail.name,
+            images: detail.files[0]?.url || "",
+            cost: detail.cost,
+            quantity: detail.quantity,
+            vouchers: detail.vouchers || [],
+            variants: detail.variants || [],
+            selectedMaterial: detail.selectedMaterial || "",
+            selectedSize: detail.selectedSize || "",
+          }));
+          setCart(formattedState);
+        }
+      } catch (error) {
+        console.error("Error loading cart:", error);
+      }
+    };
+    getCart();
+    return () => {
+      isMounted = false;
+    };
+  }, [user?._id, state.items]);
+
   const handleCheckout = () => {
     router.push("/checkout");
   };
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    console.log(storedCart);
-  });
 
-  const totalOriginalPrice = state.items.reduce((acc, item) => {
-    const selectedVariant = item.variants.find(
-      (variant) => variant.material === item.selectedMaterial
-    );
-    const addOn = selectedVariant ? selectedVariant.addOn : 0;
+  const totalOriginalPrice =
+    cart?.reduce((acc, item) => {
+      const selectedVariant = item.variants.find(
+        (variant: any) => variant.material === item.selectedMaterial
+      );
+      const addOn = selectedVariant ? selectedVariant.addOn : 0;
 
-    return acc + (item.cost + addOn) * item.quantity;
-  }, 0);
+      return acc + (item.cost + addOn) * item.quantity;
+    }, 0) || 0;
 
-  const totalDiscount = state.items.reduce((acc, item) => {
-    const maxDiscount = item.vouchers.length
-      ? Math.max(...item.vouchers.map((voucher) => voucher.discount || 0))
-      : 0;
+  const totalDiscount =
+    cart?.reduce((acc, item) => {
+      const maxDiscount = item.vouchers.length
+        ? Math.max(
+            ...item.vouchers.map((voucher: any) => voucher.discount || 0)
+          )
+        : 0;
+      const selectedVariant = item.variants.find(
+        (variant: any) => variant.material === item.selectedMaterial
+      );
+      const addOn = selectedVariant ? selectedVariant.addOn : 0;
 
-    // Tìm vật liệu đã chọn
-    const selectedVariant = item.variants.find(
-      (variant) => variant.material === item.selectedMaterial
-    );
-    const addOn = selectedVariant ? selectedVariant.addOn : 0;
+      return acc + ((item.cost + addOn) * item.quantity * maxDiscount) / 100;
+    }, 0) || 0;
 
-    return acc + ((item.cost + addOn) * item.quantity * maxDiscount) / 100;
-  }, 0);
-
-  const appliedVouchers = state.items.flatMap((item) =>
-    item.vouchers.map((voucher) => ({
-      name: voucher.name,
-      discount: voucher.discount,
-    }))
-  );
+  const appliedVouchers =
+    cart?.flatMap((item) =>
+      item.vouchers.map((voucher: any) => ({
+        name: voucher.name,
+        discount: voucher.discount,
+      }))
+    ) || [];
 
   const totalFinalPrice = totalOriginalPrice - totalDiscount;
+
   return (
     <div className="w-full text-dark100_light500">
       <div className="bg-[#EDF1F3]  dark:bg-dark-200 h-[250px] flex justify-center items-center">
@@ -82,8 +147,8 @@ export default function Page() {
               <span className="text-[20px] font-normal jost">SUBTOTAL</span>
             </div>
           </div>
-          {state.items.map((item) => (
-            <CartCard key={item._id} item={item} />
+          {cart?.map((item, index) => (
+            <CartCard key={item._id + index} item={item} setCart={setCart} />
           ))}
           <div className="mt-10 w-full flex flex-col">
             <div className="text-[20px] font-normal jost">

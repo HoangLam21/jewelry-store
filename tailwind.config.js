@@ -8,7 +8,7 @@ module.exports = {
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
     "./styles/theme.css",
-    "./node_modules/@nextui-org/theme/dist/components/(calendar|button|ripple|spinner).js"
+    "./node_modules/@nextui-org/theme/dist/components/(calendar|date-input|date-picker|listbox|select|button|ripple|spinner|form|popover|divider|scroll-shadow).js"
   ],
   theme: {
     container: {

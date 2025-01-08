@@ -17,7 +17,7 @@ const NavContent = () => {
     <section className="flex h-full flex-col gap-4 pt-16">
       {navbarLinks.map((item) => {
         const isActive =
-          (pathname.includes(item.route) && item.route.length > 1) ||
+          (pathname?.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;
 
         return (
