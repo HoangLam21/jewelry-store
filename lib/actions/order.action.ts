@@ -16,10 +16,6 @@ export const getOrders = async () => {
     await connectToDatabase();
     const orders = await Order.find().populate("customer").populate("staff");
 
-    if (orders.length === 0) {
-      return [];
-    }
-
     const orderResponse = [];
     for (const order of orders) {
       const products = [];
@@ -37,25 +33,26 @@ export const getOrders = async () => {
             ...product.toObject(),
             vouchers: product.vouchers,
             provider: product.provider,
-            files: product.files,
+            files: product.files
           },
           material: detail.material,
           size: detail.size,
           quantity: detail.quantity,
           unitPrice: detail.unitPrice,
-          discount: detail.discount,
+          discount: detail.discount
         });
       }
       orderResponse.push({
         ...order.toObject(),
         customer: order.customer,
         staff: order.staff,
-        products: products,
+        products: products
       });
     }
     return orderResponse;
   } catch (error) {
     console.log("Error fetching Orders: ", error);
+    return [];
     throw new Error("Failed to fetch orders");
   }
 };
@@ -93,7 +90,7 @@ export const createOrder = async (data: {
       phoneNumber: data.phoneNumber,
       note: data.note,
       address: data.address,
-      staff: new ObjectId(data.staff),
+      staff: new ObjectId(data.staff)
     });
     return newOrder;
   } catch (error) {
@@ -197,7 +194,7 @@ export const updateOrderStatus = async (id: string, status: string) => {
       await createFinance({
         type: "income",
         date: new Date(),
-        value: order.cost, // Dùng giá trị cost của đơn hàng làm value
+        value: order.cost // Dùng giá trị cost của đơn hàng làm value
       });
     }
 
@@ -223,7 +220,7 @@ export const getOrderById = async (id: string) => {
         throw new Error("Product not found");
       }
       const vouchers = await Voucher.find({
-        _id: { $in: product.vouchers },
+        _id: { $in: product.vouchers }
       });
       const provider = await ProductProvider.findById(product.provider);
       const files = await File.find({ _id: { $in: product.files } });
@@ -232,13 +229,13 @@ export const getOrderById = async (id: string) => {
           ...product.toObject(),
           vouchers: vouchers,
           provider: provider,
-          files: files,
+          files: files
         },
         material: detail.material,
         size: detail.size,
         quantity: detail.quantity,
         unitPrice: detail.unitPrice,
-        discount: detail.discount,
+        discount: detail.discount
       });
     }
     const customer = await Customer.findById(order.customer);
@@ -247,9 +244,9 @@ export const getOrderById = async (id: string) => {
       order: {
         ...order.toObject(),
         customer: customer,
-        staff: staff,
+        staff: staff
       },
-      products: products,
+      products: products
     };
   } catch (error) {
     console.log("Error fetching Order: ", error);

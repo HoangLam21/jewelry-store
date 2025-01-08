@@ -13,7 +13,7 @@ const Format = ({
   onConfirmDelete,
   onConfirmBlock,
   onConfirmDisableNotifications,
-  type = "delete", // Thêm prop `type` để xác định hành động
+  type = "delete" // Thêm prop `type` để xác định hành động
 }: {
   onClose: () => void;
   label: string;
@@ -78,7 +78,7 @@ const Format = ({
           <div className="text-dark100_light500 flex items-center justify-between gap-4 px-8 py-4">
             <Button
               onClick={onClose}
-              className="h-[35px] w-32 bg-white text-xs shadow-md dark:border dark:bg-transparent md:text-sm"
+              className="h-[35px] w-32 bg-white text-xs shadow-md dark:border dark:bg-transparent md:text-sm text-black"
             >
               Cancel
             </Button>
