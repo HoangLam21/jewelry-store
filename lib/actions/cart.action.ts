@@ -140,34 +140,36 @@ export const getCartInformation = async (userId: string) => {
       throw new Error("Cart not found");
     }
     const cartDetails = await Promise.all(
-      Array.from(cart.details).map(async ([productKey, detail]) => {
-        const [productId] = productKey.split("_");
+      Array.from(cart.details.entries()).map(
+        async ([productKey, detail]: any) => {
+          const [productId] = productKey.split("_");
 
-        const product = await Product.findById(productId)
-          .populate("files")
-          .populate("vouchers")
-          .populate("provider")
-          .populate("category")
-          .exec();
+          const product = await Product.findById(productId)
+            .populate("files")
+            .populate("vouchers")
+            .populate("provider")
+            .populate("category")
+            .exec();
 
-        if (!product) {
-          throw new Error("Product not found");
+          if (!product) {
+            throw new Error("Product not found");
+          }
+
+          return {
+            productId,
+            ...detail.toObject(),
+            productName: product.name,
+            productCost: product.cost,
+            productDescription: product.description,
+            productVouchers: product.vouchers,
+            productProvider: product.provider,
+            productCategory: product.category,
+            productFiles: product.files,
+            productVariants: product.variants,
+            productSales: product.sales,
+          };
         }
-
-        return {
-          productId,
-          ...detail.toObject(),
-          productName: product.name,
-          productCost: product.cost,
-          productDescription: product.description,
-          productVouchers: product.vouchers,
-          productProvider: product.provider,
-          productCategory: product.category,
-          productFiles: product.files,
-          productVariants: product.variants,
-          productSales: product.sales,
-        };
-      })
+      )
     );
 
     return {
