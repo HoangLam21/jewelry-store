@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { useParams, useRouter } from "next/navigation";
 import { StaffData } from "@/constants/data";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 import { PaginationProps } from "@/types/pagination";
 import TableSearch from "@/components/shared/table/TableSearch";
@@ -18,6 +17,7 @@ import {
 } from "@/lib/service/staff.service";
 import { Staff } from "@/dto/StaffDTO";
 import { Import } from "@/dto/ImportDTO";
+import TableInvoice from "@/components/shared/table/TableInvoice";
 
 const columns = [
   { header: "Product Image", accessor: "productImage" },
@@ -101,9 +101,9 @@ const StaffInformation = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (item: any) => (
+  const renderRow = (item: any, index: number) => (
     <tr
-      key={item.id}
+      key={index} // Nếu không có id thì dùng index làm key
       className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
     >
       <td className="px-4 py-2">
@@ -184,7 +184,7 @@ const StaffInformation = () => {
       <div className="flex flex-col gap-6 w-full pt-6">
         <TableSearch onSearch={setSearchQuery} onSort={handleSort} />
         <div className="flex flex-col gap-6 w-full p-6">
-          <Table
+          <TableInvoice
             columns={columns}
             data={paginatedInvoices}
             renderRow={renderRow}

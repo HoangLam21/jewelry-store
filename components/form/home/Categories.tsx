@@ -33,7 +33,7 @@ const Categories = ({ categoriesData }: any) => {
         {categoriesData?.map((category: any) => (
           <div
             key={category._id}
-            className="flex-shrink-0 flex flex-col items-center"
+            className="flex-shrink-0 cursor-pointer flex flex-col items-center"
           >
             <div
               onClick={() => handleNavigateCategoryDetail(category._id)}

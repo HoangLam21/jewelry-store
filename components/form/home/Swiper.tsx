@@ -14,7 +14,7 @@ const swiper = ({ productsData }: { productsData: any[] }) => {
   const sortedProducts = productsData
     .sort(
       (a: any, b: any) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
     )
     .slice(0, 3);
 

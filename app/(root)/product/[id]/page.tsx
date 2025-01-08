@@ -1,11 +1,8 @@
 "use client";
-import { ProductsData } from "@/constants/data";
-import { Navigation, Pagination } from "swiper/modules";
 
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
 import MyButton from "@/components/shared/button/MyButton";
 import DetailProduct from "@/components/form/product/DetailProduct";
 import Categories from "@/components/form/home/Categories";
@@ -42,8 +39,8 @@ const page = () => {
       dispatch({
         type: "ADD_TO_CART",
         payload: {
-          ...product
-        }
+          ...product,
+        },
       });
       alert("Add to cart!");
       setIsModalOpen(false);
@@ -92,8 +89,8 @@ const page = () => {
           ...product,
           selectedMaterial,
           selectedSize,
-          quantity
-        }
+          quantity,
+        },
       });
       alert("Buy now!");
       router.push("/checkout/buy");

@@ -9,11 +9,16 @@ import File from "@/database/file.model";
 import ProductProvider from "@/database/provider.model";
 import Staff from "@/database/staff.model";
 import Voucher from "@/database/voucher.model";
+import { createFinance } from "./finance.action";
 
 export const getOrders = async () => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const orders = await Order.find().populate("customer").populate("staff");
+
+    if (orders.length === 0) {
+      return [];
+    }
 
     const orderResponse = [];
     for (const order of orders) {
@@ -76,7 +81,7 @@ export const createOrder = async (data: {
   staff: string;
 }) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const newOrder = await Order.create({
       cost: data.cost,
       discount: data.discount,
@@ -100,7 +105,7 @@ export const createOrder = async (data: {
 // Hủy đơn hàng
 export const cancelOrder = async (id: string) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const order = await Order.findById(id);
     if (!order) {
       throw new Error("Order not found");
@@ -123,7 +128,7 @@ export const cancelOrder = async (id: string) => {
 // Xóa đơn hàng
 export const deleteOrder = async (id: string) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const deletedOrder = await Order.findByIdAndDelete(id);
     if (!deletedOrder) {
       throw new Error("Order not found");
@@ -135,47 +140,10 @@ export const deleteOrder = async (id: string) => {
   }
 };
 
-// Cập nhật trạng thái đơn hàng
-// export const updateOrderStatus = async (id: string, status: string) => {
-//   try {
-//     connectToDatabase();
-//     const order = await Order.findById(id);
-//     if (!order) {
-//       throw new Error("Order not found");
-//     }
-//     if (status === "delivered") {
-//       const orderDetails = order.details;
-//       for (const detail of orderDetails) {
-//         const product = await Product.findById(detail.id.toString());
-//         if (!product) {
-//           throw new Error("Product not found");
-//         }
-//         for (const variant of product.variants) {
-//           if (variant.material === detail.material) {
-//             for (const size of variant.sizes) {
-//               if (size.size === detail.size) {
-//                 size.stock -= detail.quantity;
-//               }
-//             }
-//           }
-//         }
-//         product.sales += detail.quantity;
-//         await product.save();
-//       }
-//     }
-//     await Order.findByIdAndUpdate(id, { status: status }, { new: true });
-//     return true;
-//   } catch (error) {
-//     console.log("Error updating Order status: ", error);
-//     throw new Error("Failed to update order status");
-//   }
-// };
-// Cập nhật trạng thái đơn hàng
-
 export const updateOrderStatus = async (id: string, status: string) => {
   try {
     // Kết nối cơ sở dữ liệu
-    connectToDatabase();
+    await connectToDatabase();
     console.log(id, status, "statussssssss");
     // Lấy thông tin đơn hàng
     const order = await Order.findById(id);
@@ -225,6 +193,14 @@ export const updateOrderStatus = async (id: string, status: string) => {
     // Cập nhật trạng thái đơn hàng
     await Order.findByIdAndUpdate(id, { status }, { new: true });
 
+    if (status === "delivered") {
+      await createFinance({
+        type: "income",
+        date: new Date(),
+        value: order.cost, // Dùng giá trị cost của đơn hàng làm value
+      });
+    }
+
     return { success: true, message: "Order status updated successfully" };
   } catch (error) {
     console.error("Error updating order status:", error);
@@ -234,7 +210,7 @@ export const updateOrderStatus = async (id: string, status: string) => {
 
 export const getOrderById = async (id: string) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const order = await Order.findById(id);
     if (!order) {
       throw new Error("Order not found");

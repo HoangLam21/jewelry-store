@@ -1,6 +1,7 @@
 import { useCart } from "@/contexts/CartContext";
+import { addToCart } from "@/lib/services/cart.service";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const ProductCard = ({ item }: { item: any }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -9,18 +10,35 @@ const ProductCard = ({ item }: { item: any }) => {
   const [selectedSize, setSelectedSize] = useState("");
   const { dispatch } = useCart();
   const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUser(parsedData);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, []);
 
   const handleAddToCart = () => {
     if (selectedMaterial && selectedSize) {
-      dispatch({
-        type: "ADD_TO_CART",
-        payload: {
-          ...item,
-          selectedMaterial,
-          selectedSize,
-          quantity: 1,
-        },
-      });
+      if (user) {
+        addToCart(user._id, item._id, 1, selectedMaterial, selectedSize);
+      } else {
+        dispatch({
+          type: "ADD_TO_CART",
+          payload: {
+            ...item,
+            selectedMaterial,
+            selectedSize,
+            quantity: 1,
+          },
+        });
+      }
       setIsModalOpen(false);
     }
   };
@@ -93,13 +111,12 @@ const ProductCard = ({ item }: { item: any }) => {
                 ))}
             </div>
 
-            {/* Hiển thị Size dựa trên Material đã chọn */}
             {selectedMaterial && (
               <div className="mb-4">
                 <p className="font-semibold text-[20px] jost">Size:</p>
                 {item.variants
                   .find((variant: any) => variant.material === selectedMaterial)
-                  ?.sizes.filter((size: any) => size.stock > 0) // Chỉ hiển thị size có stock > 0
+                  ?.sizes.filter((size: any) => size.stock > 0)
                   .map((size: any) => (
                     <button
                       key={size._id}

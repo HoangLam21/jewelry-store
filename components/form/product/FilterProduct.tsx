@@ -297,7 +297,7 @@ const FilterProduct = ({ productsData, setFilteredData }: any) => {
             COLLECTIONS
           </h2>
           <div className="flex flex-col gap-2 mb-4">
-            {["Đông", "Hè", "Thu", "Xuân"].map((collection) => (
+            {["Spring", "Summer", "Autumn", "Winter"].map((collection) => (
               <button
                 key={collection}
                 className={`text-left text-[16px] py-1 ${

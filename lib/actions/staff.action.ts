@@ -20,7 +20,7 @@ export const createStaff = async (data: {
   description: string;
 }) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const newStaff = await Staff.create({
       fullName: data.fullName,
       phoneNumber: data.phoneNumber,
@@ -48,7 +48,7 @@ export const createStaff = async (data: {
 
 export const getStaffs = async () => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const staffs = await Staff.find();
     return staffs;
   } catch (error) {
@@ -59,7 +59,7 @@ export const getStaffs = async () => {
 
 export const getStaffById = async (id: string) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const staff = await Staff.findById(id);
     if (!staff) {
       throw new Error("Staff not found");
@@ -92,7 +92,7 @@ export const updateStaff = async (
   }>
 ) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const updatedStaff = await Staff.findByIdAndUpdate(
       id,
       {
@@ -113,7 +113,7 @@ export const updateStaff = async (
 
 export const deleteStaff = async (id: string) => {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const deletedStaff = await Staff.findByIdAndDelete(id);
     if (!deletedStaff) {
       throw new Error("Staff not found");
