@@ -18,7 +18,6 @@ function addDays(days: number) {
 }
 
 export default function Page() {
-  const { state } = useCart();
   const { stateBuyNow } = useBuyNow();
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
@@ -31,8 +30,9 @@ export default function Page() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
   const router = useRouter();
+
   useEffect(() => {
-    const { originalPrice, discount, finalPrice } = state.items.reduce(
+    const { originalPrice, discount, finalPrice } = stateBuyNow.items.reduce(
       (totals, item) => {
         const selectedVariant = item.variants.find(
           (variant) => variant.material === item.selectedMaterial
@@ -64,10 +64,10 @@ export default function Page() {
     setTotalOriginalPrice(originalPrice);
     setTotalDiscount(discount);
     setTotalFinalPrice(finalPrice);
-  }, [state.items]);
+  }, [stateBuyNow.items]);
 
   const handleOrder = async () => {
-    const details = state.items.map((item: any) => ({
+    const details = stateBuyNow.items.map((item: any) => ({
       id: item._id,
       material: item.selectedMaterial,
       size: item.selectedSize,
@@ -76,9 +76,9 @@ export default function Page() {
       discount: item.vouchers?.[0]?.discount || "0"
     }));
 
-    const orderData = {
+    const orderData: CreateOrder = {
       cost: totalFinalPrice + shippingFee,
-      discount: totalDiscount,
+      discount: stateBuyNow.items[0].vouchers[0].discount,
       details,
       status: "pending",
       shippingMethod: deliveryMethod,
@@ -86,8 +86,6 @@ export default function Page() {
       customer: "6776bd0974de08ccc866a4ab",
       staff: "6776bdee74de08ccc866a4be"
     };
-
-    console.log(orderData, "check before API");
 
     try {
       console.log("vo");
@@ -102,15 +100,16 @@ export default function Page() {
       if (!response.ok) {
         alert("Order can't create. Please try again.");
       }
-
+      alert("Order created!");
       const data = await response.json();
       console.log("Order created:", data);
-      alert("Order created!");
       router.push("/");
     } catch (error: any) {
       console.error("Error creating order:", error.message);
     }
   };
+
+  console.log(stateBuyNow);
 
   useEffect(() => {
     const calculateShippingFee = () => {
@@ -171,7 +170,7 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-10">
             ORDER INFOMATION
           </h2>
-          {state.items.map((item: any) => (
+          {stateBuyNow.items.map((item: any) => (
             <div
               key={item._id}
               className="flex items-center justify-between mb-4 border-b pb-4"
