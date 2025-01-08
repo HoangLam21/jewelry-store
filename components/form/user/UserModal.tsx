@@ -167,14 +167,14 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
       {activeTab === "info" && (
         <div className="w-full pl-5">
           <p className="mt-3">
-            <strong className="text-gray-200">Phone:</strong>{" "}
+            <strong className="text-gray-400">Phone:</strong>{" "}
             {user?.phoneNumber}
           </p>
           <p className="mt-3">
-            <strong className="text-gray-200">Email:</strong> {user?.email}
+            <strong className="text-gray-400">Email:</strong> {user?.email}
           </p>
           <p className="mt-3">
-            <strong className="text-gray-200">Address:</strong> {user?.address}
+            <strong className="text-gray-400">Address:</strong> {user?.address}
           </p>
         </div>
       )}
