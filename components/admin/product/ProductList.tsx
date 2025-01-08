@@ -11,6 +11,12 @@ import Format from "@/components/shared/card/ConfirmCard";
 import { deleteProductById, fetchProduct } from "@/lib/service/product.service";
 import { FileContent, ProductResponse } from "@/dto/ProductDTO";
 import { formatCurrency } from "@/lib/utils";
+import { fetchProvider } from "@/lib/service/provider.service";
+import {
+  SelectionListProduct,
+  useProductManageContext
+} from "@/contexts/ProductManageContext";
+import { fetchVoucher } from "@/lib/service/voucher.service";
 export interface Sizes {
   size: string;
   stock: number;
@@ -65,14 +71,57 @@ interface props {
 }
 
 const ProductList = ({ list, setList }: props) => {
+  const { setProviderList, setVoucherList, providerList } =
+    useProductManageContext();
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterOption, setFilterOption] = useState("");
   const [onDelete, setOnDelete] = useState(false);
   const [onEdit, setOnEdit] = useState(false);
 
   const [onDetail, setOnDetail] = useState(false);
   const [detailItem, setDetailItem] =
     useState<ProductData>(defaultDetailProduct);
+  useEffect(() => {
+    const fetchDataProvider = async () => {
+      try {
+        const result = await fetchProvider();
+
+        if (result) {
+          const provider: SelectionListProduct[] = result.map((item: any) => ({
+            id: item._id, // Gán giá trị _id vào id
+            name: item.name // Gán giá trị name
+          }));
+
+          setProviderList(provider);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+
+    const fetchDataVoucher = async () => {
+      try {
+        const result = await fetchVoucher();
+
+        if (result) {
+          const voucher: SelectionListProduct[] = result.map((item: any) => ({
+            id: item._id,
+            name: item.name
+          }));
+          setVoucherList(voucher);
+        }
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        const errorMessage = err?.message || "An unexpected error occurred.";
+        alert(`Error fetching data: ${errorMessage}`);
+      }
+    };
+    fetchDataProvider();
+    fetchDataVoucher();
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -92,7 +141,6 @@ const ProductList = ({ list, setList }: props) => {
             category: item.category ? item.category.name : "No category",
             variants: item.variants
           }));
-
           setList(data);
         }
       } catch (err: any) {
@@ -145,7 +193,22 @@ const ProductList = ({ list, setList }: props) => {
 
   const handleEdit = (id: string) => {
     const detail = filterData.find((item) => item.id === id);
-    if (detail) setDetailItem(detail);
+    if (detail) {
+      const item: ProductData = {
+        id: detail.id,
+        image: detail.image,
+        imageInfo: detail.imageInfo,
+        productName: detail.productName,
+        price: detail.price,
+        collection: detail.collection,
+        description: detail.description,
+        vouchers: detail.vouchers,
+        provider: detail.provider,
+        category: detail.category,
+        variants: detail.variants
+      };
+      setDetailItem(item);
+    }
     console.log("edit");
     setOnDetail(false);
     setOnEdit(true);
@@ -154,6 +217,7 @@ const ProductList = ({ list, setList }: props) => {
   const handleDetail = (id: string) => {
     const detail = filterData.find((item) => item.id === id);
     if (detail) setDetailItem(detail);
+    console.log(detail, "detail");
     setOnDetail(true);
   };
 
