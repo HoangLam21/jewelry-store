@@ -150,7 +150,7 @@ const page = () => {
           <p className="text-[16px]">{product.provider?.name || "N/A"}</p> */}
 
           <p className="underline text-[20px]">VARIANTS</p>
-          <div className="flex">
+          <div className="flex gap-3">
             {product.variants.map((variant: any, index: any) => (
               <div key={index}>
                 <p className="font-bold">Material: {variant.material}</p>
@@ -321,7 +321,7 @@ const page = () => {
                 ))}
             </div>
 
-            {/* Hiển thị Size dựa trên Material đã chọn */}
+            {/* Hiển thị Size dựa trên Material đã chọn*/}
             {selectedMaterial && (
               <div className="mb-4">
                 <p className="font-semibold text-[20px] jost">Size:</p>
