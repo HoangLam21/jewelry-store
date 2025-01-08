@@ -2,7 +2,7 @@ import { updateInfoCustomer } from "@/lib/service/customer.service";
 import React, { useEffect, useState } from "react";
 import EditModal from "./EditModal";
 import Avatar from "./Avatar";
-import { fetchOrder } from "@/lib/service/order.service";
+import { deleteOrder, fetchOrder } from "@/lib/service/order.service";
 import MyButton from "@/components/shared/button/MyButton";
 import OrderDetailModal from "../order/DetailOrder";
 interface UserModalProps {
@@ -110,14 +110,9 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
 
   const handleCancelOrder = async (orderId: string) => {
     try {
-      // Thêm logic gọi API để hủy đơn hàng ở đây
-      console.log("Canceling order with ID:", orderId);
-
-      // Cập nhật trạng thái đơn hàng sau khi hủy (giả sử API trả về kết quả thành công)
+      await deleteOrder(orderId);
       setFilteredOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order._id === orderId ? { ...order, status: "cancelled" } : order
-        )
+        prevOrders.filter((order) => order._id !== orderId)
       );
       handleCloseOrderModal();
     } catch (error) {
@@ -130,7 +125,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed background-light800_dark400 text-dark100_light500 top-0 right-0 w-1/3 h-full bg-white shadow-lg z-50 flex flex-col items-center p-5">
       <button
-        className="absolute top-5 right-5 text-xl font-bold text-gray-500"
+        className="absolute top-5 right-5 text-xl font-bold "
         onClick={onClose}
       >
         ✕
@@ -185,7 +180,7 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
       )}
 
       {activeTab === "history" && (
-        <div className="w-full pl-5 overflow-y-auto">
+        <div className="w-full pl-5 overflow-y-auto h-96">
           {filteredOrders.length > 0 ? (
             filteredOrders.map((order) => (
               <div key={order._id} className="p-4 mb-4  rounded-lg shadow-md">

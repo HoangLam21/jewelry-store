@@ -16,10 +16,14 @@ function addDays(days: number) {
   result.setDate(result.getDate() + days);
   return result;
 }
-import { getCartByUserId } from "@/lib/services/cart.service";
+import {
+  getCartByUserId,
+  removeProductFromCart,
+} from "@/lib/services/cart.service";
 
 export default function Page() {
   const { state } = useCart();
+  const { dispatch } = useCart();
   const { stateBuyNow } = useBuyNow();
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
@@ -33,10 +37,10 @@ export default function Page() {
   const [note, setNote] = useState("");
   const [cart, setCart] = useState<any[]>([]);
   const router = useRouter();
-  const cartState =
-    stateBuyNow && stateBuyNow.items.length > 0 ? stateBuyNow : state;
+  // const cartState =
+  //   stateBuyNow && stateBuyNow.items.length > 0 ? stateBuyNow : state;
 
-  console.log(cartState, "check state");
+  // console.log(cartState, "check state");
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -156,12 +160,12 @@ export default function Page() {
       staff: "6776bdee74de08ccc866a4be",
       phoneNumber: phoneNumber,
       note: note,
+      address: address,
     };
 
     console.log(orderData, "check before API");
 
     try {
-      console.log("vo");
       const response = await fetch("/api/order/create", {
         method: "POST",
         headers: {
@@ -176,17 +180,44 @@ export default function Page() {
       }
       const data = await response.json();
       console.log("Order created:", data);
-      alert("Order created!");
+      cart.forEach((item: any) => handleRemoveFromCart(item));
       router.push("/");
+      alert("Order created!");
     } catch (error: any) {
       console.error("Error creating order:", error.message);
     }
   };
+  const handleRemoveFromCart = async (item: any) => {
+    if (user?._id) {
+      try {
+        await removeProductFromCart(
+          user._id,
+          item._id,
+          item.selectedMaterial,
+          item.selectedSize
+        );
 
+        setCart((prevCart: any) =>
+          prevCart.filter(
+            (product: any) =>
+              !(
+                product._id === item._id &&
+                product.selectedMaterial === item.selectedMaterial &&
+                product.selectedSize === item.selectedSize
+              )
+          )
+        );
+      } catch (error) {
+        console.error("Error removing product:", error);
+      }
+    } else {
+      dispatch({ type: "REMOVE_FROM_CART", payload: item._id });
+    }
+  };
   useEffect(() => {
     const calculateShippingFee = () => {
-      if (deliveryMethod === "fast") return 5000;
-      if (deliveryMethod === "express") return 30000;
+      if (deliveryMethod === "fast") return 35000;
+      if (deliveryMethod === "express") return 70000;
       return paymentMethod === "vnpay" ? 25000 : 30000;
     };
     setShippingFee(calculateShippingFee());
@@ -294,8 +325,12 @@ export default function Page() {
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="w-full p-3 border rounded-none bg-transparent "
             >
-              <option value="cod">Cash on Delivery (30k shipping fee)</option>
-              <option value="vnpay">VNPay (25k shipping fee)</option>
+              <option className="bg-transparent" value="cod">
+                Cash on Delivery (30k shipping fee)
+              </option>
+              <option className="bg-transparent" value="vnpay">
+                VNPay (25k shipping fee)
+              </option>
             </select>
           </div>
 
