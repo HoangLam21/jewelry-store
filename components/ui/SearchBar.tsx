@@ -1,7 +1,6 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
-import { SearchBarProps } from "@/types/ui-props";
 const SearchBar = ({
   placeHolder,
   width,
@@ -13,7 +12,7 @@ const SearchBar = ({
   borderRadius,
   searchQuery,
   setSearchQuery,
-}: SearchBarProps) => {
+}: any) => {
   return (
     <div className={` flex items-center w-full ${borderRadius? borderRadius:"rounded-full"}  border-2`}>
       <Icon

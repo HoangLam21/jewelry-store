@@ -51,12 +51,12 @@ const InputDate: React.FC<InputDateProps> = ({
     };
   }, []);
 
-  const handleDateChange = (date: Date) => {
+  const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
     console.log("data: ", date);
     if (onChange) {
-      console.log("pick ", date.toLocaleDateString())
-      onChange(date.toLocaleDateString()); // Call onChange if provided
+      console.log("pick ", date?.toLocaleDateString());
+      onChange(date?.toLocaleDateString()!); // Call onChange if provided
     }
   };
 
@@ -73,7 +73,6 @@ const InputDate: React.FC<InputDateProps> = ({
           onClick={handleIconClick}
           readOnly // Set to readonly since DatePicker is handling input changes
           aria-label="Select a date"
-          fdprocessedid="73fttm"
         />
         <span
           onClick={handleIconClick}

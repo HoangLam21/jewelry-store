@@ -6,7 +6,7 @@ import Image from "next/image";
 import { sidebarLinks } from "@/constants";
 import { usePathname } from "next/navigation";
 import Theme from "../navbar/Theme";
-import { Icon } from "@iconify/react/dist/iconify";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const Sidebar = () => {
   const pathname = usePathname();
