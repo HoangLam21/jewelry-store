@@ -70,8 +70,10 @@ export const getProducts = async () => {
         _id: { $in: product.vouchers },
       });
       const provider = await ProductProvider.findById(product.provider);
+      const category =await Category.findById(product.category);
       productResponse.push({
         ...product.toObject(),
+        category:category,
         vouchers: vouchers,
         provider: provider,
         files: files,
@@ -95,12 +97,14 @@ export const getProductById = async (id: string) => {
     const files = await File.find({ _id: { $in: product.files } });
     const vouchers = await Voucher.find({ _id: { $in: product.vouchers } });
     const provider = await ProductProvider.findById(product.provider);
+    const category = await Category.findById(product.category);
     const productObject = product.toObject();
     return {
       ...productObject,
       files: files,
       vouchers: vouchers,
       provider: provider,
+      category:category
     };
   } catch (error) {
     console.log("Error fetching Product by ID: ", error);

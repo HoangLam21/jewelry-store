@@ -49,7 +49,7 @@ export default function Page() {
           if (isMounted) {
             const formattedData = formatCartData(data);
             setCart(formattedData);
-            console.log("state", state.items);
+            console.log("formattedData", formattedData);
           }
         } else if (state.items.length > 0) {
           const formattedState = state.items.map((detail: any) => ({
@@ -74,9 +74,11 @@ export default function Page() {
       isMounted = false;
     };
   }, [user?._id, state.items]);
+
   const handleCheckout = () => {
     router.push("/checkout");
   };
+
   const totalOriginalPrice =
     cart?.reduce((acc, item) => {
       const selectedVariant = item.variants.find(

@@ -76,9 +76,10 @@ const ProductList = ({ list, setList }: props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result: ProductResponse[] = await fetchProduct();
+        const result = await fetchProduct();
+        console.log(result, "check");
         if (result) {
-          const data: ProductData[] = result.map((item) => ({
+          const data: ProductData[] = result.map((item: any) => ({
             id: item._id,
             image: item.files[0].url,
             imageInfo: item.files,
@@ -88,7 +89,7 @@ const ProductList = ({ list, setList }: props) => {
             description: item.description,
             vouchers: item.vouchers?.[item.vouchers.length - 1]?._id || "",
             provider: item.provider ? item.provider._id : "",
-            category: item.category,
+            category: item.category ? item.category.name : "No category",
             variants: item.variants
           }));
 

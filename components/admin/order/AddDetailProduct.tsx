@@ -1,15 +1,15 @@
 // AddDetailProduct.tsx
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
-import { Product } from "./AddOrder";
 import { CreateOrder } from "@/dto/OrderDTO";
 import InputEdit from "@/components/shared/input/InputEdit";
 import LabelInformation from "@/components/shared/label/LabelInformation";
 import { useState } from "react";
+import { ProductData } from "../product/ProductList";
 
 type AddDetailProductProps = {
   isProductOverlayOpen: boolean;
-  selectedProduct: Product | null; // Define the type according to the shape of selectedProduct
+  selectedProduct: ProductData | null; // Define the type according to the shape of selectedProduct
   setIsProductOverlayOpen: (isOpen: boolean) => void;
   item: CreateOrder;
   setItem: any;
@@ -19,7 +19,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
   selectedProduct,
   setIsProductOverlayOpen,
   item,
-  setItem,
+  setItem
 }) => {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("");
@@ -97,7 +97,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
         size: selectedSize,
         unitPrice: unitPrice,
         quantity: quantity,
-        discount: discount.toString(),
+        discount: discount.toString()
       };
 
       // Kiểm tra xem sản phẩm đã tồn tại trong danh sách chưa
@@ -124,7 +124,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
       // Cập nhật state `item`
       setItem({
         ...item,
-        details: updatedDetails,
+        details: updatedDetails
       });
 
       // Reset form
@@ -169,18 +169,24 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
                 <div className="flex gap-4 items-center">
                   <p>Size:</p>
                   <div className="flex gap-4">
-                    {["S", "M", "L"].map((size) => (
+                    {[
+                      ...new Set(
+                        selectedProduct.variants.flatMap((variant) =>
+                          variant.sizes.map((size) => size.size)
+                        )
+                      )
+                    ].map((uniqueSize) => (
                       <button
-                        key={size}
+                        key={uniqueSize}
                         type="button"
                         className={`w-10 h-10 rounded-full ${
-                          selectedSize === size
+                          selectedSize === uniqueSize
                             ? "bg-primary-100 text-white"
                             : "bg-gray-300"
                         }`}
-                        onClick={() => handleSizeSelection(size)}
+                        onClick={() => handleSizeSelection(uniqueSize)}
                       >
-                        {size}
+                        {uniqueSize}
                       </button>
                     ))}
                   </div>
@@ -193,7 +199,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
                       <button
                         key={variant.material}
                         type="button"
-                        className={`w-10 h-10 rounded-full ${
+                        className={`w-20 h-6 rounded-full ${
                           selectedMaterial === variant.material
                             ? "bg-primary-100 text-white"
                             : "bg-gray-300"

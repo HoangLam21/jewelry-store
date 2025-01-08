@@ -141,18 +141,24 @@ const AddDetailImport: React.FC<AddDetailProductProps> = ({
                 <div className="flex gap-4 items-center">
                   <p>Size:</p>
                   <div className="flex gap-4">
-                    {["S", "M", "L"].map((size) => (
+                    {[
+                      ...new Set(
+                        selectedProduct.variants.flatMap((variant) =>
+                          variant.sizes.map((size) => size.size)
+                        )
+                      ),
+                    ].map((uniqueSize) => (
                       <button
-                        key={size}
+                        key={uniqueSize}
                         type="button"
                         className={`w-10 h-10 rounded-full ${
-                          selectedSize === size
+                          selectedSize === uniqueSize
                             ? "bg-primary-100 text-white"
                             : "bg-gray-300"
                         }`}
-                        onClick={() => handleSizeSelection(size)}
+                        onClick={() => handleSizeSelection(uniqueSize)}
                       >
-                        {size}
+                        {uniqueSize}
                       </button>
                     ))}
                   </div>
@@ -165,7 +171,7 @@ const AddDetailImport: React.FC<AddDetailProductProps> = ({
                       <button
                         key={variant.material}
                         type="button"
-                        className={`w-10 h-10 rounded-full ${
+                        className={`w-20 h-6 rounded-full ${
                           selectedMaterial === variant.material
                             ? "bg-primary-100 text-white"
                             : "bg-gray-300"
@@ -201,12 +207,7 @@ const AddDetailImport: React.FC<AddDetailProductProps> = ({
 
                 <button
                   type="button"
-                  className={`mt-4 p-2 rounded bg-primary-100 text-white ${
-                    stock !== null && quantity > stock
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  disabled={stock !== null && quantity > stock}
+                  className={`mt-4 p-2 rounded bg-primary-100 text-white `}
                   onClick={handleAddDetail} // Add the new detail when clicked
                 >
                   Order

@@ -92,6 +92,7 @@ export const createOrder = async (data: {
       address: data.address,
       staff: new ObjectId(data.staff)
     });
+
     return newOrder;
   } catch (error) {
     console.log("Error creating Order: ", error);
@@ -196,6 +197,19 @@ export const updateOrderStatus = async (id: string, status: string) => {
         date: new Date(),
         value: order.cost // Dùng giá trị cost của đơn hàng làm value
       });
+
+      // Update the customer's orders and points
+      if (order.customer) {
+        const customer = await Customer.findById(order.customer);
+
+        if (customer) {
+          customer.orders.push(order._id);
+          customer.point += 1;
+          await customer.save();
+        } else {
+          throw new Error("Customer not found");
+        }
+      }
     }
 
     return { success: true, message: "Order status updated successfully" };

@@ -17,6 +17,18 @@ const Navbar = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [productsData, setProductsData] = useState<any[]>([]);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUser(parsedData);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, []);
   useEffect(() => {
     let isMounted = true;
     const getAllProducts = async () => {
@@ -81,15 +93,27 @@ const Navbar = () => {
           />
         )}
 
-        <Icon
-          icon="solar:user-bold"
-          className="text-dark100_light500 mr-5 text-[20px]"
-          onClick={() => setIsUserModalOpen(true)} // Mở modal khi nhấn
-        />
-        <UserModal
-          isOpen={isUserModalOpen}
-          onClose={() => setIsUserModalOpen(false)} // Đóng modal
-        />
+        {user ? (
+          <>
+            <Icon
+              icon="solar:user-bold"
+              className="text-dark100_light500 mr-5 text-[20px]"
+              onClick={() => setIsUserModalOpen(true)}
+            />
+            <UserModal
+              isOpen={isUserModalOpen}
+              onClose={() => setIsUserModalOpen(false)}
+            />
+          </>
+        ) : (
+          <Link
+            href="/sign-in"
+            className="text-dark100_light500 mr-5 text-[16px] font-medium"
+          >
+            Login
+          </Link>
+        )}
+
         <Link href="/cart">
           <Icon icon="mdi:cart" className="text-dark100_light500 text-[20px]" />
         </Link>

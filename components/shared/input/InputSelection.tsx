@@ -74,7 +74,6 @@ const InputSelection: React.FC<InputSelectionProps> = ({
           className="h-[34px] w-full border border-gray-300 rounded-lg px-3 bg-white focus:outline-none cursor-pointer"
           onClick={handleDropdownClick}
           readOnly
-          fdprocessedid="nh3mmk"
         />
         <span
           onClick={handleDropdownClick}

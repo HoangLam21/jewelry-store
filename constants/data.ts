@@ -1399,114 +1399,114 @@ export const Providers: Provider[] = [
 ];
 
 export const categoryData: CategoryResponse[] = [
-  {
-    _id: "1",
-    name: "Rings",
-    hot: true,
-    products: [
-      { _id: "1", fullName: "Gold Ring", cost: 100 },
-      { _id: "2", fullName: "Silver Ring", cost: 50 }
-    ],
-    description: "",
-    createAt: "2025-01-01T08:00:00Z"
-  },
-  {
-    _id: "2",
-    name: "Necklaces",
-    hot: true,
-    products: [
-      { _id: "1", fullName: "Diamond Necklace", cost: 500 },
-      { _id: "2", fullName: "Pearl Necklace", cost: 200 }
-    ],
-    description: "",
-    createAt: "2025-01-02T09:00:00Z"
-  },
-  {
-    _id: "3",
-    name: "Bracelets",
-    description: "",
-    hot: false,
-    products: [
-      { _id: "1", fullName: "Leather Bracelet", cost: 30 },
-      { _id: "2", fullName: "Gold Bracelet", cost: 150 }
-    ],
-    createAt: "2025-01-03T10:00:00Z"
-  },
-  {
-    _id: "4",
-    description: "",
-    name: "Earrings",
-    hot: true,
-    products: [
-      { _id: "1", fullName: "Stud Earrings", cost: 40 },
-      { _id: "2", fullName: "Hoop Earrings", cost: 60 }
-    ],
-    createAt: "2025-01-04T11:00:00Z"
-  },
-  {
-    _id: "5",
-    description: "",
-    name: "Watches",
-    hot: false,
-    products: [
-      { _id: "1", fullName: "Analog Watch", cost: 120 },
-      { _id: "2", fullName: "Digital Watch", cost: 80 }
-    ],
-    createAt: "2025-01-05T12:00:00Z"
-  },
-  {
-    _id: "6",
-    description: "",
-    name: "Brooches",
-    hot: true,
-    products: [
-      { _id: "1", fullName: "Vintage Brooch", cost: 90 },
-      { _id: "2", fullName: "Floral Brooch", cost: 110 }
-    ],
-    createAt: "2025-01-06T13:00:00Z"
-  },
-  {
-    _id: "7",
-    description: "",
-    name: "Pendants",
-    hot: false,
-    products: [
-      { _id: "1", fullName: "Gold Pendant", cost: 140 },
-      { _id: "2", fullName: "Silver Pendant", cost: 100 }
-    ],
-    createAt: "2025-01-07T14:00:00Z"
-  },
-  {
-    _id: "8",
-    description: "",
-    name: "Cufflinks",
-    hot: true,
-    products: [
-      { _id: "1", fullName: "Silver Cufflinks", cost: 70 },
-      { _id: "2", fullName: "Gold Cufflinks", cost: 130 }
-    ],
-    createAt: "2025-01-08T15:00:00Z"
-  },
-  {
-    _id: "9",
-    description: "",
-    name: "Charms",
-    hot: false,
-    products: [
-      { _id: "1", fullName: "Heart Charm", cost: 25 },
-      { _id: "2", fullName: "Star Charm", cost: 35 }
-    ],
-    createAt: "2025-01-09T16:00:00Z"
-  },
-  {
-    _id: "10",
-    description: "",
-    name: "Anklets",
-    hot: true,
-    products: [
-      { _id: "1", fullName: "Gold Anklet", cost: 60 },
-      { _id: "2", fullName: "Silver Anklet", cost: 40 }
-    ],
-    createAt: "2025-01-10T17:00:00Z"
-  }
+  // {
+  //   _id: "1",
+  //   name: "Rings",
+  //   hot: true,
+  //   products: [
+  //     { _id: "1", fullName: "Gold Ring", cost: 100 },
+  //     { _id: "2", fullName: "Silver Ring", cost: 50 }
+  //   ],
+  //   description: "",
+  //   createAt: "2025-01-01T08:00:00Z"
+  // },
+  // {
+  //   _id: "2",
+  //   name: "Necklaces",
+  //   hot: true,
+  //   products: [
+  //     { _id: "1", fullName: "Diamond Necklace", cost: 500 },
+  //     { _id: "2", fullName: "Pearl Necklace", cost: 200 }
+  //   ],
+  //   description: "",
+  //   createAt: "2025-01-02T09:00:00Z"
+  // },
+  // {
+  //   _id: "3",
+  //   name: "Bracelets",
+  //   description: "",
+  //   hot: false,
+  //   products: [
+  //     { _id: "1", fullName: "Leather Bracelet", cost: 30 },
+  //     { _id: "2", fullName: "Gold Bracelet", cost: 150 }
+  //   ],
+  //   createAt: "2025-01-03T10:00:00Z"
+  // },
+  // {
+  //   _id: "4",
+  //   description: "",
+  //   name: "Earrings",
+  //   hot: true,
+  //   products: [
+  //     { _id: "1", fullName: "Stud Earrings", cost: 40 },
+  //     { _id: "2", fullName: "Hoop Earrings", cost: 60 }
+  //   ],
+  //   createAt: "2025-01-04T11:00:00Z"
+  // },
+  // {
+  //   _id: "5",
+  //   description: "",
+  //   name: "Watches",
+  //   hot: false,
+  //   products: [
+  //     { _id: "1", fullName: "Analog Watch", cost: 120 },
+  //     { _id: "2", fullName: "Digital Watch", cost: 80 }
+  //   ],
+  //   createAt: "2025-01-05T12:00:00Z"
+  // },
+  // {
+  //   _id: "6",
+  //   description: "",
+  //   name: "Brooches",
+  //   hot: true,
+  //   products: [
+  //     { _id: "1", fullName: "Vintage Brooch", cost: 90 },
+  //     { _id: "2", fullName: "Floral Brooch", cost: 110 }
+  //   ],
+  //   createAt: "2025-01-06T13:00:00Z"
+  // },
+  // {
+  //   _id: "7",
+  //   description: "",
+  //   name: "Pendants",
+  //   hot: false,
+  //   products: [
+  //     { _id: "1", fullName: "Gold Pendant", cost: 140 },
+  //     { _id: "2", fullName: "Silver Pendant", cost: 100 }
+  //   ],
+  //   createAt: "2025-01-07T14:00:00Z"
+  // },
+  // {
+  //   _id: "8",
+  //   description: "",
+  //   name: "Cufflinks",
+  //   hot: true,
+  //   products: [
+  //     { _id: "1", fullName: "Silver Cufflinks", cost: 70 },
+  //     { _id: "2", fullName: "Gold Cufflinks", cost: 130 }
+  //   ],
+  //   createAt: "2025-01-08T15:00:00Z"
+  // },
+  // {
+  //   _id: "9",
+  //   description: "",
+  //   name: "Charms",
+  //   hot: false,
+  //   products: [
+  //     { _id: "1", fullName: "Heart Charm", cost: 25 },
+  //     { _id: "2", fullName: "Star Charm", cost: 35 }
+  //   ],
+  //   createAt: "2025-01-09T16:00:00Z"
+  // },
+  // {
+  //   _id: "10",
+  //   description: "",
+  //   name: "Anklets",
+  //   hot: true,
+  //   products: [
+  //     { _id: "1", fullName: "Gold Anklet", cost: 60 },
+  //     { _id: "2", fullName: "Silver Anklet", cost: 40 }
+  //   ],
+  //   createAt: "2025-01-10T17:00:00Z"
+  // }
 ];
