@@ -1,10 +1,81 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import Image from "next/image";
 import { useCart } from "@/contexts/CartContext";
+import {
+  decreaseProductQuantity,
+  increaseProductQuantity,
+} from "@/lib/services/cart.service";
 
-const CartCard = ({ item }: any) => {
+const CartCard = ({ item, setCart }: any) => {
   const { dispatch } = useCart();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUser(parsedData);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, []);
+
+  const handleIncreaseQuantity = async () => {
+    if (user?._id) {
+      try {
+        await increaseProductQuantity(
+          user._id,
+          item._id,
+          item.selectedMaterial,
+          item.selectedSize
+        );
+        setCart((prevCart: any) =>
+          prevCart.map((product: any) =>
+            product?._id === item?._id &&
+            product?.selectedMaterial === item?.selectedMaterial &&
+            product?.selectedSize === item?.selectedSize
+              ? { ...product, quantity: product?.quantity + 1 }
+              : product
+          )
+        );
+        // Optionally: fetch updated cart and dispatch
+      } catch (error) {
+        console.error("Failed to increase quantity:", error);
+      }
+    } else {
+      dispatch({ type: "INCREASE_QUANTITY", payload: item._id });
+    }
+  };
+
+  const handleDecreaseQuantity = async () => {
+    if (user?._id) {
+      try {
+        await decreaseProductQuantity(
+          user._id,
+          item._id,
+          item.selectedMaterial,
+          item.selectedSize
+        );
+        setCart((prevCart: any) =>
+          prevCart.map((product: any) =>
+            product?._id === item?._id &&
+            product?.selectedMaterial === item?.selectedMaterial &&
+            product?.selectedSize === item?.selectedSize &&
+            product?.quantity > 1
+              ? { ...product, quantity: product?.quantity - 1 }
+              : product
+          )
+        );
+      } catch (error) {
+        console.error("Failed to decrease quantity:", error);
+      }
+    } else {
+      dispatch({ type: "DECREASE_QUANTITY", payload: item._id });
+    }
+  };
 
   const selectedVariant = item.variants?.find(
     (variant: { material: string }) =>
@@ -55,9 +126,10 @@ const CartCard = ({ item }: any) => {
         <div className="w-[15%] flex items-center justify-center">
           <button
             className="px-2 background-light700_dark300"
-            onClick={() =>
-              dispatch({ type: "DECREASE_QUANTITY", payload: item._id })
-            }
+            // onClick={() =>
+            //   dispatch({ type: "DECREASE_QUANTITY", payload: item._id })
+            // }
+            onClick={handleDecreaseQuantity}
           >
             -
           </button>
@@ -66,9 +138,10 @@ const CartCard = ({ item }: any) => {
           </span>
           <button
             className="px-2 background-light700_dark300"
-            onClick={() =>
-              dispatch({ type: "INCREASE_QUANTITY", payload: item._id })
-            }
+            // onClick={() =>
+            //   dispatch({ type: "INCREASE_QUANTITY", payload: item._id })
+            // }
+            onClick={handleIncreaseQuantity}
           >
             +
           </button>

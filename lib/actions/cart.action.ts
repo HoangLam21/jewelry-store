@@ -130,7 +130,6 @@ export const editProductQuantityInCart = async (
   }
 };
 
-// Get all information of a cart
 export const getCartInformation = async (userId: string) => {
   try {
     const cart = await Cart.findOne({ user: userId })
@@ -140,14 +139,10 @@ export const getCartInformation = async (userId: string) => {
     if (!cart) {
       throw new Error("Cart not found");
     }
-
-    // Populate thông tin sản phẩm trong chi tiết giỏ hàng
     const cartDetails = await Promise.all(
       Array.from(cart.details).map(async ([productKey, detail]) => {
-        // Tách productId từ productKey
-        const [productId] = productKey.split("_"); // Lấy productId từ phần đầu của khóa
+        const [productId] = productKey.split("_");
 
-        // Tìm sản phẩm bằng productId
         const product = await Product.findById(productId)
           .populate("files")
           .populate("vouchers")
@@ -240,7 +235,6 @@ export const addProductVariantToCart = async (
   }
 };
 
-// Remove a product variant from a cart
 export const removeProductVariantFromCart = async (
   userId: string,
   productId: string,
@@ -292,7 +286,6 @@ export const removeProductVariantFromCart = async (
   }
 };
 
-// Edit the quantity of a product variant in a cart
 export const editProductVariantQuantityInCart = async (
   userId: string,
   productId: string,
@@ -344,7 +337,6 @@ export const editProductVariantQuantityInCart = async (
   }
 };
 
-// Get all information of a cart with product variants
 export const getCartInformationWithVariants = async (userId: string) => {
   try {
     await connectToDatabase();
@@ -381,5 +373,81 @@ export const getCartInformationWithVariants = async (userId: string) => {
     console.log("Error getting cart information with variants: ", error);
     await mongoose.connection.close();
     throw new Error("Failed to get cart information with variants");
+  }
+};
+
+export const increaseProductQuantity = async (
+  userId: string,
+  productId: string,
+  selectedMaterial: string,
+  selectedSize: string
+) => {
+  try {
+    await connectToDatabase();
+
+    let cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      throw new Error("Cart not found");
+    }
+
+    const productKey = `${productId}_${selectedMaterial}_${selectedSize}`;
+    console.log(productKey);
+    const existingProduct = cart.details.get(productKey);
+
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+      const productPrice = 10000; // Example price, you may want to dynamically set this
+      cart.totalCost += productPrice;
+    } else {
+      throw new Error("Product not found in cart");
+    }
+
+    await cart.save();
+    console.log("Cart updated:", cart);
+    return cart;
+  } catch (error) {
+    console.error("Error increasing product quantity: ", error);
+    throw new Error("Failed to increase product quantity");
+  }
+};
+
+export const decreaseProductQuantity = async (
+  userId: string,
+  productId: string,
+  selectedMaterial: string,
+  selectedSize: string
+) => {
+  try {
+    await connectToDatabase();
+
+    let cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      throw new Error("Cart not found");
+    }
+
+    const productKey = `${productId}_${selectedMaterial}_${selectedSize}`;
+    const existingProduct = cart.details.get(productKey);
+
+    if (existingProduct) {
+      if (existingProduct.quantity > 1) {
+        existingProduct.quantity -= 1;
+        const productPrice = 10000; // Example price, you may want to dynamically set this
+        cart.totalCost -= productPrice;
+      } else {
+        // Optionally, remove the product from the cart if quantity is 1
+        cart.details.delete(productKey);
+      }
+    } else {
+      throw new Error("Product not found in cart");
+    }
+
+    await cart.save();
+    console.log("Cart updated:", cart);
+    return cart;
+  } catch (error) {
+    console.error("Error decreasing product quantity: ", error);
+    throw new Error("Failed to decrease product quantity");
   }
 };

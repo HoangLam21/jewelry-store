@@ -39,7 +39,7 @@ export default function Page() {
   useEffect(() => {
     const formatCartData = (cartData: any) => {
       return cartData.details.map((detail: any) => ({
-        _id: detail._id,
+        _id: detail.productId,
         name: detail.productName,
         images: detail.productFiles[0]?.url || "",
         cost: detail.productCost,
@@ -89,7 +89,7 @@ export default function Page() {
     const { originalPrice, discount, finalPrice } = cart.reduce(
       (totals, item) => {
         const selectedVariant = item.variants.find(
-          (variant) => variant.material === item.selectedMaterial
+          (variant: any) => variant.material === item.selectedMaterial
         );
 
         const sizeStock = selectedVariant?.sizes.find(

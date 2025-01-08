@@ -27,21 +27,9 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        setUser(parsedData);
-      } catch (error) {
-        console.error("Failed to parse user data from localStorage:", error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
     const formatCartData = (cartData: any) => {
       return cartData.details.map((detail: any) => ({
-        _id: detail._id,
+        _id: detail.productId,
         name: detail.productName,
         images: detail.productFiles[0]?.url || "",
         cost: detail.productCost,
@@ -123,6 +111,25 @@ export default function Page() {
     ) || [];
 
   const totalFinalPrice = totalOriginalPrice - totalDiscount;
+
+  const handleIncrease = (productId: string) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item._id === productId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
+
+  const handleDecrease = (productId: string) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item._id === productId && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
+  };
+
   return (
     <div className="w-full text-dark100_light500">
       <div className="bg-[#EDF1F3]  dark:bg-dark-200 h-[250px] flex justify-center items-center">
@@ -157,7 +164,7 @@ export default function Page() {
             </div>
           </div>
           {cart?.map((item, index) => (
-            <CartCard key={item._id + index} item={item} />
+            <CartCard key={item._id + index} item={item} setCart={setCart} />
           ))}
           <div className="mt-10 w-full flex flex-col">
             <div className="text-[20px] font-normal jost">
