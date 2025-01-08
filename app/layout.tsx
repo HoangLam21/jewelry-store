@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import ChatBubble from "@/components/MessengerChat/MessenerChat";
@@ -20,11 +21,19 @@ export default function RootLayout({
     <html lang="en" className="mdl-js">
       <body cz-shortcut-listen="true">
         <ThemeProvider>
+          <ClerkProvider>
           <CartProvider>
             <BuyNowProvider>
+              <SignedOut>
+                <SignInButton />
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
               <ProductManageProvider>{children}</ProductManageProvider>
             </BuyNowProvider>
           </CartProvider>
+          </ClerkProvider>
         </ThemeProvider>
         <ChatBubble />
       </body>

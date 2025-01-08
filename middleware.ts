@@ -1,28 +1,12 @@
-import { NextResponse } from "next/server";
+import { clerkMiddleware } from '@clerk/nextjs/server'
 
-// Định nghĩa các route cần bảo vệ
-const isProtectedRoute = (url: any) => {
-  return url.startsWith("/");
-};
+export default clerkMiddleware()
 
-export function middleware(req:any) {
-  const { pathname } = req.nextUrl;
-
-  // // Kiểm tra nếu là route bảo vệ, thực hiện các thao tác bảo vệ
-  // if (isProtectedRoute(pathname)) {
-  //   // Bạn có thể thực hiện logic bảo vệ ở đây
-  //   // Ví dụ, nếu không có token, trả về một lỗi hoặc chuyển hướng
-  //   const token = req.cookies.get("auth_token"); // Kiểm tra cookie hoặc header auth
-  //   if (!token) {
-  //     return NextResponse.redirect(new URL("/login", req.url)); // Chuyển hướng nếu không có token
-  //   }
-  // }
-
-  // // Nếu không phải route bảo vệ, cho phép tiếp tục
-  return NextResponse.next();
-}
-
-// Cấu hình matcher cho middleware
 export const config = {
-  matcher: ["/ask-question/:path*", "/(api|trpc)(.*)"], // Định nghĩa các route được kiểm tra
-};
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
+}
