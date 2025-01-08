@@ -29,7 +29,7 @@ import {
   getDetailCategory,
   updateInfoCategory
 } from "@/lib/service/category.service";
-import { Product } from "../product/ProductList";
+import { ProductData } from "../product/ProductList";
 import { ProductResponse } from "@/dto/ProductDTO";
 import { fetchProduct } from "@/lib/service/product.service";
 import ConfirmModal, { ConfirmModalProps } from "../product/ConfirmModal";
@@ -67,7 +67,7 @@ const columns = [
 const EditCategoryInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [searchQuery, setSearchQuery] = useState("");
-  const [productList, setProductList] = useState<Product[]>([]);
+  const [productList, setProductList] = useState<ProductData[]>([]);
   const [category, setCategory] = useState<CategoryResponse>(defaultCategory);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [updateCategory, setUpdateCategory] =
@@ -118,7 +118,7 @@ const EditCategoryInformation = () => {
       try {
         const result: ProductResponse[] = await fetchProduct();
         if (result) {
-          const data: Product[] = result.map((item) => ({
+          const data: ProductData[] = result.map((item) => ({
             id: item._id,
             image: item.files[0].url,
             imageInfo: item.files,
@@ -208,7 +208,7 @@ const EditCategoryInformation = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (item: Product) => (
+  const renderRow = (item: ProductData) => (
     <tr key={item.id} className="my-4 border-t border-gray-300 text-sm">
       <td className="px-4 py-2">
         <h3 className="text-base">{item.price}</h3>

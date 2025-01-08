@@ -6,9 +6,20 @@ import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import ShippingInfomation from "@/components/form/checkout/ShippingInfomation";
 import { useRouter } from "next/navigation";
+import { useBuyNow } from "@/contexts/BuyNowContext";
+import { CreateOrder } from "@/dto/OrderDTO";
+import { newDate } from "react-datepicker/dist/date_utils";
+import { formatCurrency } from "@/lib/utils";
+
+function addDays(days: number) {
+  const result = new Date();
+  result.setDate(result.getDate() + days);
+  return result;
+}
 
 export default function Page() {
   const { state } = useCart();
+  const { stateBuyNow } = useBuyNow();
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [totalFinalPrice, setTotalFinalPrice] = useState(0);
@@ -20,8 +31,12 @@ export default function Page() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
   const router = useRouter();
+  const cartState =
+    stateBuyNow && stateBuyNow.items.length > 0 ? stateBuyNow : state;
+
+  console.log(cartState, "check state");
   useEffect(() => {
-    const { originalPrice, discount, finalPrice } = state.items.reduce(
+    const { originalPrice, discount, finalPrice } = cartState.items.reduce(
       (totals, item) => {
         const selectedVariant = item.variants.find(
           (variant) => variant.material === item.selectedMaterial
@@ -44,7 +59,7 @@ export default function Page() {
           originalPrice: totals.originalPrice + basePrice + addOnPrice,
           discount: totals.discount + voucherDiscount,
           finalPrice:
-            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount),
+            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount)
         };
       },
       { originalPrice: 0, discount: 0, finalPrice: 0 }
@@ -53,54 +68,51 @@ export default function Page() {
     setTotalOriginalPrice(originalPrice);
     setTotalDiscount(discount);
     setTotalFinalPrice(finalPrice);
-  }, [state.items]);
+  }, [cartState.items]);
 
   const handleOrder = async () => {
-    const details = state.items.map((item: any) => ({
+    const details = cartState.items.map((item: any) => ({
       id: item._id,
       material: item.selectedMaterial,
       size: item.selectedSize,
       unitPrice: item.cost,
       quantity: item.quantity,
-      discount: item.vouchers?.[0]?.discount || "0",
+      discount: item.vouchers?.[0]?.discount || "0"
     }));
 
-    const orderData = {
+    const orderData: CreateOrder = {
       cost: totalFinalPrice + shippingFee,
       discount: totalDiscount,
       details,
       status: "pending",
       shippingMethod: deliveryMethod,
-      ETD: new Date(),
-      address,
+      ETD: addDays(3),
       customer: "6776bd0974de08ccc866a4ab",
-      phoneNumber: phoneNumber,
-      note: note,
-      staff: "6776bd0974de08ccc866a4ab", // Thay bằng ID nhân viên hiện tại
+      staff: "6776bdee74de08ccc866a4be"
     };
+
+    console.log(orderData, "check before API");
 
     try {
       console.log("vo");
       const response = await fetch("/api/order/create", {
-        method: "POST", // HTTP method
+        method: "POST",
         headers: {
-          "Content-Type": "application/json", // Định dạng dữ liệu
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(orderData), // Dữ liệu gửi đi
+        body: JSON.stringify(orderData)
       });
 
       if (!response.ok) {
-        // Nếu có lỗi, tạo một lỗi mới
-        throw new Error(`Server error: ${response.statusText}`);
+        alert("Order can't create. Please try again.");
       }
 
-      const data = await response.json(); // Chuyển phản hồi sang JSON
+      const data = await response.json();
       console.log("Order created:", data);
+      alert("Order created!");
       router.push("/");
-      // Điều hướng hoặc thông báo thành công
     } catch (error: any) {
       console.error("Error creating order:", error.message);
-      // Thông báo lỗi
     }
   };
 
@@ -163,7 +175,7 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-10">
             ORDER INFOMATION
           </h2>
-          {state.items.map((item: any) => (
+          {cartState.items.map((item: any) => (
             <div
               key={item._id}
               className="flex items-center justify-between mb-4 border-b pb-4"
@@ -182,7 +194,7 @@ export default function Page() {
                 </span>
               </div>
               <span className="text-[18px] font-semibold text-primary-100">
-                {item.cost * item.quantity}
+                {formatCurrency(item.cost * item.quantity)}
               </span>
             </div>
           ))}
@@ -190,15 +202,17 @@ export default function Page() {
           <div className="mt-6">
             <div className="text-[18px] font-normal flex justify-between mb-2">
               <span>Total Original Price:</span>
-              <span>${totalOriginalPrice.toFixed(2)}</span>
+              <span>{formatCurrency(totalOriginalPrice)}</span>
             </div>
             <div className="text-[18px] font-normal flex justify-between mb-2">
               <span>Total Discount:</span>
-              <span className="text-red-500">-${totalDiscount.toFixed(2)}</span>
+              <span className="text-red-500">
+                -{formatCurrency(totalDiscount)}
+              </span>
             </div>
             <div className="text-[18px] font-medium flex justify-between mb-4">
               <span>Total Final Price:</span>
-              <span>${totalFinalPrice.toFixed(2)}</span>
+              <span>{formatCurrency(totalFinalPrice)}</span>
             </div>
           </div>
 

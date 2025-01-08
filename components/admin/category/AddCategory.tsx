@@ -16,7 +16,7 @@ import {
 import { defaultCategory } from "./CategoryList";
 import { ProductResponse } from "@/dto/ProductDTO";
 import { fetchProduct } from "@/lib/service/product.service";
-import { Product } from "../product/ProductList";
+import { ProductData } from "../product/ProductList";
 import { formatCurrency } from "@/lib/utils";
 import TableSearch from "@/components/shared/table/TableSearch";
 import Table from "@/components/shared/table/Table";
@@ -41,14 +41,14 @@ const AddCategoryInformation = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [newDetail, setNewDetail] = useState<CategoryResponse>(defaultCategory);
   const [quantity, setQuantity] = useState(0);
-  const [productList, setProductList] = useState<Product[]>([]);
+  const [productList, setProductList] = useState<ProductData[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result: ProductResponse[] = await fetchProduct();
         if (result) {
-          const data: Product[] = result.map((item) => ({
+          const data: ProductData[] = result.map((item) => ({
             id: item._id,
             image: item.files[0].url,
             imageInfo: item.files,
@@ -113,7 +113,7 @@ const AddCategoryInformation = () => {
 
   type SortableKeys = "id" | "name" | "price" | "collection";
 
-  const getValueByKey = (item: Product, key: SortableKeys) => {
+  const getValueByKey = (item: ProductData, key: SortableKeys) => {
     switch (key) {
       case "id":
         return item.id;
@@ -176,7 +176,7 @@ const AddCategoryInformation = () => {
     dataLength: filterData.length
   };
 
-  const renderRow = (item: Product) => (
+  const renderRow = (item: ProductData) => (
     <tr key={item.id} className=" my-4 border-t border-gray-300  text-sm ">
       <td className="px-4 py-2">
         <h3 className="text-base">{item.id}</h3>
