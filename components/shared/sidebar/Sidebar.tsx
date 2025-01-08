@@ -57,13 +57,13 @@ const Sidebar = () => {
             <Link
               key={route}
               href={route}
-              className={`flex items-center gap-4 p-4 rounded-lg h-12 ${
+              className={`flex items-center gap-4 p-4 rounded-lg h-10 ${
                 isActive ? "bg-primary-100 text-white" : "text-dark400_light600"
               }`}
             >
               <Icon
                 icon={icon}
-                className={`text-2xl ml-2 ${
+                className={`text-xl ml-2 ${
                   isActive ? "text-white" : "text-dark400_light600"
                 }`}
               />

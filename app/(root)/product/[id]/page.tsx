@@ -150,7 +150,7 @@ const page = () => {
           <p className="text-[16px]">{product.provider?.name || "N/A"}</p> */}
 
           <p className="underline text-[20px]">VARIANTS</p>
-          <div className="flex gap-3">
+          <div className="flex">
             {product.variants.map((variant: any, index: any) => (
               <div key={index}>
                 <p className="font-bold">Material: {variant.material}</p>
