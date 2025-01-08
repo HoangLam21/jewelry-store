@@ -41,7 +41,7 @@ const OrderDetail = () => {
 
   if (!orderDetail) {
     return (
-      <div className="flex w-full h-full items-center justify-center bg-white">
+      <div className="flex h-[90vh] items-center justify-center bg-white">
         <div className="loader"></div>
       </div>
     );

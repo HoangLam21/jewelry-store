@@ -274,10 +274,10 @@ export const getAllImportsOfProvider = async (staffId: string) => {
             };
           })
         );
-        console.log(invoices, "import invoices provider");
-        console.log(provider.representativeName, "import provider provider");
-        console.log(importData, "import importData provider");
-        console.log(staff, "import staff provider");
+        // console.log(invoices, "import invoices provider");
+        // console.log(provider.representativeName, "import provider provider");
+        // console.log(importData, "import importData provider");
+        // console.log(staff, "import staff provider");
         return {
           id: importData._id.toString(),
           suplier: {
