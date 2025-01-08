@@ -13,6 +13,7 @@ import {
 import { Provider } from "@/dto/ProviderDTO";
 import PaginationUI from "@/types/pagination/Pagination";
 import { PaginationProps } from "@/types/pagination";
+import TableInvoice from "@/components/shared/table/TableInvoice";
 
 const columns = [
   { header: "Product Image", accessor: "productImage" },
@@ -82,10 +83,10 @@ const ProviderInformation = () => {
     dataLength: filteredInvoices.length,
   };
 
-  const renderRow = (item: any) => {
+  const renderRow = (item: any, index: number) => {
     return (
       <tr
-        key={item.id}
+        key={index}
         className="border-t border-gray-300 text-sm dark:text-dark-360"
       >
         <td className="px-4 py-2">
@@ -159,7 +160,7 @@ const ProviderInformation = () => {
       <div className="flex flex-col gap-6 w-full pt-6">
         <TableSearch onSearch={handleSearch} />
         <div className="flex flex-col gap-6 w-full p-6">
-          <Table
+          <TableInvoice
             columns={columns}
             data={paginatedInvoices}
             renderRow={renderRow}
