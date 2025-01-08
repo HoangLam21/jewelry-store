@@ -29,7 +29,7 @@ const CommentCard = ({ item }: { item: Comment }) => {
         />
       </div>
       <div className="w-full flex flex-col">
-        <p>{item.userName}</p>
+        <p className="text-dark100_light500">{item.userName}</p>
         <p>
           {" "}
           {[...Array(5)].map((_, index) => (
@@ -43,7 +43,7 @@ const CommentCard = ({ item }: { item: Comment }) => {
             </span>
           ))}
         </p>
-        <p className="text-sm">
+        <p className="text-sm text-dark100_light500">
           {" "}
           {`${new Date(item.createAt).toLocaleDateString("vi-VN", {
             year: "numeric",
@@ -57,7 +57,7 @@ const CommentCard = ({ item }: { item: Comment }) => {
             item.size
           } | Material: ${item.material}`}
         </p>
-        <p>{item.comment}</p>
+        <p className="text-dark100_light500">{item.comment}</p>
         <div className="flex gap-2 mt-2">
           {item.image.map((it, index) => (
             <div className="w-32 h-32" key={index}>
