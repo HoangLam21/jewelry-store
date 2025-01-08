@@ -113,8 +113,9 @@ const EditOrder = () => {
     const matchesSearch =
       item.productName.toLowerCase().includes(lowerCaseQuery) ||
       item.price.toLowerCase().includes(lowerCaseQuery) ||
-      item.id.toLowerCase().includes(lowerCaseQuery) ||
-      item.quantity.toString().toLowerCase().includes(lowerCaseQuery);
+      item.id.toLowerCase().includes(lowerCaseQuery);
+    // ||
+    // item.quantity.toString().toLowerCase().includes(lowerCaseQuery);
     return matchesSearch;
   });
 
@@ -223,13 +224,13 @@ const EditOrder = () => {
 
         <div className="w-full h-4/6 flex overflow-hidden">
           <div className="container grid md:grid-cols-3 lg:grid-cols-5 grid-cols-1 w-full gap-8 max-h-[400px] md:w-2/3 lg:w-3/4 overflow-y-auto ">
-            {filterData.map((product: Product) => (
+            {/* {filterData.map((product: Product) => (
               <ImportCard
                 key={product.id}
                 item={product}
                 onClick={() => addToCart(product)}
               />
-            ))}
+            ))} */}
           </div>
           {/* Cart Section */}
           <div className="flex flex-col md:w-2/5 w-2/3 lg:w-2/5 max-h-[400px]">
@@ -239,14 +240,14 @@ const EditOrder = () => {
                 <hr className="my-2" />
                 <div>
                   {/* Map over cart items and display them */}
-                  {cartItems.map((cartItem) => (
+                  {/* {cartItems.map((cartItem) => (
                     <div key={cartItem.id} className="flex flex-col gap-4">
                       <ImportOrderCard
                         item={cartItem}
                         updateCart={updateCart}
                       />
                     </div>
-                  ))}
+                  ))} */}
                 </div>
 
                 <hr className="my-2" />

@@ -172,7 +172,28 @@ const OrderList = ({
       orderId: string
     ) => {
       const newStatus = event.target.value;
-      handleUpdateStatusOrder(orderId, newStatus);
+
+      // Cập nhật trạng thái ngay lập tức trong danh sách orders
+
+      try {
+        // Gửi API để cập nhật trạng thái
+        await handleUpdateStatusOrder(orderId, newStatus);
+        setOrderData((prevOrders: any) =>
+          prevOrders.map((order: any) =>
+            order._id === orderId ? { ...order, status: newStatus } : order
+          )
+        );
+      } catch (error) {
+        // Xử lý lỗi API
+        console.error("Failed to update status:", error);
+        alert("Unable to update status. Please try again.");
+        // Khôi phục trạng thái cũ nếu cần
+        setOrderData((prevOrders: any) =>
+          prevOrders.map((order: any) =>
+            order._id === orderId ? { ...order, status: order.status } : order
+          )
+        );
+      }
     };
 
     return (
@@ -195,13 +216,39 @@ const OrderList = ({
           <select
             value={item.status}
             onChange={(event) => handleStatusChange(event, item._id)}
-            className="border rounded px-2 py-1 text-sm"
+            className={`border rounded px-2 py-1 text-sm appearance-none
+      ${
+        item.status === "ordered"
+          ? "bg-gray-200 text-gray-800"
+          : item.status === "confirmed"
+          ? "bg-blue-200 text-blue-800"
+          : item.status === "preparing"
+          ? "bg-yellow-200 text-yellow-800"
+          : item.status === "shipping"
+          ? "bg-purple-200 text-purple-800"
+          : item.status === "delivered"
+          ? "bg-green-200 text-green-800"
+          : "bg-white text-black"
+      } focus:bg-white focus:text-black`}
           >
-            <option value="pending">Pending</option>
-            <option value="delivered">Delivered</option>
-            {/* Add more status options as needed */}
+            <option value="ordered" className="bg-white text-black">
+              Ordered
+            </option>
+            <option value="confirmed" className="bg-white text-black">
+              Confirmed
+            </option>
+            <option value="preparing" className="bg-white text-black">
+              Preparing
+            </option>
+            <option value="shipping" className="bg-white text-black">
+              Shipping
+            </option>
+            <option value="delivered" className="bg-white text-black">
+              Delivered
+            </option>
           </select>
         </td>
+
         <td className="px-4 py-2 hidden lg:table-cell">
           <div className="flex items-center gap-2">
             <Link href={`/admin/order/${item._id}`}>
@@ -217,7 +264,15 @@ const OrderList = ({
 
             <div
               className="w-7 h-7 flex items-center justify-center rounded-full"
-              onClick={() => setDeleteOrderId(item._id)}
+              onClick={() => {
+                if (item.status === "shipping" || item.status === "delivered") {
+                  alert(
+                    "Cannot delete orders that are in 'shipping' or 'delivered' status."
+                  );
+                  return;
+                }
+                setDeleteOrderId(item._id);
+              }}
             >
               <Icon
                 icon="tabler:trash"

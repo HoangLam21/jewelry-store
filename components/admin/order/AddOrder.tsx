@@ -9,7 +9,7 @@ import LabelInformation from "@/components/shared/label/LabelInformation";
 import ImportCard from "@/components/shared/card/ImportCard";
 import { formatCurrency, formatPrice } from "@/lib/utils";
 import ImportOrderCard, {
-  DetailProduct,
+  DetailImportProduct,
 } from "@/components/shared/card/ImportOrderCard";
 import TableSearch from "@/components/shared/table/TableSearch";
 import TableSearchNoFilter from "@/components/shared/table/TableSearchNoFilter";
@@ -169,7 +169,7 @@ const AddOrder = () => {
     setIsProductOverlayOpen(true); // Mở modal
   };
 
-  const updateCart = (updatedItem: DetailProduct) => {
+  const updateCart = (updatedItem: DetailImportProduct) => {
     // Update the item details with the new quantity
     const updatedDetails = item.details.map((detail) =>
       detail.id === updatedItem.id
