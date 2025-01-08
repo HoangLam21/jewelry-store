@@ -12,6 +12,9 @@ import UserModal from "@/components/form/user/UserModal";
 import { fetchProducts } from "@/lib/services/product.service";
 import SearchModal from "@/components/form/search/SearchModal";
 
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+
+
 const Navbar = () => {
   const pathname = usePathname();
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
@@ -93,26 +96,19 @@ const Navbar = () => {
           />
         )}
 
-        {user ? (
-          <>
-            <Icon
-              icon="solar:user-bold"
-              className="text-dark100_light500 mr-5 text-[20px]"
-              onClick={() => setIsUserModalOpen(true)}
-            />
-            <UserModal
-              isOpen={isUserModalOpen}
-              onClose={() => setIsUserModalOpen(false)}
-            />
-          </>
-        ) : (
-          <Link
-            href="/sign-in"
-            className="text-dark100_light500 mr-5 text-[16px] font-medium"
-          >
-            Login
-          </Link>
-        )}
+        
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+        <SignedOut>
+          <SignInButton>
+            <div
+              className="text-dark100_light500 mr-5 text-[16px] font-medium cursor-pointer"
+            >
+              Login
+            </div>
+          </SignInButton>
+        </SignedOut>
 
         <Link href="/cart">
           <Icon icon="mdi:cart" className="text-dark100_light500 text-[20px]" />
