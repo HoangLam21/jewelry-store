@@ -59,7 +59,8 @@ const AddCategoryInformation = () => {
             vouchers: item.vouchers?.[item.vouchers.length - 1]?._id || "",
             provider: item.provider ? item.provider._id : "",
             category: item.category,
-            variants: item.variants
+            variants: item.variants,
+            categoryId:""
           }));
 
           setProductList(data);
