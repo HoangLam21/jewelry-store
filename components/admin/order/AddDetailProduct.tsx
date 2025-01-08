@@ -169,18 +169,24 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
                 <div className="flex gap-4 items-center">
                   <p>Size:</p>
                   <div className="flex gap-4">
-                    {["S", "M", "L"].map((size) => (
+                    {[
+                      ...new Set(
+                        selectedProduct.variants.flatMap((variant) =>
+                          variant.sizes.map((size) => size.size)
+                        )
+                      ),
+                    ].map((uniqueSize) => (
                       <button
-                        key={size}
+                        key={uniqueSize}
                         type="button"
                         className={`w-10 h-10 rounded-full ${
-                          selectedSize === size
+                          selectedSize === uniqueSize
                             ? "bg-primary-100 text-white"
                             : "bg-gray-300"
                         }`}
-                        onClick={() => handleSizeSelection(size)}
+                        onClick={() => handleSizeSelection(uniqueSize)}
                       >
-                        {size}
+                        {uniqueSize}
                       </button>
                     ))}
                   </div>
@@ -193,7 +199,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
                       <button
                         key={variant.material}
                         type="button"
-                        className={`w-10 h-10 rounded-full ${
+                        className={`w-20 h-6 rounded-full ${
                           selectedMaterial === variant.material
                             ? "bg-primary-100 text-white"
                             : "bg-gray-300"
