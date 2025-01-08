@@ -86,26 +86,33 @@ const OrderDetailModal = ({ order, isOpen, onClose, onCancelOrder }: any) => {
           <h3 className="text-xl font-semibold mb-2">Products</h3>
           {order.products && order.products.length > 0 ? (
             order.products.map((detail: any, index: number) => (
-              <div key={index} className="mb-3">
-                <p>
-                  <strong>Product:</strong> {detail?.product.name}
-                </p>
-                <p>
-                  <strong>Material:</strong> {detail?.material}
-                </p>
-                <p>
-                  <strong>Quantity:</strong> {detail?.quantity}
-                </p>
-                <p>
-                  <strong>Size:</strong> {detail?.size}
-                </p>
-                <p>
+              <div key={index} className="mb-3 flex">
+                <img
+                  src={detail?.product.files[0].url}
+                  width={100}
+                  height={50}
+                ></img>
+                <div className="ml-3">
+                  <p>
+                    <strong>Product:</strong> {detail?.product.name}
+                  </p>
+                  <p>
+                    <strong>Material:</strong> {detail?.material}
+                  </p>
+                  <p>
+                    <strong>Quantity:</strong> {detail?.quantity}
+                  </p>
+                  <p>
+                    <strong>Size:</strong> {detail?.size}
+                  </p>
+                  {/* <p>
                   <strong>Discount:</strong> {detail?.discount}
-                </p>
-                <p>
-                  <strong>Price:</strong>{" "}
-                  {(detail?.product.cost * detail?.quantity).toLocaleString()}
-                </p>
+                </p> */}
+                  <p>
+                    <strong>Price:</strong>{" "}
+                    {(detail?.product.cost * detail?.quantity).toLocaleString()}
+                  </p>
+                </div>
               </div>
             ))
           ) : (
@@ -126,7 +133,7 @@ const OrderDetailModal = ({ order, isOpen, onClose, onCancelOrder }: any) => {
         )}
 
         <button
-          className="mt-4 bg-gray-400 text-white px-4 py-2 rounded"
+          className="mt-4 flex ml-auto bg-gray-400 text-white px-4 py-2 rounded"
           onClick={onClose}
         >
           Close
