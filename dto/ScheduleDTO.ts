@@ -6,3 +6,9 @@ export interface Schedule{
     shift:number;
     date:string;
 }
+
+export interface ScheduleRequest{
+    staff:string;
+    shift:number;
+    date:string;
+}

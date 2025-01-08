@@ -8,6 +8,8 @@ import Table from "@/components/shared/table/Table";
 import PaginationUI from "@/types/pagination/Pagination";
 import Format from "@/components/shared/card/ConfirmCard";
 import { Schedule } from "@/dto/ScheduleDTO";
+import { deleteSchedule } from "@/lib/service/schedule.service";
+import TableSearchNoFilter from "@/components/shared/table/TableSearchNoFilter";
 
 const columns = [
   { header: "Staff", accessor: "staff" },
@@ -19,9 +21,11 @@ const columns = [
 const ScheduleList = ({
   schedules,
   setSchedules,
+  openEditForm,
 }: {
   schedules: Schedule[];
   setSchedules: any;
+  openEditForm: (schedule: Schedule) => void;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,7 +50,7 @@ const ScheduleList = ({
       case "shift":
         return item.shift;
       case "date":
-        return item.date;
+        return item.date.substring(0, 10);
       default:
         return "";
     }
@@ -80,14 +84,14 @@ const ScheduleList = ({
       item.staff.fullName.toLowerCase().includes(lowerCaseQuery) ||
       item.shift.toString().toLowerCase().includes(lowerCaseQuery) ||
       item.date.toLowerCase().includes(lowerCaseQuery);
-
     return matchesSearch;
   });
 
-  const totalPages = Math.ceil(schedules.length / rowsPerPage);
+  const totalPages = Math.ceil(filterData.length / rowsPerPage); // Sử dụng filterData thay vì schedules
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const currentData = schedules.slice(startIndex, endIndex);
+  const currentData = filterData.slice(startIndex, endIndex); // Lấy dữ liệu của trang hiện tại
+
 
   const dataLength = schedules.length;
   const itemsPerPage = 8;
@@ -102,13 +106,9 @@ const ScheduleList = ({
     dataLength,
   };
 
-  const handleSort = () => {
-    console.log("this is sort");
-  };
-
   const handleDeleteSchedule = async (id: string) => {
     try {
-      const result = null
+      const result = await deleteSchedule(id);
       if (result) {
         setOnDelete(false);
         setSchedules((prev: Schedule[]) =>
@@ -138,33 +138,24 @@ const ScheduleList = ({
         </div>
       </td>
       <td className="px-4 py-2">{item.shift}</td>
-      <td className="px-4 py-2">{item.date}</td>
+      <td className="px-4 py-2">{item.date.substring(0, 10)}</td>
 
       <td className="px-4 py-2">
         <div className="flex items-center gap-2">
-          <Link href={`/admin/schedule/${item._id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full">
-              <Icon
-                icon="tabler:eye"
-                width={24}
-                height={24}
-                className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1 hover:cursor-pointer"
-              />
-            </div>
-          </Link>
-          <Link href={`/admin/schedule/edit/${item._id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full">
-              <Icon
-                icon="tabler:edit"
-                width={24}
-                height={24}
-                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1 hover:cursor-pointer"
-              />
-            </div>
-          </Link>
           <div
             className="w-7 h-7 flex items-center justify-center rounded-full"
-            onClick={() => setDeleteScheduleId(item._id)}
+            onClick={() => openEditForm(item)}
+          >
+            <Icon
+              icon="tabler:edit"
+              width={24}
+              height={24}
+              className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1 hover:cursor-pointer"
+            />
+          </div>
+          <div
+            className="w-7 h-7 flex items-center justify-center rounded-full"
+            onClick={() => handleDeleteSchedule(item._id)}
           >
             <Icon
               icon="tabler:trash"
@@ -190,17 +181,25 @@ const ScheduleList = ({
   );
 
   return (
-    <div className="w-full flex flex-col p-4 rounded-md shadow-sm">
-      <TableSearch onSearch={setSearchQuery} onSort={handleSort} />
-      <Table
-        columns={columns}
-        data={filterData}
-        renderRow={renderRow}
-        onSort={(key: string) => requestSort(key as SortableKeys)}
-      />
+    <div className="w-full h-full flex flex-col p-4 rounded-md shadow-sm justify-between">
+      <TableSearchNoFilter onSearch={setSearchQuery} />
+      <div className="flex-1">
+        {" "}
+        <Table
+          columns={columns}
+          data={currentData}
+          renderRow={renderRow}
+          onSort={(key: string) => requestSort(key as SortableKeys)}
+        />
+      </div>
       <div className="p-4 mt-4 text-sm flex items-center justify-center md:justify-between text-gray-500 dark:text-dark-360">
         <PaginationUI paginationUI={paginationUI} />
       </div>
+      {schedules ? null : (
+        <div className="flex-1 flex items-center justify-center ">
+          <div className="loader"></div>
+        </div>
+      )}
     </div>
   );
 };

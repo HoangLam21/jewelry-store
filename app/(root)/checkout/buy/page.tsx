@@ -16,14 +16,8 @@ function addDays(days: number) {
   result.setDate(result.getDate() + days);
   return result;
 }
-import {
-  getCartByUserId,
-  removeProductFromCart
-} from "@/lib/services/cart.service";
 
 export default function Page() {
-  const { state } = useCart();
-  const { dispatch } = useCart();
   const { stateBuyNow } = useBuyNow();
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
@@ -35,80 +29,13 @@ export default function Page() {
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
-  const [cart, setCart] = useState<any[]>([]);
   const router = useRouter();
-  // const cartState =
-  //   stateBuyNow && stateBuyNow.items.length > 0 ? stateBuyNow : state;
-
-  // console.log(cartState, "check state");
-  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      try {
-        const parsedData = JSON.parse(userData);
-        setUser(parsedData);
-      } catch (error) {
-        console.error("Failed to parse user data from localStorage:", error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const formatCartData = (cartData: any) => {
-      return cartData.details.map((detail: any) => ({
-        _id: detail.productId,
-        name: detail.productName,
-        images: detail.productFiles[0]?.url || "",
-        cost: detail.productCost,
-        quantity: detail.quantity,
-        vouchers: detail.productVouchers || [],
-        variants: detail.productVariants || [],
-        selectedMaterial: detail.selectedMaterial,
-        selectedSize: detail.selectedSize
-      }));
-    };
-
-    let isMounted = true;
-    const getCart = async () => {
-      try {
-        if (user?._id) {
-          const data = await getCartByUserId(user?._id);
-          if (isMounted) {
-            const formattedData = formatCartData(data);
-            setCart(formattedData);
-            console.log("state", state.items);
-          }
-        } else if (state.items.length > 0) {
-          const formattedState = state.items.map((detail: any) => ({
-            _id: detail._id,
-            name: detail.name,
-            images: detail.files[0]?.url || "",
-            cost: detail.cost,
-            quantity: detail.quantity,
-            vouchers: detail.vouchers || [],
-            variants: detail.variants || [],
-            selectedMaterial: detail.selectedMaterial || "",
-            selectedSize: detail.selectedSize || ""
-          }));
-          setCart(formattedState);
-        }
-      } catch (error) {
-        console.error("Error loading cart:", error);
-      }
-    };
-    getCart();
-    return () => {
-      isMounted = false;
-    };
-  }, [user?._id, state.items]);
-
-  useEffect(() => {
-    const { originalPrice, discount, finalPrice } = cart.reduce(
+    const { originalPrice, discount, finalPrice } = stateBuyNow.items.reduce(
       (totals, item) => {
         const selectedVariant = item.variants.find(
-          (variant: any) => variant.material === item.selectedMaterial
+          (variant) => variant.material === item.selectedMaterial
         );
 
         const sizeStock = selectedVariant?.sizes.find(
@@ -137,10 +64,10 @@ export default function Page() {
     setTotalOriginalPrice(originalPrice);
     setTotalDiscount(discount);
     setTotalFinalPrice(finalPrice);
-  }, [cart]);
+  }, [stateBuyNow.items]);
 
   const handleOrder = async () => {
-    const details = cart.map((item: any) => ({
+    const details = stateBuyNow.items.map((item: any) => ({
       id: item._id,
       material: item.selectedMaterial,
       size: item.selectedSize,
@@ -149,23 +76,19 @@ export default function Page() {
       discount: item.vouchers?.[0]?.discount || "0"
     }));
 
-    const orderData = {
+    const orderData: CreateOrder = {
       cost: totalFinalPrice + shippingFee,
-      discount: totalDiscount,
+      discount: stateBuyNow.items[0].vouchers[0].discount,
       details,
       status: "pending",
       shippingMethod: deliveryMethod,
       ETD: addDays(3),
       customer: "6776bd0974de08ccc866a4ab",
-      staff: "6776bdee74de08ccc866a4be",
-      phoneNumber: phoneNumber,
-      note: note,
-      address: address
+      staff: "6776bdee74de08ccc866a4be"
     };
 
-    console.log(orderData, "check before API");
-
     try {
+      console.log("vo");
       const response = await fetch("/api/order/create", {
         method: "POST",
         headers: {
@@ -176,48 +99,22 @@ export default function Page() {
 
       if (!response.ok) {
         alert("Order can't create. Please try again.");
-        throw new Error(`Server error: ${response.statusText}`);
       }
+      alert("Order created!");
       const data = await response.json();
       console.log("Order created:", data);
-      cart.forEach((item: any) => handleRemoveFromCart(item));
       router.push("/");
-      alert("Order created!");
     } catch (error: any) {
       console.error("Error creating order:", error.message);
     }
   };
-  const handleRemoveFromCart = async (item: any) => {
-    if (user?._id) {
-      try {
-        await removeProductFromCart(
-          user._id,
-          item._id,
-          item.selectedMaterial,
-          item.selectedSize
-        );
 
-        setCart((prevCart: any) =>
-          prevCart.filter(
-            (product: any) =>
-              !(
-                product._id === item._id &&
-                product.selectedMaterial === item.selectedMaterial &&
-                product.selectedSize === item.selectedSize
-              )
-          )
-        );
-      } catch (error) {
-        console.error("Error removing product:", error);
-      }
-    } else {
-      dispatch({ type: "REMOVE_FROM_CART", payload: item._id });
-    }
-  };
+  console.log(stateBuyNow);
+
   useEffect(() => {
     const calculateShippingFee = () => {
-      if (deliveryMethod === "fast") return 35000;
-      if (deliveryMethod === "express") return 70000;
+      if (deliveryMethod === "fast") return 5000;
+      if (deliveryMethod === "express") return 30000;
       return paymentMethod === "vnpay" ? 25000 : 30000;
     };
     setShippingFee(calculateShippingFee());
@@ -273,28 +170,26 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-10">
             ORDER INFOMATION
           </h2>
-          {/* {cartState.items.map((item: any) => ( */}
-          {cart.map((item, index) => (
+          {stateBuyNow.items.map((item: any) => (
             <div
-              key={item?._id + index}
+              key={item._id}
               className="flex items-center justify-between mb-4 border-b pb-4"
             >
               <Image
-                src={item?.images}
-                alt={item?.name}
+                src={item.files[0].url}
+                alt={item.name}
                 width={100}
                 height={120}
                 className="object-cover h-40 rounded"
               />
               <div className="ml-4">
-                <h3 className="text-[18px] font-medium">{item?.name}</h3>
+                <h3 className="text-[18px] font-medium">{item.name}</h3>
                 <span className="text-[16px] text-gray-500">
-                  Quantity: {item?.quantity}
+                  Quantity: {item.quantity}
                 </span>
               </div>
               <span className="text-[18px] font-semibold text-primary-100">
                 {formatCurrency(item.cost * item.quantity)}
-                {/* {item?.cost * item?.quantity} */}
               </span>
             </div>
           ))}
@@ -325,12 +220,8 @@ export default function Page() {
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="w-full p-3 border rounded-none bg-transparent "
             >
-              <option className="bg-transparent" value="cod">
-                Cash on Delivery (30k shipping fee)
-              </option>
-              <option className="bg-transparent" value="vnpay">
-                VNPay (25k shipping fee)
-              </option>
+              <option value="cod">Cash on Delivery (30k shipping fee)</option>
+              <option value="vnpay">VNPay (25k shipping fee)</option>
             </select>
           </div>
 
