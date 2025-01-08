@@ -266,7 +266,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
           images: imageList,
           vouchers: item.vouchers,
           provider: item.provider || undefined,
-          category: detailProduct.category || undefined,
+          category: detailProduct.categoryId || undefined,
           collections: item.collection,
           variants: groupVariants(combinedData)
         }).filter(([_, value]) => value !== undefined)
@@ -295,11 +295,11 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
           )
         );
 
-        alert("Update information of customer");
+        alert("Update information of product");
       } else {
-        alert("Can't update information of customer");
+        alert("Can't update information of product");
       }
-    } else alert("No information of customer to update");
+    } else alert("No information of product to update");
     console.log("save");
   };
   const handleConfirmSave = () => {
