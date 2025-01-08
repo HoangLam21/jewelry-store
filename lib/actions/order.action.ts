@@ -92,8 +92,7 @@ export const createOrder = async (data: {
       address: data.address,
       staff: new ObjectId(data.staff)
     });
-
-    return newOrder;
+    return newOrder.toObject();
   } catch (error) {
     console.log("Error creating Order: ", error);
     throw new Error("Failed to create order");
