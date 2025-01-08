@@ -110,12 +110,12 @@ const page = () => {
 
           <p className="underline text-[20px]">VARIANTS</p>
           <div className="flex">
-            {product.variants.map((variant, index) => (
+            {product.variants.map((variant: any, index: any) => (
               <div key={index}>
                 <p className="font-bold">Material: {variant.material}</p>
                 <p>Sizes:</p>
                 <ul>
-                  {variant.sizes.map((size, idx) => (
+                  {variant.sizes.map((size:any, idx:any) => (
                     <li key={idx}>
                       {size.size} - Stock: {size.stock}
                     </li>
@@ -127,7 +127,7 @@ const page = () => {
 
           <p className="underline text-[20px]">VOUCHERS</p>
           <ul>
-            {product.vouchers.map((voucher) => (
+            {product.vouchers.map((voucher:any) => (
               <li key={voucher._id}>
                 {voucher.name} - sale off {voucher.discount}%
               </li>
