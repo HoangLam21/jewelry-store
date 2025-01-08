@@ -47,9 +47,7 @@ export async function getProviderById(
   }
 }
 
-export async function getAllImportsOfProvider(
-  providerId: string
-): Promise<Provider[] | []> {
+export async function getAllImportsOfProvider(providerId: string): Promise<[]> {
   // const token = localStorage.getItem("token");
   // if (!token) {
   //   console.error("Không tìm thấy token");
@@ -58,7 +56,7 @@ export async function getAllImportsOfProvider(
 
   try {
     const response = await fetch(
-      `/api/import/provider?providerId=${providerId}`
+      `/api/import/provider?id=${providerId}`
       //   {
       //   headers: {
       //     Authorization: `${token}`,

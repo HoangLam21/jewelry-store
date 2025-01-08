@@ -257,8 +257,8 @@ const AddProduct = ({ onBack, setList }: Props) => {
         setList((prev) => [
           ...prev,
           {
-            id: item.id,
-            image: item.image,
+            id: result._id,
+            image: selectedFiles[0].url,
             imageInfo: selectedFiles,
             productName: item.productName,
             price: formatCurrency(Number(item.price)),

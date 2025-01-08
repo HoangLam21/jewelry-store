@@ -26,7 +26,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <div className="lg:flex mx-5 block justify-between items-center p-10">
+      {/* <div className="lg:flex mx-5 block justify-between items-center p-10">
         <div className="lg:w-1/2 w-full space-y-6">
           <h2 className="text-[30px] jost font-normal">CHAT WITH STAFF</h2>
           <p>
@@ -38,7 +38,7 @@ export default function Page() {
         <div className="lg:w-1/2 w-full space-y-6">
           <div className="border w-[80%] h-[800px] rounded-lg border-gray-200"></div>
         </div>
-      </div>
+      </div> */}
       <div className="lg:flex mx-5 mt-10 block justify-between p-10">
         <div className="lg:w-1/2 w-full space-y-6">
           <h2 className="text-[30px] jost font-normal">CONTACT INFO</h2>

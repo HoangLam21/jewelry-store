@@ -33,7 +33,7 @@ export async function getStaffById(staffId: string): Promise<Staff | null> {
   }
 }
 
-export async function getAllImportsOfStaff(staffId: string): Promise<[] | []> {
+export async function getAllImportsOfStaff(staffId: string): Promise<[]> {
   // const token = localStorage.getItem("token");
   // if (!token) {
   //   console.error("Không tìm thấy token");
@@ -42,7 +42,7 @@ export async function getAllImportsOfStaff(staffId: string): Promise<[] | []> {
 
   try {
     const response = await fetch(
-      `/api/import/staff?staffId=${staffId}`
+      `/api/import/staff?id=${staffId}`
       //   {
       //   headers: {
       //     Authorization: `${token}`,

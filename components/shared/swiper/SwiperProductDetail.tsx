@@ -22,18 +22,16 @@ const SwiperProductDetail = ({
   const [isNextDisabled, setIsNextDisabled] = useState(false); // nextDisabled
 
   const handleSlideChange = (swiper: any) => {
-    // Kiểm tra nếu đang ở slide đầu tiên
     if (swiper.isBeginning) {
-      setIsPrevDisabled(true); // Disable prev
+      setIsPrevDisabled(true);
     } else {
-      setIsPrevDisabled(false); // Enable prev
+      setIsPrevDisabled(false);
     }
 
-    // Kiểm tra nếu đang ở slide cuối cùng
     if (swiper.isEnd) {
-      setIsNextDisabled(true); // Disable next
+      setIsNextDisabled(true);
     } else {
-      setIsNextDisabled(false); // Enable next
+      setIsNextDisabled(false);
     }
   };
   const imageWidth = width ? `w-[${width}px]` : "w-[80px]";
@@ -47,8 +45,8 @@ const SwiperProductDetail = ({
       <Swiper
         className="mySwiper1"
         navigation={{
-          prevEl: ".swiper-button-prev",
-          nextEl: ".swiper-button-next"
+          prevEl: ".swiper-button-prev1",
+          nextEl: ".swiper-button-next1"
         }} // Sử dụng class cho các nút
         modules={[Navigation]}
         slidesPerView={5}

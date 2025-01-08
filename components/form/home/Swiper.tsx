@@ -8,7 +8,7 @@ import MyButton from "@/components/shared/button/MyButton";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const swiper = ({ productsData }: any) => {
+const swiper = ({ productsData }: { productsData: any[] }) => {
   const router = useRouter();
 
   const sortedProducts = productsData

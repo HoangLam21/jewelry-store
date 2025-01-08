@@ -193,15 +193,6 @@ const AddOrder = () => {
     }, 0);
   };
 
-  // Calculate discount for the cart (if any)
-  const calculateDiscount = () => {
-    return item.details.reduce((totalDiscount, detail) => {
-      const price = detail.unitPrice * detail.quantity;
-      const discountAmount = (price * parseFloat(detail.discount)) / 100;
-      return totalDiscount + discountAmount;
-    }, 0);
-  };
-
   //SAVE
   const handleSave = async () => {
     if (item) {
