@@ -1,15 +1,15 @@
 // AddDetailProduct.tsx
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
-import { Product } from "./AddOrder";
 import { CreateOrder } from "@/dto/OrderDTO";
 import InputEdit from "@/components/shared/input/InputEdit";
 import LabelInformation from "@/components/shared/label/LabelInformation";
 import { useState } from "react";
+import { ProductData } from "../product/ProductList";
 
 type AddDetailProductProps = {
   isProductOverlayOpen: boolean;
-  selectedProduct: Product | null; // Define the type according to the shape of selectedProduct
+  selectedProduct: ProductData | null; // Define the type according to the shape of selectedProduct
   setIsProductOverlayOpen: (isOpen: boolean) => void;
   item: CreateOrder;
   setItem: any;
@@ -19,7 +19,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
   selectedProduct,
   setIsProductOverlayOpen,
   item,
-  setItem,
+  setItem
 }) => {
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedMaterial, setSelectedMaterial] = useState<string>("");
@@ -97,7 +97,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
         size: selectedSize,
         unitPrice: unitPrice,
         quantity: quantity,
-        discount: discount.toString(),
+        discount: discount.toString()
       };
 
       // Kiểm tra xem sản phẩm đã tồn tại trong danh sách chưa
@@ -124,7 +124,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
       // Cập nhật state `item`
       setItem({
         ...item,
-        details: updatedDetails,
+        details: updatedDetails
       });
 
       // Reset form
@@ -174,7 +174,7 @@ const AddDetailProduct: React.FC<AddDetailProductProps> = ({
                         selectedProduct.variants.flatMap((variant) =>
                           variant.sizes.map((size) => size.size)
                         )
-                      ),
+                      )
                     ].map((uniqueSize) => (
                       <button
                         key={uniqueSize}
