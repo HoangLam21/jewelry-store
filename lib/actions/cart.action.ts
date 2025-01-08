@@ -52,43 +52,43 @@ export const addProductToCart = async (
   }
 };
 
-export const removeProductFromCart = async (
-  userId: string,
-  productId: string
-) => {
-  try {
-    await connectToDatabase();
-    const cart = await Cart.findOneAndUpdate(
-      { user: userId },
-      {
-        $unset: { [`details.${productId}`]: "" },
-      },
-      { new: true }
-    );
-    if (!cart || !cart.details) {
-      throw new Error("Cart or product not found");
-    }
-    const productQuantity = cart.details.get(productId);
-    if (!productQuantity) {
-      throw new Error("Product not found in cart");
-    }
-    // Update total cost
-    const updatedCart = await Cart.findOneAndUpdate(
-      { user: userId },
-      { $inc: { totalCost: -productQuantity } },
-      { new: true }
-    );
-    if (!updatedCart) {
-      throw new Error("Failed to update cart");
-    }
-    await mongoose.connection.close();
-    return updatedCart;
-  } catch (error) {
-    console.log("Error removing product from cart: ", error);
-    await mongoose.connection.close();
-    throw new Error("Failed to remove product from cart");
-  }
-};
+// export const removeProductFromCart = async (
+//   userId: string,
+//   productId: string
+// ) => {
+//   try {
+//     await connectToDatabase();
+//     const cart = await Cart.findOneAndUpdate(
+//       { user: userId },
+//       {
+//         $unset: { [`details.${productId}`]: "" },
+//       },
+//       { new: true }
+//     );
+//     if (!cart || !cart.details) {
+//       throw new Error("Cart or product not found");
+//     }
+//     const productQuantity = cart.details.get(productId);
+//     if (!productQuantity) {
+//       throw new Error("Product not found in cart");
+//     }
+//     // Update total cost
+//     const updatedCart = await Cart.findOneAndUpdate(
+//       { user: userId },
+//       { $inc: { totalCost: -productQuantity } },
+//       { new: true }
+//     );
+//     if (!updatedCart) {
+//       throw new Error("Failed to update cart");
+//     }
+//     await mongoose.connection.close();
+//     return updatedCart;
+//   } catch (error) {
+//     console.log("Error removing product from cart: ", error);
+//     await mongoose.connection.close();
+//     throw new Error("Failed to remove product from cart");
+//   }
+// };
 
 export const editProductQuantityInCart = async (
   userId: string,
@@ -449,5 +449,41 @@ export const decreaseProductQuantity = async (
   } catch (error) {
     console.error("Error decreasing product quantity: ", error);
     throw new Error("Failed to decrease product quantity");
+  }
+};
+
+export const removeProductFromCart = async (
+  userId: string,
+  productId: string,
+  selectedMaterial: string,
+  selectedSize: string
+) => {
+  try {
+    await connectToDatabase();
+
+    let cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      throw new Error("Cart not found");
+    }
+
+    const productKey = `${productId}_${selectedMaterial}_${selectedSize}`;
+
+    if (cart.details.has(productKey)) {
+      const product = cart.details.get(productKey);
+      const productPrice = product.quantity * 10000;
+      cart.totalCost -= productPrice;
+
+      cart.details.delete(productKey);
+    } else {
+      throw new Error("Product not found in cart");
+    }
+
+    await cart.save();
+    console.log("Product removed from cart:", cart);
+    return cart;
+  } catch (error) {
+    console.error("Error removing product from cart:", error);
+    throw new Error("Failed to remove product from cart");
   }
 };

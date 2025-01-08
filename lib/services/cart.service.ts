@@ -111,3 +111,34 @@ export async function decreaseProductQuantity(
     console.error("Failed to increase quantity product to cart", err);
   }
 }
+
+export async function removeProductFromCart(
+  userId: string,
+  productId: string,
+  selectedMaterial: string,
+  selectedSize: string
+) {
+  try {
+    const response = await fetch("/api/cart/remove", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        productId,
+        selectedMaterial,
+        selectedSize,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to remove product from cart");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error("Failed to remove product from cart", err);
+  }
+}

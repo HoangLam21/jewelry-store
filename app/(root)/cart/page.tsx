@@ -112,24 +112,6 @@ export default function Page() {
 
   const totalFinalPrice = totalOriginalPrice - totalDiscount;
 
-  const handleIncrease = (productId: string) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item._id === productId ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
-  };
-
-  const handleDecrease = (productId: string) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item._id === productId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-    );
-  };
-
   return (
     <div className="w-full text-dark100_light500">
       <div className="bg-[#EDF1F3]  dark:bg-dark-200 h-[250px] flex justify-center items-center">

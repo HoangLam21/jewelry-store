@@ -5,6 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import {
   decreaseProductQuantity,
   increaseProductQuantity,
+  removeProductFromCart,
 } from "@/lib/services/cart.service";
 
 const CartCard = ({ item, setCart }: any) => {
@@ -77,6 +78,34 @@ const CartCard = ({ item, setCart }: any) => {
     }
   };
 
+  const handleRemoveFromCart = async () => {
+    if (user?._id) {
+      try {
+        await removeProductFromCart(
+          user._id,
+          item._id,
+          item.selectedMaterial,
+          item.selectedSize
+        );
+
+        setCart((prevCart: any) =>
+          prevCart.filter(
+            (product: any) =>
+              !(
+                product._id === item._id &&
+                product.selectedMaterial === item.selectedMaterial &&
+                product.selectedSize === item.selectedSize
+              )
+          )
+        );
+      } catch (error) {
+        console.error("Error removing product:", error);
+      }
+    } else {
+      dispatch({ type: "REMOVE_FROM_CART", payload: item._id });
+    }
+  };
+
   const selectedVariant = item.variants?.find(
     (variant: { material: string }) =>
       variant.material === item.selectedMaterial
@@ -126,9 +155,6 @@ const CartCard = ({ item, setCart }: any) => {
         <div className="w-[15%] flex items-center justify-center">
           <button
             className="px-2 background-light700_dark300"
-            // onClick={() =>
-            //   dispatch({ type: "DECREASE_QUANTITY", payload: item._id })
-            // }
             onClick={handleDecreaseQuantity}
           >
             -
@@ -138,9 +164,6 @@ const CartCard = ({ item, setCart }: any) => {
           </span>
           <button
             className="px-2 background-light700_dark300"
-            // onClick={() =>
-            //   dispatch({ type: "INCREASE_QUANTITY", payload: item._id })
-            // }
             onClick={handleIncreaseQuantity}
           >
             +
@@ -152,12 +175,7 @@ const CartCard = ({ item, setCart }: any) => {
           </span>
         </div>
         <div className="w-[5%] flex items-center justify-center">
-          <button
-            className=""
-            onClick={() =>
-              dispatch({ type: "REMOVE_FROM_CART", payload: item._id })
-            }
-          >
+          <button className="" onClick={handleRemoveFromCart}>
             <Icon
               icon="material-symbols:close-rounded"
               width="24"
