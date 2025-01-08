@@ -25,7 +25,6 @@ export default function Page() {
         if (userId) {
           const customerData = await getCustomerById(userId);
           localStorage.setItem("userData", JSON.stringify(customerData));
-          // console.log("User data saved to localStorage:", customerData);
         }
       } catch (error) {
         console.error("Error fetching customer data:", error);

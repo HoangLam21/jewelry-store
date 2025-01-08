@@ -24,7 +24,6 @@ import {
 export default function Page() {
   const { state } = useCart();
   const { dispatch } = useCart();
-  const { stateBuyNow } = useBuyNow();
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [totalFinalPrice, setTotalFinalPrice] = useState(0);
@@ -37,10 +36,6 @@ export default function Page() {
   const [note, setNote] = useState("");
   const [cart, setCart] = useState<any[]>([]);
   const router = useRouter();
-  // const cartState =
-  //   stateBuyNow && stateBuyNow.items.length > 0 ? stateBuyNow : state;
-
-  // console.log(cartState, "check state");
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -124,6 +119,18 @@ export default function Page() {
           ? (basePrice + addOnPrice) * (voucher.discount / 100)
           : 0;
 
+        // const bestVoucher = item.vouchers?.reduce(
+        //   (maxVoucher: any, currentVoucher: any) =>
+        //     currentVoucher?.discount > (maxVoucher?.discount || 0)
+        //       ? currentVoucher
+        //       : maxVoucher,
+        //   null
+        // );
+
+        // const voucherDiscount = bestVoucher
+        //   ? (basePrice + addOnPrice) * (bestVoucher.discount / 100)
+        //   : 0;
+
         return {
           originalPrice: totals.originalPrice + basePrice + addOnPrice,
           discount: totals.discount + voucherDiscount,
@@ -187,6 +194,7 @@ export default function Page() {
       console.error("Error creating order:", error.message);
     }
   };
+
   const handleRemoveFromCart = async (item: any) => {
     if (user?._id) {
       try {
@@ -214,6 +222,7 @@ export default function Page() {
       dispatch({ type: "REMOVE_FROM_CART", payload: item._id });
     }
   };
+
   useEffect(() => {
     const calculateShippingFee = () => {
       if (deliveryMethod === "fast") return 35000;
