@@ -10,6 +10,7 @@ import { useBuyNow } from "@/contexts/BuyNowContext";
 import { CreateOrder } from "@/dto/OrderDTO";
 import { newDate } from "react-datepicker/dist/date_utils";
 import { formatCurrency } from "@/lib/utils";
+import { payVNPay } from "@/lib/service/vnpay.service";
 
 function addDays(days: number) {
   const result = new Date();
@@ -55,7 +56,7 @@ export default function Page() {
           originalPrice: totals.originalPrice + basePrice + addOnPrice,
           discount: totals.discount + voucherDiscount,
           finalPrice:
-            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount)
+            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount),
         };
       },
       { originalPrice: 0, discount: 0, finalPrice: 0 }
@@ -66,14 +67,15 @@ export default function Page() {
     setTotalFinalPrice(finalPrice);
   }, [stateBuyNow.items]);
 
-  const handleOrder = async () => {
+  const handleOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
     const details = stateBuyNow.items.map((item: any) => ({
       id: item._id,
       material: item.selectedMaterial,
       size: item.selectedSize,
       unitPrice: item.cost,
       quantity: item.quantity,
-      discount: item.vouchers?.[0]?.discount || "0"
+      discount: item.vouchers?.[0]?.discount || "0",
     }));
 
     const orderData: CreateOrder = {
@@ -84,32 +86,29 @@ export default function Page() {
       shippingMethod: deliveryMethod,
       ETD: addDays(3),
       customer: "6776bd0974de08ccc866a4ab",
-      staff: "6776bdee74de08ccc866a4be"
+      staff: "6776bdee74de08ccc866a4be",
     };
 
     try {
-      console.log("vo");
       const response = await fetch("/api/order/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify(orderData),
       });
-
+      const createdOrder = await response.json();
       if (!response.ok) {
         alert("Order can't create. Please try again.");
       }
-      alert("Order created!");
-      const data = await response.json();
-      console.log("Order created:", data);
-      router.push("/");
+      if (paymentMethod === "vnpay") { 
+        const data = await payVNPay(createdOrder._id, totalFinalPrice);
+        router.push(data.url);
+      }
     } catch (error: any) {
       console.error("Error creating order:", error.message);
     }
   };
-
-  console.log(stateBuyNow);
 
   useEffect(() => {
     const calculateShippingFee = () => {
