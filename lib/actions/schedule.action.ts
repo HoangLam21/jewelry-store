@@ -12,7 +12,7 @@ export const createSchedule = async (data: {
       throw new Error("Staff not exist");
     }
     const schedule = await Schedule.create(data);
-    return schedule;
+    return {...schedule.toObject(),staff:staff};
   } catch (error) {
     console.log(error);
     throw error;
@@ -31,7 +31,7 @@ export const updateSchedule = async (
     const existSchedule = await Schedule.findByIdAndUpdate(id, data, {
       new: true,
     });
-    return existSchedule;
+    return {...existSchedule.toObject(),staff:staff};
   } catch (error) {
     console.log(error);
     throw error;
