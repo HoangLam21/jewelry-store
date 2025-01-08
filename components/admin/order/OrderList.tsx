@@ -10,7 +10,7 @@ import PaginationUI from "@/types/pagination/Pagination";
 import { format } from "date-fns";
 import LabelStatus from "@/components/shared/label/LabelStatus";
 import { Order } from "@/dto/OrderDTO";
-import { deleteOrder } from "@/lib/service/order.service";
+import { deleteOrder, updatedStatusOrder } from "@/lib/service/order.service";
 import Format from "@/components/shared/card/ConfirmCard";
 import { formatPrice } from "@/lib/utils";
 
@@ -150,87 +150,154 @@ const OrderList = ({
     }
   };
 
-  const renderRow = (item: any) => (
-    <tr
-      key={item._id}
-      className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
-    >
-      <td className="px-4 py-2">
-        <div className="flex flex-col">
-          <p>Order Id</p>
-          <p>#00{item._id}</p>
-        </div>
-      </td>
-      <td className="px-4 py-2">{format(item.createAt, "PPP")}</td>
-      <td className="px-4 py-2">{item.staff?.fullName || ""}</td>
+  const handleUpdateStatusOrder = async (id: string, status: string) => {
+    console.log("davo");
+    try {
+      const result = await updatedStatusOrder(id, status);
+      if (result) {
+        alert("Update order successfully.");
+      } else {
+        alert("Can't delete order.");
+      }
+    } catch (err: any) {
+      console.error("Error delete data:", err);
+      const errorMessage = err?.message || "An unexpected error occurred.";
+      alert(`Error delete data: ${errorMessage}`);
+    }
+  };
 
-      <td className="px-4 py-2 hidden md:table-cell">
-        {" "}
-        {formatPrice(item.cost)}
-      </td>
-      <td className="px-4 py-2">
-        {item.status === "done" ? (
-          <LabelStatus
-            title="Done"
-            background="bg-custom-green"
-            text_color="text-dark-green"
-          />
-        ) : (
-          <LabelStatus
-            title="Pending"
-            background="bg-light-yellow"
-            text_color="text-yellow-600"
-          />
-        )}
-      </td>
-      <td className="px-4 py-2 hidden lg:table-cell">
-        <div className="flex items-center gap-2">
-          <Link href={`/admin/order/${item._id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full">
-              <Icon
-                icon="tabler:eye"
-                width={24}
-                height={24}
-                className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1"
-              />
-            </div>
-          </Link>
-          <Link href={`/admin/order/edit/${item._id}`}>
-            <div className="w-7 h-7 flex items-center justify-center rounded-full hover:cursor-pointer">
-              <Icon
-                icon="tabler:edit"
-                width={24}
-                height={24}
-                className="text-white  dark:bg-dark-150 bg-dark-green rounded-md  p-1 hover:cursor-pointer"
-              />
-            </div>
-          </Link>
-          <div
-            className="w-7 h-7 flex items-center justify-center rounded-full"
-            onClick={() => setDeleteOrderId(item._id)}
-          >
-            <Icon
-              icon="tabler:trash"
-              width={24}
-              height={24}
-              className=" dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1 hover:cursor-pointer"
-            />
+  const renderRow = (item: any) => {
+    const handleStatusChange = async (
+      event: React.ChangeEvent<HTMLSelectElement>,
+      orderId: string
+    ) => {
+      const newStatus = event.target.value;
+
+      // Cập nhật trạng thái ngay lập tức trong danh sách orders
+
+      try {
+        // Gửi API để cập nhật trạng thái
+        await handleUpdateStatusOrder(orderId, newStatus);
+        setOrderData((prevOrders: any) =>
+          prevOrders.map((order: any) =>
+            order._id === orderId ? { ...order, status: newStatus } : order
+          )
+        );
+      } catch (error) {
+        // Xử lý lỗi API
+        console.error("Failed to update status:", error);
+        alert("Unable to update status. Please try again.");
+        // Khôi phục trạng thái cũ nếu cần
+        setOrderData((prevOrders: any) =>
+          prevOrders.map((order: any) =>
+            order._id === orderId ? { ...order, status: order.status } : order
+          )
+        );
+      }
+    };
+
+    return (
+      <tr
+        key={item._id}
+        className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
+      >
+        <td className="px-4 py-2">
+          <div className="flex flex-col">
+            <p>Order Id</p>
+            <p>#00{item._id}</p>
           </div>
-        </div>
-      </td>
-      {deleteOrderId === item._id && (
-        <td colSpan={columns.length}>
-          <Format
-            onClose={() => setDeleteOrderId(null)}
-            content={`delete: `}
-            label={"Delete order"}
-            userName={item._id}
-            onConfirmDelete={() => handleDeleteOrder(item._id)}
-          />
         </td>
-      )}
-    </tr>
-  );
+        <td className="px-4 py-2">{format(item.createAt, "PPP")}</td>
+        <td className="px-4 py-2">{item.staff?.fullName || ""}</td>
+        <td className="px-4 py-2 hidden md:table-cell">
+          {formatPrice(item.cost)}
+        </td>
+        <td className="px-4 py-2">
+          <select
+            value={item.status}
+            onChange={(event) => handleStatusChange(event, item._id)}
+            className={`border rounded px-2 py-1 text-sm appearance-none
+      ${
+        item.status === "ordered"
+          ? "bg-gray-200 text-gray-800"
+          : item.status === "confirmed"
+          ? "bg-blue-200 text-blue-800"
+          : item.status === "preparing"
+          ? "bg-yellow-200 text-yellow-800"
+          : item.status === "shipping"
+          ? "bg-purple-200 text-purple-800"
+          : item.status === "delivered"
+          ? "bg-green-200 text-green-800"
+          : "bg-white text-black"
+      } focus:bg-white focus:text-black`}
+          >
+            <option value="ordered" className="bg-white text-black">
+              Ordered
+            </option>
+            <option value="confirmed" className="bg-white text-black">
+              Confirmed
+            </option>
+            <option value="preparing" className="bg-white text-black">
+              Preparing
+            </option>
+            <option value="shipping" className="bg-white text-black">
+              Shipping
+            </option>
+            <option value="delivered" className="bg-white text-black">
+              Delivered
+            </option>
+          </select>
+        </td>
+
+        <td className="px-4 py-2 hidden lg:table-cell">
+          <div className="flex items-center gap-2">
+            <Link href={`/admin/order/${item._id}`}>
+              <div className="w-7 h-7 flex items-center justify-center rounded-full">
+                <Icon
+                  icon="tabler:eye"
+                  width={24}
+                  height={24}
+                  className="text-accent-blue bg-light-blue dark:bg-blue-800 dark:text-dark-360 rounded-md p-1"
+                />
+              </div>
+            </Link>
+
+            <div
+              className="w-7 h-7 flex items-center justify-center rounded-full"
+              onClick={() => {
+                if (item.status === "shipping" || item.status === "delivered") {
+                  alert(
+                    "Cannot delete orders that are in 'shipping' or 'delivered' status."
+                  );
+                  return;
+                }
+                setDeleteOrderId(item._id);
+              }}
+            >
+              <Icon
+                icon="tabler:trash"
+                width={24}
+                height={24}
+                className="dark:text-red-950 font-bold bg-light-red text-red-600 dark:bg-dark-110 rounded-md p-1 hover:cursor-pointer"
+              />
+            </div>
+          </div>
+        </td>
+        {deleteOrderId === item._id && (
+          <td colSpan={columns.length}>
+            <Format
+              onClose={() => setDeleteOrderId(null)}
+              content={`delete: `}
+              label={"Delete order"}
+              userName={item._id}
+              onConfirmDelete={() => handleDeleteOrder(item._id)}
+            />
+          </td>
+        )}
+      </tr>
+    );
+  };
+
   return (
     <div className="w-full flex flex-col p-4 rounded-md shadow-sm">
       <TableSearch onSearch={setSearchQuery} onSort={handleSort} />

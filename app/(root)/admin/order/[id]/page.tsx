@@ -36,7 +36,7 @@ const Page = () => {
         type={2}
       ></Headers>
       <OrderDetail />
-      <MyButton
+      {/* <MyButton
         title="Export"
         icon="clarity:export-line"
         event={handleExport}
@@ -45,7 +45,7 @@ const Page = () => {
         background="bg-border-color"
         text_color="text-black"
         border_color="bg-border-color"
-      />
+      /> */}
     </div>
   );
 };

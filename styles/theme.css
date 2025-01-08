@@ -239,5 +239,69 @@
   .swiper-wrapper {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+  }
+
+  /* SWIPER PRODUCT DETAIL*/
+  .mySwiper1 {
+    position: relative; /* Đảm bảo swiper chứa các nút điều hướng */
+    width: 100%; /* Đảm bảo swiper chiếm toàn bộ chiều rộng */
+    height: 400px; /* Chiều cao tự động */
+    overflow: hidden; /* Ẩn phần vượt ra ngoài */
+  }
+  .swiper-container1 {
+    position: relative; /* Đảm bảo các nút điều hướng được đặt chính xác */
+    width: 100%; /* Đảm bảo rằng swiper chiếm toàn bộ chiều rộng của phần tử chứa */
+    height: 400px; /* Điều chỉnh chiều cao tùy theo nội dung bên trong */
+  }
+  /* Nút điều hướng Prev và Next */
+  .swiper-button-prev1,
+  .swiper-button-next1 {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* Nút Prev nằm bên trái */
+  .swiper-button-prev1 {
+    left: 0;
+    right: auto;
+  }
+
+  /* Nút Next nằm bên phải */
+  .swiper-button-next1 {
+    right: 0;
+    left: auto;
+  }
+
+  .swiper-slide1 {
+    text-align: center;
+    font-size: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    flex-direction: column;
+    width: fit-content;
+    margin-right: 0;
+  }
+
+  .swiper-slide1 img {
+    display: block;
+    object-fit: cover;
+    cursor: pointer;
+    height: 320px;
+    width: 280px;
+  }
+  .swiper-wrapper1 {
+    display: flex;
+    align-items: center;
   }
 }

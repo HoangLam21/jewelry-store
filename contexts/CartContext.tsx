@@ -29,7 +29,7 @@ const CartContext = createContext<{
   dispatch: React.Dispatch<CartAction>;
 }>({
   state: { items: [] },
-  dispatch: () => null,
+  dispatch: () => null
 });
 
 const cartReducer = (state: CartState, action: CartAction): CartState => {
@@ -49,14 +49,14 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
             item.selectedSize === action.payload.selectedSize
               ? { ...item, quantity: item.quantity + 1 }
               : item
-          ),
+          )
         };
       }
       return { items: [...state.items, { ...action.payload, quantity: 1 }] };
     }
     case "REMOVE_FROM_CART":
       return {
-        items: state.items.filter((item) => item._id !== action.payload),
+        items: state.items.filter((item) => item._id !== action.payload)
       };
     case "INCREASE_QUANTITY":
       return {
@@ -64,7 +64,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           item._id === action.payload
             ? { ...item, quantity: item.quantity + 1 }
             : item
-        ),
+        )
       };
     case "DECREASE_QUANTITY":
       return {
@@ -72,7 +72,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
           item._id === action.payload && item.quantity > 1
             ? { ...item, quantity: item.quantity - 1 }
             : item
-        ),
+        )
       };
     case "INIT_CART":
       return { items: action.payload }; // Khởi tạo giỏ hàng từ localStorage
@@ -82,7 +82,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 };
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
+  children
 }) => {
   const [state, dispatch] = useReducer(cartReducer, { items: [] });
 
@@ -91,7 +91,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
     if (storedCart) {
       dispatch({
         type: "INIT_CART",
-        payload: JSON.parse(storedCart),
+        payload: JSON.parse(storedCart)
       } as CartAction);
     }
   }, []);

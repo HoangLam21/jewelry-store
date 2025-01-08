@@ -20,42 +20,21 @@ import { Staff } from "@/dto/StaffDTO";
 import { Import } from "@/dto/ImportDTO";
 
 const columns = [
-  { header: "Customer", accessor: "customer" },
-  {
-    header: "ID",
-    accessor: "id",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Create Date",
-    accessor: "createDate",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Note",
-    accessor: "note",
-    className: "hidden lg:table-cell",
-  },
-  { header: "Total", accessor: "total", className: "hidden lg:table-cell" },
-  { header: "Status", accessor: "status" },
+  { header: "Product Image", accessor: "productImage" },
+  { header: "Product Name", accessor: "productName" },
+  { header: "Material", accessor: "material" },
+  { header: "Size", accessor: "size" },
+  { header: "Quantity", accessor: "quantity" },
+  { header: "Unit Price", accessor: "unitPrice" },
+  { header: "Import Status", accessor: "importStatus" },
 ];
-
 const StaffInformation = () => {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [staff, setStaff] = useState<Staff | null>(null); // Store staff data safely
-  const [importOfStaff, setImportOfStaff] = useState<[]>([]); // Store staff data safely
+  const [importOfStaff, setImportOfStaff] = useState<any[]>([]); // Store staff data safely
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 8;
-
-  const [sortConfig, setSortConfig] = useState<{
-    key: SortableKeys;
-    direction: "ascending" | "descending";
-  }>({
-    key: "id",
-    direction: "ascending",
-  });
-  type SortableKeys = "id" | "customer" | "createDate" | "total" | "status";
 
   useEffect(() => {
     const fetchStaffData = async () => {
@@ -72,13 +51,11 @@ const StaffInformation = () => {
     const fetchImportOfStaffData = async () => {
       try {
         if (id) {
-          const foundItem = await getAllImportsOfStaff(
-            "6776bdd574de08ccc866a4b8"
-          );
+          const foundItem = await getAllImportsOfStaff(id);
           setImportOfStaff(foundItem);
         }
       } catch (error) {
-        console.error("Lỗi khi lấy thông tin import cua nhân viên:", error);
+        console.error("Lỗi khi lấy thông tin import của nhân viên:", error);
       }
     };
 
@@ -87,210 +64,123 @@ const StaffInformation = () => {
   }, [id]);
 
   // Render nothing if staff is not loaded yet
-  if (!staff) {
+  if (!staff && !importOfStaff) {
     return <p>Loading staff information...</p>;
   }
 
-  const formatCurrency = (value: number): string => {
-    return new Intl.NumberFormat("vi-VN").format(value) + " vnd";
-  };
-
-  const getValueByKey = (item: Import, key: SortableKeys) => {
-    switch (key) {
-      case "id":
-        return item.id;
-      case "customer":
-        return item.invoice.map((it) => it.productName);
-      case "createDate":
-        return item.createAt;
-      case "status":
-        return item.status;
-      default:
-        return "";
-    }
-  };
-
-  // const sorted = [...importOfStaff].sort((a, b) => {
-  //   const aValue = getValueByKey(a, sortConfig.key);
-  //   const bValue = getValueByKey(b, sortConfig.key);
-
-  //   if (aValue < bValue) {
-  //     return sortConfig.direction === "ascending" ? -1 : 1;
-  //   }
-  //   if (aValue > bValue) {
-  //     return sortConfig.direction === "ascending" ? 1 : -1;
-  //   }
-  //   return 0;
-  // });
-
-  const requestSort = (key: SortableKeys) => {
-    let direction: "ascending" | "descending" = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-  };
-
-  // const filteredInvoices = importOfStaff.filter((invoice) => {
-  //   const query = searchQuery.toLowerCase();
-  //   return (
-  //     invoice.invoice
-  //       .map((it) => it.productName.toLowerCase())
-  //       .includes(query) ||
-  //     invoice.invoice
-  //       .map((it) => (it.quantity * it.unitPrice).toString().toLowerCase())
-  //       .includes(query)
-  //   );
-  // });
-
-  const filteredInvoices = importOfStaff.filter((item: any) => {
-    const lowerCaseQuery = searchQuery.toLowerCase();
-    // Lọc theo searchQuery
-    const matchesSearch =
-      item.staff?.fullName.toLowerCase().includes(lowerCaseQuery) ||
-      item.createAt.toLowerCase().includes(lowerCaseQuery) ||
-      item.cost.toString().toLowerCase().includes(lowerCaseQuery);
-
-    return matchesSearch;
-  });
+  const filteredInvoices = importOfStaff.flatMap((item: any) =>
+    item.invoice.filter((invoice: any) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        invoice.productName.toLowerCase().includes(lowerCaseQuery) ||
+        invoice.material.toLowerCase().includes(lowerCaseQuery) ||
+        invoice.size.toLowerCase().includes(lowerCaseQuery)
+      );
+    })
+  );
 
   const totalPages = Math.ceil(filteredInvoices.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const dataLength = filteredInvoices.length;
-  const itemsPerPage = 8;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const paginatedInvoices = filteredInvoices.slice(
     startIndex,
     startIndex + rowsPerPage
   );
-
+  const itemsPerPage = 8;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const paginationUI: PaginationProps = {
     currentPage,
     setCurrentPage,
     indexOfLastItem,
     indexOfFirstItem,
     totalPages,
-    dataLength,
+    dataLength: filteredInvoices.length,
   };
 
   const handleSort = () => {
     console.log("this is sort");
   };
 
-  const renderRow = (invoice: Import) => (
+  const renderRow = (item: any) => (
     <tr
-      key={invoice.id}
-      className="border-t border-gray-300 text-sm dark:text-dark-360"
+      key={item.id}
+      className="border-t border-gray-300 my-4 text-sm dark:text-dark-360"
     >
       <td className="px-4 py-2">
-        {invoice.invoice.map((it) => it.productName)}
+        <div className="flex items-center">
+          <div className="w-[100px] h-[105px] overflow-hidden">
+            <Image
+              src={item.productImage || "/assets/images/avatar.jpg"}
+              alt={item.productName || "Product Image"}
+              layout="responsive"
+              width={100}
+              height={105}
+              className="rounded-md object-cover"
+            />
+          </div>
+        </div>
       </td>
-      <td className="px-4 py-2 hidden md:table-cell">{invoice.id}</td>
-      <td className="hidden px-4 py-2 md:table-cell">
-        {format(new Date(invoice.createAt), "PPP")}
-      </td>
-
-      <td className="hidden px-4 py-2 lg:table-cell">
-        {invoice.invoice.map((it, index) => (
-          <div key={index}>{formatCurrency(it.quantity * it.unitPrice)}</div>
-        ))}
-      </td>
-      <td className="px-4 py-2">
-        {invoice.status === false ? (
-          <LabelStatus
-            background="bg-light-red"
-            text_color="text-dark-red"
-            title="Just created"
-          />
-        ) : invoice.status === true ? (
-          <LabelStatus
-            background="bg-light-blue"
-            text_color="text-accent-blue"
-            title="In progress"
-          />
-        ) : (
-          <LabelStatus
-            background="bg-custom-green"
-            text_color="text-dark-green"
-            title="Done"
-          />
-        )}
-      </td>
+      <td className="px-4 py-2">{item.productName}</td>
+      <td className="px-4 py-2">{item.material || "N/A"}</td>
+      <td className="px-4 py-2">{item.size || "N/A"}</td>
+      <td className="px-4 py-2">{item.quantity || "0"}</td>
+      <td className="px-4 py-2">{item.unitPrice || "0"} VND</td>
+      <td className="px-4 py-2">{item.importStatus ? "Done" : "Pending"}</td>
     </tr>
   );
 
   return (
     <div className="w-full flex flex-col p-4 rounded-md shadow-md">
       {/* General Information */}
-
       <TitleSession
         icon="flowbite:profile-card-outline"
         title="General Information"
       />
-
       <div className="w-full p-6 flex flex-col gap-6 ">
         <div className="w-full flex">
           <div className="w-1/5">
             <Image
               alt="avatar"
-              src={staff.avatar || "/assets/images/avatar.jpg"}
+              src={staff?.avatar || "/assets/images/avatar.jpg"}
               width={115}
               height={130}
               className="rounded-md"
             />
           </div>
-
           <div className="w-full grid grid-cols-2 gap-5">
             <div className="flex flex-col gap-5">
-              <LabelInformation content={staff.fullName} title="Fullname" />
               <LabelInformation
-                content={format(new Date(staff.birthday), "PPP")}
+                content={staff?.fullName || ""}
+                title="Fullname"
+              />
+              <LabelInformation
+                content={format(new Date(staff?.birthday || new Date()), "PPP")}
                 title="Date of Birth"
               />
-              <LabelInformation content={staff.gender} title="Gender" />
+              <LabelInformation content={staff?.gender || ""} title="Gender" />
             </div>
             <div className="flex flex-col gap-5">
-              <LabelInformation content={staff._id} title="ID" />
-              <LabelInformation content={staff.email} title="Email" />
+              <LabelInformation content={staff?._id || ""} title="ID" />
+              <LabelInformation content={staff?.email || ""} title="Email" />
               <LabelInformation
-                content={staff.phoneNumber}
+                content={staff?.phoneNumber || ""}
                 title="Phone Number"
               />
             </div>
           </div>
         </div>
-
         <div className="w-full grid grid-cols-3 gap-4">
-          <LabelInformation content={staff.address} title="Address" />
-          <LabelInformation content={staff.district} title="City" />
-          <LabelInformation content={staff.province} title="Country" />
+          <LabelInformation content={staff?.address || ""} title="Address" />
+          <LabelInformation content={staff?.district || ""} title="City" />
+          <LabelInformation content={staff?.province || ""} title="Country" />
         </div>
-        <LabelInformation content={staff.experience} title="Experience" />
-      </div>
-
-      {/* Work Information */}
-
-      <TitleSession
-        icon="material-symbols-light:work-outline"
-        title="Work information"
-      />
-
-      <div className="flex flex-col gap-6 w-full p-6">
-        <LabelInformation content={staff.position} title="Positon" />
-        <LabelInformation content={staff.kindOfJob} title="Kind of job" />
-        <LabelInformation content={staff.description} title="Description" />
         <LabelInformation
-          content={format(staff.enrolledDate, "PPP")}
-          title="Date of work"
+          content={staff?.experience || ""}
+          title="Experience"
         />
-        <LabelInformation content={`${staff.salary} VND`} title="Salary" />
       </div>
-
       {/* Number of sales invoices */}
-
       <TitleSession icon="humbleicons:money" title="Number of sales invoices" />
-
       <div className="flex flex-col gap-6 w-full pt-6">
         <TableSearch onSearch={setSearchQuery} onSort={handleSort} />
         <div className="flex flex-col gap-6 w-full p-6">

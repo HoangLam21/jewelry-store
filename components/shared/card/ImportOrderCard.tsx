@@ -3,7 +3,7 @@ import { formatPrice } from "@/lib/utils";
 import { useState } from "react";
 import { Product } from "./ImportCard";
 
-export interface DetailProduct {
+export interface DetailImportProduct {
   id: string;
   material: string;
   size: string;
@@ -18,8 +18,8 @@ const ImportOrderCard = ({
   setItem,
   item,
 }: {
-  cartItem: DetailProduct;
-  updateCart: (updatedItem: DetailProduct) => void;
+  cartItem: DetailImportProduct;
+  updateCart: (updatedItem: DetailImportProduct) => void;
   setItem: any;
   item: Product | null;
 }) => {

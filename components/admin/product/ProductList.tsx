@@ -20,7 +20,7 @@ export interface Variant {
   sizes: Sizes[];
   addOn: number;
 }
-export interface Product {
+export interface ProductData {
   id: string;
   image: string;
   imageInfo: FileContent[];
@@ -34,9 +34,9 @@ export interface Product {
   variants: Variant[];
 }
 
-export const defaultDetailProduct: Product = {
+export const defaultDetailProduct: ProductData = {
   id: "",
-  image: "",
+  image: "/assets/images/avatar.jpg",
   imageInfo: [],
   productName: "",
   price: "0",
@@ -60,8 +60,8 @@ export const defaultDetailProduct: Product = {
 };
 
 interface props {
-  list: Product[];
-  setList: React.Dispatch<React.SetStateAction<Product[]>>;
+  list: ProductData[];
+  setList: React.Dispatch<React.SetStateAction<ProductData[]>>;
 }
 
 const ProductList = ({ list, setList }: props) => {
@@ -71,13 +71,14 @@ const ProductList = ({ list, setList }: props) => {
   const [onEdit, setOnEdit] = useState(false);
 
   const [onDetail, setOnDetail] = useState(false);
-  const [detailItem, setDetailItem] = useState<Product>(defaultDetailProduct);
+  const [detailItem, setDetailItem] =
+    useState<ProductData>(defaultDetailProduct);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result: ProductResponse[] = await fetchProduct();
         if (result) {
-          const data: Product[] = result.map((item) => ({
+          const data: ProductData[] = result.map((item) => ({
             id: item._id,
             image: item.files[0].url,
             imageInfo: item.files,

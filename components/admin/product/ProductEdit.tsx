@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import { Product, Variant } from "./ProductList";
+import { ProductData, Variant } from "./ProductList";
 import { formatCurrency, parseCurrency } from "@/lib/utils";
 import ConfirmModal, { ConfirmModalProps } from "./ConfirmModal";
 import AddVariant from "./AddVariant";
@@ -61,8 +61,8 @@ export const groupVariants = (combinedList: CombinedVariant[]): Variant[] => {
   return grouped;
 };
 interface Props {
-  detailProduct: Product;
-  setList: React.Dispatch<React.SetStateAction<Product[]>>;
+  detailProduct: ProductData;
+  setList: React.Dispatch<React.SetStateAction<ProductData[]>>;
   onBack: (value: boolean) => void;
 }
 
@@ -114,7 +114,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
   }, []);
 
   //Images
-  const [item, setItem] = useState<Product>(detailProduct);
+  const [item, setItem] = useState<ProductData>(detailProduct);
   const handleAdd = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -147,7 +147,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
   //Change Input
   const handleChangeProductInputFields = (
     field: keyof Omit<
-      Product,
+      ProductData,
       "id" | "image" | "subImage" | "vouchers" | "provider" | "category"
     >,
     value: string
