@@ -53,7 +53,9 @@ const InputDate: React.FC<InputDateProps> = ({
 
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
+    console.log("data: ", date);
     if (onChange) {
+      console.log("pick ", date.toLocaleDateString())
       onChange(date.toLocaleDateString()); // Call onChange if provided
     }
   };
