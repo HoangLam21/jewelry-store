@@ -2,6 +2,9 @@ import { updateInfoCustomer } from "@/lib/service/customer.service";
 import React, { useEffect, useState } from "react";
 import EditModal from "./EditModal";
 import Avatar from "./Avatar";
+import { deleteOrder, fetchOrder } from "@/lib/service/order.service";
+import MyButton from "@/components/shared/button/MyButton";
+import OrderDetailModal from "../order/DetailOrder";
 interface UserModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -18,6 +21,11 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<"info" | "history">("info");
   const [user, setUser] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [ordersData, setOrdersData] = useState<any[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+
   const [editData, setEditData] = useState<CreateCustomer>({
     fullName: "",
     phoneNumber: "",
@@ -36,6 +44,36 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const getAllOrders = async () => {
+      try {
+        const data = await fetchOrder();
+        if (isMounted) {
+          setOrdersData(data);
+          console.log("orders", data);
+        }
+      } catch (error) {
+        console.error("Error loading posts:", error);
+      }
+    };
+    getAllOrders();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (user && user._id && ordersData.length > 0) {
+      console.log(user._id);
+      const filtered = ordersData.filter(
+        (order) => order.customer._id === user._id
+      );
+      setFilteredOrders(filtered);
+      console.log(filtered);
+    }
+  }, [user, ordersData]);
 
   const handleEditClick = () => {
     setEditData({
@@ -60,12 +98,34 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleOrderDetailClick = (order: any) => {
+    setSelectedOrder(order);
+    setIsOrderModalOpen(true);
+  };
+
+  const handleCloseOrderModal = () => {
+    setSelectedOrder(null);
+    setIsOrderModalOpen(false);
+  };
+
+  const handleCancelOrder = async (orderId: string) => {
+    try {
+      await deleteOrder(orderId);
+      setFilteredOrders((prevOrders) =>
+        prevOrders.filter((order) => order._id !== orderId)
+      );
+      handleCloseOrderModal();
+    } catch (error) {
+      console.error("Failed to cancel order:", error);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed background-light800_dark400 text-dark100_light500 top-0 right-0 w-1/3 h-full bg-white shadow-lg z-50 flex flex-col items-center p-5">
       <button
-        className="absolute top-5 right-5 text-xl font-bold text-gray-500"
+        className="absolute top-5 right-5 text-xl font-bold "
         onClick={onClose}
       >
         ✕
@@ -94,16 +154,11 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
       </div>
 
       <Avatar user={user} setProfileUser={setUser} />
-      {/* <img
-        src={user?.avatar}
-        alt={user?.fullName}
-        className="w-24 h-24 rounded-full mb-4"
-      /> */}
       <h2 className="text-2xl font-semibold mb-4">{user?.fullName}</h2>
 
       <button
         onClick={handleEditClick}
-        className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+        className="bg-primary-100 text-white px-4 py-2 rounded mb-4"
       >
         Edit Info
       </button>
@@ -124,12 +179,63 @@ const UserModal: React.FC<UserModalProps> = ({ isOpen, onClose }) => {
         </div>
       )}
 
+      {activeTab === "history" && (
+        <div className="w-full pl-5 overflow-y-auto h-96">
+          {filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => (
+              <div key={order._id} className="p-4 mb-4  rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold ">
+                  Order ID: {order._id}
+                </h3>
+                <p>
+                  <strong>Status:</strong> {order.status}
+                </p>
+                <p>
+                  <strong>Cost:</strong> {order.cost.toLocaleString()}
+                </p>
+                <p>
+                  <strong>Discount:</strong> {order.discount}
+                </p>
+                <p>
+                  <strong>Shipping Method:</strong> {order.shippingMethod}
+                </p>
+                <p>
+                  <strong>ETD:</strong>{" "}
+                  {new Date(order.ETD).toLocaleDateString()}
+                </p>
+                <div className="mt-3">
+                  <MyButton
+                    title="See detail"
+                    background="bg-primary-100"
+                    rounded="none"
+                    text_color="text-dark500_light100"
+                    text="text-sm"
+                    onClick={() => handleOrderDetailClick(order)}
+                    width=""
+                  />
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No purchase history found.</p>
+          )}
+        </div>
+      )}
+
       {isEditModalOpen && (
         <EditModal
           editData={editData}
           setEditData={setEditData}
           setIsEditModalOpen={setIsEditModalOpen}
           handleSaveEdit={handleSaveEdit}
+        />
+      )}
+      {isOrderModalOpen && selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          isOpen={isOrderModalOpen}
+          onClose={handleCloseOrderModal}
+          onCancelOrder={handleCancelOrder}
         />
       )}
     </div>

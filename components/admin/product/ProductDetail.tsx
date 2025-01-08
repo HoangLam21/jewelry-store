@@ -6,11 +6,11 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { Product, Variant } from "./ProductList";
+import { ProductData, Variant } from "./ProductList";
 import { formatCurrency } from "@/lib/utils";
 
 interface Props {
-  detailProduct: Product;
+  detailProduct: ProductData;
   onEdit: (id: string) => void;
   onBack: (value: boolean) => void;
 }

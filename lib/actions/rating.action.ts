@@ -15,18 +15,24 @@ export const createRating = async (data: {
   try {
     await connectToDatabase();
     const imageIds = [];
+    const imageUrls = [];
     if (data.images) {
       for (const image of data.images) {
         const createdImage = await createFile(image);
         imageIds.push(createdImage._id);
+        imageUrls.push(createdImage.url);
       }
     }
     const newRating = await Rating.create({
       ...data,
       images: imageIds,
-      createdAt: new Date(),
+      createdAt: new Date()
     });
-    return newRating;
+    const response = {
+      ...newRating.toObject(),
+      imageUrls
+    };
+    return response;
   } catch (error) {
     console.error("Error creating Rating:", error);
     throw new Error("Failed to create rating");
@@ -97,7 +103,7 @@ export const updateRating = async (
         imageIds.push(createdImage._id);
       }
       const updatedRating = await Rating.findByIdAndUpdate(id, data, {
-        new: true,
+        new: true
       }).populate("images");
       const customer = await Customer.findById(updatedRating.userId);
       return { ...updatedRating.toObject(), userId: customer };
@@ -106,7 +112,7 @@ export const updateRating = async (
         id,
         { ...data, images: existRating.images },
         {
-          new: true,
+          new: true
         }
       ).populate("images");
       if (!updatedRating) {

@@ -1,50 +1,66 @@
 "use client";
-import { ProductsData } from "@/constants/data";
-import { Navigation, Pagination } from "swiper/modules";
 
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
 import MyButton from "@/components/shared/button/MyButton";
 import DetailProduct from "@/components/form/product/DetailProduct";
 import Categories from "@/components/form/home/Categories";
 import RelatedProduct from "@/components/form/product/RelatedProduct";
 import { getProductById } from "@/lib/services/product.service";
 import { useCart } from "@/contexts/CartContext";
-
+import { ProductData } from "@/components/admin/product/ProductList";
+import { useBuyNow } from "@/contexts/BuyNowContext";
+interface BuyNowItem {
+  _id: string;
+  name: string;
+  images: string;
+  cost: number;
+  quantity: number;
+  vouchers: any[];
+  variants: any[];
+  selectedMaterial: string;
+  selectedSize: string;
+}
 const page = () => {
+  const router = useRouter();
   const { id } = useParams<{ id: string }>() as { id: string };
   const [product, setProduct] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBuy, setIsBuy] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const { dispatch } = useCart();
-  if (selectedMaterial && selectedSize) {
-    dispatch({
-      type: "ADD_TO_CART",
-      payload: {
-        ...product,
-        selectedMaterial,
-        selectedSize,
-        quantity: 1,
-      },
-    });
-    setIsModalOpen(false);
-  }
+  const { dispatchBuyNow } = useBuyNow();
+
+  const handleAddToCart = () => {
+    if (selectedMaterial && selectedSize) {
+      dispatch({
+        type: "ADD_TO_CART",
+        payload: {
+          ...product,
+        },
+      });
+      alert("Add to cart!");
+      setIsModalOpen(false);
+    } else {
+      alert("Please select both material and size before adding to cart!");
+    }
+  };
+
   useEffect(() => {
     const getProduct = async () => {
       const data = await getProductById(id);
       setProduct(data);
-      console.log(data);
     };
     getProduct();
-  }, []);
-
+  }, [id]);
   if (!product) {
     return <p>Loading provider information...</p>;
   }
 
+  console.log(product);
   // const handleQuantityChange = (newQuantity: string | number) => {
   //   let quantity =
   //     typeof newQuantity === "string" ? parseInt(newQuantity, 10) : newQuantity;
@@ -58,8 +74,30 @@ const page = () => {
   //   setProduct(updatedItem); // Cập nhật trực tiếp sản phẩm trong component
   // };
 
-  const handleAddToCart = () => {
-    console.log("add to cart");
+  const handleDecreaseQuantity = () => {
+    setQuantity((prevQuantity) => Math.max(1, prevQuantity - 1));
+  };
+
+  const handleIncreaseQuantity = () => {
+    setQuantity((prevQuantity) => prevQuantity + 1);
+  };
+  const handleBuyNow = () => {
+    if (selectedMaterial && selectedSize) {
+      dispatchBuyNow({
+        type: "BUY_NOW",
+        payload: {
+          ...product,
+          selectedMaterial,
+          selectedSize,
+          quantity,
+        },
+      });
+      alert("Buy now!");
+      router.push("/checkout");
+      setIsModalOpen(false);
+    } else {
+      alert("Please select both material and size before adding to cart!");
+    }
   };
 
   return (
@@ -115,7 +153,7 @@ const page = () => {
                 <p className="font-bold">Material: {variant.material}</p>
                 <p>Sizes:</p>
                 <ul>
-                  {variant.sizes.map((size:any, idx:any) => (
+                  {variant.sizes.map((size: any, idx: any) => (
                     <li key={idx}>
                       {size.size} - Stock: {size.stock}
                     </li>
@@ -127,7 +165,7 @@ const page = () => {
 
           <p className="underline text-[20px]">VOUCHERS</p>
           <ul>
-            {product.vouchers.map((voucher:any) => (
+            {product.vouchers.map((voucher: any) => (
               <li key={voucher._id}>
                 {voucher.name} - sale off {voucher.discount}%
               </li>
@@ -169,7 +207,7 @@ const page = () => {
             <MyButton
               title="BUY NOW"
               width="w-1/2"
-              event={handleAddToCart}
+              event={() => setIsBuy(true)}
               background="bg-primary-100"
               text_color="text-white"
             />
@@ -252,8 +290,96 @@ const page = () => {
         </div>
       )}
 
+      {isBuy && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="text-dark100_light500 background-light800_dark400 p-6 rounded-lg shadow-lg w-[400px]">
+            <h3 className="text-[24px] text-dark100_light500 font-bold jost mb-4">
+              Choose Material and Size
+            </h3>
+            <div className="mb-4">
+              <p className="font-semibold text-[20px] jost">Material:</p>
+              {product.variants
+                .filter(
+                  (variant: any) =>
+                    variant.sizes.some((size: any) => size.stock > 0) // Kiểm tra nếu bất kỳ size nào của material có stock > 0
+                )
+                .map((variant: any) => (
+                  <button
+                    key={variant.material}
+                    className={`px-4 py-2 m-2 rounded ${
+                      selectedMaterial === variant.material
+                        ? "bg-primary-100 text-white"
+                        : "bg-gray-200 dark:bg-gray-950"
+                    }`}
+                    onClick={() => setSelectedMaterial(variant.material)}
+                  >
+                    {variant.material}
+                  </button>
+                ))}
+            </div>
+
+            {/* Hiển thị Size dựa trên Material đã chọn*/}
+            {selectedMaterial && (
+              <div className="mb-4">
+                <p className="font-semibold text-[20px] jost">Size:</p>
+                {product.variants
+                  .find((variant: any) => variant.material === selectedMaterial)
+                  ?.sizes.filter((size: any) => size.stock > 0) // Chỉ hiển thị size có stock > 0
+                  .map((size: any) => (
+                    <button
+                      key={size._id}
+                      className={`px-4 py-2 m-2 rounded ${
+                        selectedSize === size.size
+                          ? "bg-primary-100 text-white"
+                          : "bg-gray-200 dark:bg-gray-950"
+                      }`}
+                      onClick={() => setSelectedSize(size.size)}
+                    >
+                      {size.size}
+                    </button>
+                  ))}
+                <p className="font-semibold text-[20px] jost">Quantity:</p>
+                <div className="w-[15%] flex items-center justify-center">
+                  <button
+                    className="px-2 background-light700_dark300"
+                    onClick={handleDecreaseQuantity}
+                  >
+                    -
+                  </button>
+                  <span className="text-[16px] font-normal jost mx-2">
+                    {quantity}
+                  </span>
+                  <button
+                    className="px-2 background-light700_dark300"
+                    onClick={handleIncreaseQuantity}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-4">
+              <button
+                className="bg-gray-300 px-4 py-2 rounded dark:bg-gray-950"
+                onClick={() => setIsBuy(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-primary-100 text-white px-4 py-2 rounded"
+                onClick={handleBuyNow}
+                disabled={!selectedMaterial || !selectedSize}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <DetailProduct item={product} />
-      <RelatedProduct />
+      <RelatedProduct categoryItem={product.category} />
     </div>
   );
 };

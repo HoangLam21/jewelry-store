@@ -11,7 +11,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { defaultDetailProduct, Product } from "./ProductList";
+import { defaultDetailProduct, ProductData } from "./ProductList";
 import { CombinedVariant, groupVariants } from "./ProductEdit";
 import ConfirmModal, { ConfirmModalProps } from "./ConfirmModal";
 import AddVariant from "./AddVariant";
@@ -36,7 +36,7 @@ export const convertFilesToFileContent = (files: File[]): FileContent[] => {
 
 interface Props {
   onBack: (value: boolean) => void;
-  setList: React.Dispatch<React.SetStateAction<Product[]>>;
+  setList: React.Dispatch<React.SetStateAction<ProductData[]>>;
 }
 
 const AddProduct = ({ onBack, setList }: Props) => {
@@ -87,7 +87,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
     const newFiles = selectedFiles.filter((file) => file.url !== url);
     setSelectedFiles(newFiles);
   };
-  const [item, setItem] = useState<Product>(defaultDetailProduct);
+  const [item, setItem] = useState<ProductData>(defaultDetailProduct);
   const handleAdd = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -144,7 +144,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
 
   const handleChangeProductInputFields = (
     field: keyof Omit<
-      Product,
+      ProductData,
       "id" | "vouchers" | "provider" | "category" | "quantity"
     >,
     value: string
@@ -257,8 +257,8 @@ const AddProduct = ({ onBack, setList }: Props) => {
         setList((prev) => [
           ...prev,
           {
-            id: item.id,
-            image: item.image,
+            id: result._id,
+            image: selectedFiles[0].url,
             imageInfo: selectedFiles,
             productName: item.productName,
             price: formatCurrency(Number(item.price)),
