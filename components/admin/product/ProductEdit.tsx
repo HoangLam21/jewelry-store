@@ -15,6 +15,8 @@ import { updateInfoProduct } from "@/lib/service/product.service";
 import { CreateProduct, FileContent } from "@/dto/ProductDTO";
 import { fetchProvider } from "@/lib/service/provider.service";
 import { fetchVoucher } from "@/lib/service/voucher.service";
+import { useProductManageContext } from "@/contexts/ProductManageContext";
+import InputSelectionProduct from "@/components/shared/input/InputSelectionProduct";
 
 export interface CombinedVariant {
   material: string; // Material
@@ -72,46 +74,12 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
     detailProduct.imageInfo
   );
   const [onAdd, setOnAdd] = useState(false);
-  const [providerList, setProviderList] = useState<string[]>([]);
-  const [voucherList, setVoucherList] = useState<string[]>([]);
+  const { providerList, voucherList, collectionList } =
+    useProductManageContext();
   const [combinedData, setCombinedData] = useState<CombinedVariant[]>(
     combineVariants(detailProduct.variants)
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    const fetchDataProvider = async () => {
-      try {
-        const result = await fetchProvider();
-
-        if (result) {
-          const providerId: string[] = result.map((item: any) => item._id);
-          setProviderList(providerId);
-        }
-      } catch (err: any) {
-        console.error("Error fetching data:", err);
-        const errorMessage = err?.message || "An unexpected error occurred.";
-        alert(`Error fetching data: ${errorMessage}`);
-      }
-    };
-
-    const fetchDataVoucher = async () => {
-      try {
-        const result = await fetchVoucher();
-
-        if (result) {
-          const voucherId: string[] = result.map((item: any) => item._id);
-          setVoucherList(voucherId);
-        }
-      } catch (err: any) {
-        console.error("Error fetching data:", err);
-        const errorMessage = err?.message || "An unexpected error occurred.";
-        alert(`Error fetching data: ${errorMessage}`);
-      }
-    };
-    fetchDataProvider();
-    fetchDataVoucher();
-  }, []);
 
   //Images
   const [item, setItem] = useState<ProductData>(detailProduct);
@@ -120,6 +88,20 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
       fileInputRef.current.click();
     }
   };
+
+  const nameProvider = item?.provider
+    ? providerList.find((provider) => provider.id === item.provider)?.name ||
+      "Unknown"
+    : "None";
+  const nameVoucher = item?.vouchers
+    ? voucherList.find((voucher) => voucher.id === item.vouchers)?.name ||
+      "Unknown"
+    : "None";
+  const nameCollection = item?.collection
+    ? collectionList.find((coll) => coll.id === item.collection)?.name ||
+      "Unknown"
+    : "None";
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
@@ -390,7 +372,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                       value={detailProduct.category}
                       width="w-full"
                     />
-                    <InputEdit
+                    {/* <InputEdit
                       titleInput="Collection"
                       onChange={(e) =>
                         handleChangeProductInputFields(
@@ -400,14 +382,26 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                       }
                       width="w-full"
                       placeholder="Enter collection"
+                    /> */}
+                    <InputSelectionProduct
+                      width="w-full"
+                      titleInput="Collection"
+                      options={collectionList}
+                      value={nameCollection}
+                      onChange={(value) => {
+                        setItem((prev) => ({
+                          ...prev!,
+                          collection: value
+                        }));
+                      }}
                     />
                   </div>
                   <div className="w-1/2 h-fit gap-4 flex flex-col">
-                    <InputSelection
+                    <InputSelectionProduct
                       width="w-full"
                       titleInput="Voucher"
                       options={voucherList}
-                      value={item?.vouchers ?? "None"}
+                      value={nameVoucher}
                       onChange={(value) => {
                         setItem((prev) => ({
                           ...prev!,
@@ -415,6 +409,7 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                         }));
                       }}
                     />
+
                     <InputEdit
                       titleInput="Price"
                       onChange={(e) =>
@@ -423,11 +418,11 @@ const ProductEdit = ({ detailProduct, onBack, setList }: Props) => {
                       width="w-full"
                       placeholder={detailProduct.price}
                     />
-                    <InputSelection
+                    <InputSelectionProduct
                       width="w-full"
                       titleInput="Provider"
                       options={providerList}
-                      value={item?.provider ?? "None"}
+                      value={nameProvider}
                       onChange={(value) => {
                         setItem((prev) => ({
                           ...prev!,

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { ProductData, Variant } from "./ProductList";
 import { formatCurrency } from "@/lib/utils";
+import { useProductManageContext } from "@/contexts/ProductManageContext";
 
 interface Props {
   detailProduct: ProductData;
@@ -17,6 +18,21 @@ interface Props {
 
 const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
   const router = useRouter();
+  const { providerList, voucherList, collectionList } =
+    useProductManageContext();
+
+  const nameProvider = detailProduct?.provider
+    ? providerList.find((provider) => provider.id === detailProduct.provider)
+        ?.name || "Unknown"
+    : "None";
+  const nameVoucher = detailProduct?.vouchers
+    ? voucherList.find((voucher) => voucher.id === detailProduct.vouchers)
+        ?.name || "Unknown"
+    : "None";
+  const nameCollection = detailProduct?.collection
+    ? collectionList.find((coll) => coll.id === detailProduct.collection)
+        ?.name || "Unknown"
+    : "None";
 
   const handleAddImport = () => {
     router.push("/admin/import/add");
@@ -62,7 +78,7 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
                   {variant.sizes[0].size}
                 </p>
               </td>
-              <td className="px-4 py-2 flex items-center justify-between">
+              <td className="px-4 py-2 flex detailProducts-center justify-between">
                 <p className="text-sm dark:text-dark-360">
                   {variant.sizes[0].stock}
                 </p>
@@ -85,7 +101,7 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
             <td className="px-4 py-2">
               <p className="text-sm dark:text-dark-360">{sizeInfo.size}</p>
             </td>
-            <td className="px-4 py-2 flex items-center justify-between">
+            <td className="px-4 py-2 flex detailProducts-center justify-between">
               <p className="text-sm dark:text-dark-360">{sizeInfo.stock}</p>
             </td>
           </tr>
@@ -96,9 +112,9 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
 
   return (
     <div className="modal-overlay">
-      <div className="w-[880px] h-[700px] rounded-lg background-light800_dark300 items-center justify-start flex flex-row shadow-sm drop-shadow-sm shadow-zinc-700 pr-2 pb-6 gap-5 overflow-y-scroll overflow-x-hidden scrollable">
-        <div className="flex flex-col w-[50%] h-full items-start justify-start gap-4 flex-grow-0">
-          <div className="flex w-full h-[350px] items-start justify-start">
+      <div className="w-[880px] h-[700px] rounded-lg background-light800_dark300 detailProducts-center justify-start flex flex-row shadow-sm drop-shadow-sm shadow-zinc-700 pr-2 pb-6 gap-5 overflow-y-scroll overflow-x-hidden scrollable">
+        <div className="flex flex-col w-[50%] h-full detailProducts-start justify-start gap-4 flex-grow-0">
+          <div className="flex w-full h-[350px] detailProducts-start justify-start">
             <Image
               src={detailProduct.image}
               alt="productImage"
@@ -109,22 +125,24 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
           </div>
           <div className="w-full h-[80px] flex ">
             <SwiperProduct
-              urlImage={detailProduct.imageInfo.map((item) => item.url)}
+              urlImage={detailProduct.imageInfo.map(
+                (detailProduct) => detailProduct.url
+              )}
               width="80"
               height="80"
             />
           </div>
         </div>
 
-        <div className="flex flex-col flex-grow h-full justify-start gap-4 items-center">
+        <div className="flex flex-col flex-grow h-full justify-start gap-4 detailProducts-center">
           <div className="flex flex-col gap-6 w-full h-fit">
-            <div className="flex flex-row items-start justify-between w-full h-fit pt-2">
+            <div className="flex flex-row detailProducts-start justify-between w-full h-fit pt-2">
               <div className="flex w-fit h-fit pt-4">
                 <p className="text-dark100_light500 h3-bold">
                   {detailProduct.productName}
                 </p>
               </div>
-              <div className="flex w-fit h-fit justify-end items-center">
+              <div className="flex w-fit h-fit justify-end detailProducts-center">
                 <Icon
                   icon="iconoir:cancel"
                   width={24}
@@ -135,7 +153,7 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 items-start justify-start w-full h-fit pr-4">
+            <div className="flex flex-col gap-4 detailProducts-start justify-start w-full h-fit pr-4">
               <div className="flex flex-row gap-4 w-full h-fit">
                 <div className="w-1/2 h-fit gap-4 flex flex-col">
                   <InputUnEdit
@@ -152,7 +170,7 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
                 <div className="w-1/2 h-fit gap-4 flex flex-col">
                   <InputUnEdit
                     titleInput="Collection"
-                    value={detailProduct.collection}
+                    value={nameCollection}
                     width="w-full"
                   />
                   <InputUnEdit
@@ -165,14 +183,14 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
               <div className="flex w-full h-fit">
                 <InputUnEdit
                   titleInput="Voucher"
-                  value={detailProduct.vouchers}
+                  value={nameVoucher}
                   width="w-full"
                 />
               </div>
               <div className="flex w-full h-fit">
                 <InputUnEdit
                   titleInput="Provider"
-                  value={detailProduct.provider}
+                  value={nameProvider}
                   width="w-full"
                 />
               </div>
@@ -196,7 +214,7 @@ const ProductDetail = ({ detailProduct, onBack, onEdit }: Props) => {
             </div>
           </div>
 
-          <div className="flex justify-end w-full items-center pr-4 pb-2">
+          <div className="flex justify-end w-full detailProducts-center pr-4 pb-2">
             <div className="flex flex-row w-full h-fit gap-6 justify-end">
               <Button
                 onClick={() => onEdit(detailProduct.id)}

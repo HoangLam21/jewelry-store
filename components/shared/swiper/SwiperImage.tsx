@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 
@@ -33,20 +33,22 @@ const SwiperProduct = ({ urlImage, width, height }: SwiperProductProps) => {
   const imageWidth = width ? `w-[${width}px]` : "w-[80px]";
   const imageHeight = height ? `h-[${height}px]` : "h-[80px]";
   return (
-    <div className="swiper-container relative">
+    <div className="swiper-container relative ml-4">
       <Swiper
         className="mySwiper"
-        navigation={{
-          prevEl: ".swiper-button-prev",
-          nextEl: ".swiper-button-next"
-        }} // Sử dụng class cho các nút
-        modules={[Navigation]}
-        slidesPerView={2}
-        spaceBetween={16}
+        spaceBetween={20}
+        slidesPerView={4}
+        // navigation={true}
+        pagination={{ clickable: true }}
+        modules={[Navigation, Pagination]}
         onSlideChange={handleSlideChange}
       >
         {urlImage.map((item, index) => (
-          <SwiperSlide key={index} className="flex justify-center items-center">
+          <SwiperSlide
+            key={index}
+            className="flex justify-between items-center"
+            style={{ width: "auto", marginRight: 0 }}
+          >
             <div className={`flex ${imageWidth} ${imageHeight}`}>
               <Image
                 src={item}
@@ -61,7 +63,7 @@ const SwiperProduct = ({ urlImage, width, height }: SwiperProductProps) => {
       </Swiper>
 
       {/* Custom navigation buttons */}
-      <div
+      {/* <div
         className="swiper-button-prev absolute top-1/2 left-0 transform -translate-y-1/2 z-10"
         onClick={(e) => isPrevDisabled && e.preventDefault()}
       >
@@ -82,7 +84,7 @@ const SwiperProduct = ({ urlImage, width, height }: SwiperProductProps) => {
           height={28}
           className="text-primary-100"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

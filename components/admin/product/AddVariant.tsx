@@ -60,6 +60,7 @@ const AddVariant = ({ setCombinedData, setOnAdd }: props) => {
       stock: 0,
       addOn: 0
     });
+    setOnAdd(false);
   };
 
   const handleBack = () => {

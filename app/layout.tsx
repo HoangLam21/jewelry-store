@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import ChatBubble from "@/components/MessengerChat/MessenerChat";
 import { BuyNowProvider } from "@/contexts/BuyNowContext";
+import { ProductManageProvider } from "@/contexts/ProductManageContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +21,9 @@ export default function RootLayout({
       <body cz-shortcut-listen="true">
         <ThemeProvider>
           <CartProvider>
-            <BuyNowProvider>{children}</BuyNowProvider>
+            <BuyNowProvider>
+              <ProductManageProvider>{children}</ProductManageProvider>
+            </BuyNowProvider>
           </CartProvider>
         </ThemeProvider>
         <ChatBubble />
