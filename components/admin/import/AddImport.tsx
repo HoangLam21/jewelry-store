@@ -236,7 +236,7 @@ const AddImport = () => {
               />
             ))}
           </div>
-          {/* Cart Section */}
+
           {/* Cart Section */}
           <div className="flex flex-col md:w-2/5 w-2/3 lg:w-2/5 max-h-[400px]">
             {item.details.length > 0 ? (
