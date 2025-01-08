@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { Icon } from "@iconify/react";
 import {
   Menubar,
   MenubarMenu,
@@ -11,6 +10,7 @@ import {
   MenubarSeparator,
 } from "@radix-ui/react-menubar";
 import { Button } from "@/components/ui/button";
+import { Icon } from "@iconify/react/dist/iconify";
 
 const TableSearch = ({
   onSearch,

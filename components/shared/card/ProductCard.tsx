@@ -7,7 +7,7 @@ const ProductFrame = ({
   param,
   onDelete,
   onEdit,
-  onDetail
+  onDetail,
 }: {
   param: Product;
   onDelete: (id: string) => void;

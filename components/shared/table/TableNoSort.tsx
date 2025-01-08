@@ -2,17 +2,15 @@ import React from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import sortIcon from "@iconify/icons-mi/sort";
 
-const Table = ({
+const TableNoSort = ({
   columns,
   renderRow,
   data,
-  onSort,
   index,
 }: {
   columns: { header: string; accessor: string; className?: string }[];
   renderRow: (item: any) => React.ReactNode;
   data: any[];
-  onSort: (key: string) => void; // Accept string as SortableKey
   index?: number;
 }) => {
   return (
@@ -26,17 +24,6 @@ const Table = ({
             >
               <div className="flex items-center">
                 <span>{col.header}</span>
-                <div
-                  className="px-2 inline-flex items-center dark:text-dark-360 hover:cursor-pointer"
-                  onClick={() => onSort(col.accessor)} // Pass column key for sorting
-                >
-                  <Icon
-                    icon={sortIcon}
-                    className="text-gray-800 dark:text-white"
-                    width={18}
-                    height={18}
-                  />
-                </div>
               </div>
             </th>
           ))}
@@ -53,4 +40,4 @@ const Table = ({
   );
 };
 
-export default Table;
+export default TableNoSort;

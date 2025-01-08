@@ -5,8 +5,8 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import Image from "next/image";
 import { sidebarLinks } from "@/constants";
 import { usePathname } from "next/navigation";
-import { Icon } from "@iconify/react";
 import Theme from "../navbar/Theme";
+import { Icon } from "@iconify/react/dist/iconify";
 
 const Sidebar = () => {
   const pathname = usePathname();

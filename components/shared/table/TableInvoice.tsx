@@ -2,18 +2,16 @@ import React from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import sortIcon from "@iconify/icons-mi/sort";
 
-const Table = ({
+const TableInvoice = ({
   columns,
   renderRow,
   data,
   onSort,
-  index,
 }: {
   columns: { header: string; accessor: string; className?: string }[];
-  renderRow: (item: any) => React.ReactNode;
+  renderRow: (item: any, index: number) => React.ReactNode; // pass index
   data: any[];
   onSort: (key: string) => void; // Accept string as SortableKey
-  index?: number;
 }) => {
   return (
     <table className="w-full border-collapse">
@@ -44,8 +42,8 @@ const Table = ({
       </thead>
       <tbody>
         {data.map((item, index) => (
-          <React.Fragment key={item.id || JSON.stringify(item)}>
-            {renderRow(item)}
+          <React.Fragment key={item.id + index}>
+            {renderRow(item, index)}
           </React.Fragment>
         ))}
       </tbody>
@@ -53,4 +51,4 @@ const Table = ({
   );
 };
 
-export default Table;
+export default TableInvoice;

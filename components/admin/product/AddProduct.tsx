@@ -30,7 +30,7 @@ export const convertFilesToFileContent = (files: File[]): FileContent[] => {
     width: "", // Giá trị mặc định, cần tính toán thêm nếu có
     height: "", // Giá trị mặc định, cần tính toán thêm nếu có
     format: file.type.split("/")[1] || "", // Định dạng file (phần sau `/` trong `type`)
-    type: file.type // MIME type
+    type: file.type, // MIME type
   }));
 };
 
@@ -108,8 +108,8 @@ const AddProduct = ({ onBack, setList }: Props) => {
     { header: "Image", accessor: "image" },
     {
       header: "Name",
-      accessor: "name"
-    }
+      accessor: "name",
+    },
   ];
   const renderRow = (img: FileContent) => {
     return (
@@ -151,7 +151,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
   ) => {
     setItem((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -166,7 +166,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
     setConfirm: () => {},
     handleAction: () => {},
     name: "",
-    action: ""
+    action: "",
   });
   const handleConfirmDelete = (material: string, size: string) => {
     setIsConfirm(true);
@@ -174,7 +174,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
       setConfirm: setIsConfirm,
       handleAction: () => handleDelete(material, size),
       name: " this variant",
-      action: "remove"
+      action: "remove",
     });
   };
   const handleAddVariant = () => {
@@ -184,16 +184,16 @@ const AddProduct = ({ onBack, setList }: Props) => {
     { header: "Material", accessor: "material" },
     {
       header: "Size",
-      accessor: "size"
+      accessor: "size",
     },
     {
       header: "Stock",
-      accessor: "stock"
+      accessor: "stock",
     },
     {
       header: "Added",
-      accessor: "addOn"
-    }
+      accessor: "addOn",
+    },
   ];
   const renderRowVariant = (data: CombinedVariant) => {
     return (
@@ -246,7 +246,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
           provider: item.provider || undefined,
           category: item.category || undefined,
           collections: item.collection,
-          variants: groupVariants(combinedData)
+          variants: groupVariants(combinedData),
         }).filter(([_, value]) => value !== undefined)
       ) as unknown as CreateProduct;
 
@@ -267,8 +267,8 @@ const AddProduct = ({ onBack, setList }: Props) => {
             vouchers: item.vouchers,
             provider: item.provider,
             category: item.category,
-            variants: groupVariants(combinedData)
-          }
+            variants: groupVariants(combinedData),
+          },
         ]);
 
         alert("Update information of product");
@@ -284,7 +284,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
       setConfirm: setIsConfirm,
       handleAction: handleSave,
       name: "new product",
-      action: "create"
+      action: "create",
     });
   };
 
@@ -352,7 +352,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
                       onChange={(value) => {
                         setItem((prev) => ({
                           ...prev!,
-                          provider: value
+                          provider: value,
                         }));
                       }}
                     />
@@ -377,7 +377,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
                       onChange={(value) => {
                         setItem((prev) => ({
                           ...prev!,
-                          vouchers: value
+                          vouchers: value,
                         }));
                       }}
                     />
