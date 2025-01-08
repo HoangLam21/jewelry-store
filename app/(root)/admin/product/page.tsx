@@ -1,12 +1,14 @@
 "use client";
 import AddProduct from "@/components/admin/product/AddProduct";
-import ProductList, { Product } from "@/components/admin/product/ProductList";
+import ProductList, {
+  ProductData,
+} from "@/components/admin/product/ProductList";
 import Headers from "@/components/shared/header/Headers";
 import React, { useState } from "react";
 
 const Page = () => {
   const [openAddProduct, setOpenAddProduct] = useState(false);
-  const [list, setList] = useState<Product[]>([]);
+  const [list, setList] = useState<ProductData[]>([]);
   const handleExport = () => {};
 
   const handleAddProduct = () => {
