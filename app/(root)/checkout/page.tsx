@@ -16,6 +16,7 @@ function addDays(days: number) {
   result.setDate(result.getDate() + days);
   return result;
 }
+import { getCartByUserId } from "@/lib/services/cart.service";
 
 export default function Page() {
   const { state } = useCart();
@@ -30,16 +31,80 @@ export default function Page() {
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [note, setNote] = useState("");
+  const [cart, setCart] = useState<any[]>([]);
   const router = useRouter();
   const cartState =
     stateBuyNow && stateBuyNow.items.length > 0 ? stateBuyNow : state;
 
   console.log(cartState, "check state");
+  const [user, setUser] = useState<any>(null);
+
   useEffect(() => {
-    const { originalPrice, discount, finalPrice } = cartState.items.reduce(
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUser(parsedData);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const formatCartData = (cartData: any) => {
+      return cartData.details.map((detail: any) => ({
+        _id: detail.productId,
+        name: detail.productName,
+        images: detail.productFiles[0]?.url || "",
+        cost: detail.productCost,
+        quantity: detail.quantity,
+        vouchers: detail.productVouchers || [],
+        variants: detail.productVariants || [],
+        selectedMaterial: detail.selectedMaterial,
+        selectedSize: detail.selectedSize,
+      }));
+    };
+
+    let isMounted = true;
+    const getCart = async () => {
+      try {
+        if (user?._id) {
+          const data = await getCartByUserId(user?._id);
+          if (isMounted) {
+            const formattedData = formatCartData(data);
+            setCart(formattedData);
+            console.log("state", state.items);
+          }
+        } else if (state.items.length > 0) {
+          const formattedState = state.items.map((detail: any) => ({
+            _id: detail._id,
+            name: detail.name,
+            images: detail.files[0]?.url || "",
+            cost: detail.cost,
+            quantity: detail.quantity,
+            vouchers: detail.vouchers || [],
+            variants: detail.variants || [],
+            selectedMaterial: detail.selectedMaterial || "",
+            selectedSize: detail.selectedSize || "",
+          }));
+          setCart(formattedState);
+        }
+      } catch (error) {
+        console.error("Error loading cart:", error);
+      }
+    };
+    getCart();
+    return () => {
+      isMounted = false;
+    };
+  }, [user?._id, state.items]);
+
+  useEffect(() => {
+    const { originalPrice, discount, finalPrice } = cart.reduce(
       (totals, item) => {
         const selectedVariant = item.variants.find(
-          (variant) => variant.material === item.selectedMaterial
+          (variant: any) => variant.material === item.selectedMaterial
         );
 
         const sizeStock = selectedVariant?.sizes.find(
@@ -59,7 +124,7 @@ export default function Page() {
           originalPrice: totals.originalPrice + basePrice + addOnPrice,
           discount: totals.discount + voucherDiscount,
           finalPrice:
-            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount)
+            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount),
         };
       },
       { originalPrice: 0, discount: 0, finalPrice: 0 }
@@ -68,19 +133,19 @@ export default function Page() {
     setTotalOriginalPrice(originalPrice);
     setTotalDiscount(discount);
     setTotalFinalPrice(finalPrice);
-  }, [cartState.items]);
+  }, [cart]);
 
   const handleOrder = async () => {
-    const details = cartState.items.map((item: any) => ({
+    const details = cart.map((item: any) => ({
       id: item._id,
       material: item.selectedMaterial,
       size: item.selectedSize,
       unitPrice: item.cost,
       quantity: item.quantity,
-      discount: item.vouchers?.[0]?.discount || "0"
+      discount: item.vouchers?.[0]?.discount || "0",
     }));
 
-    const orderData: CreateOrder = {
+    const orderData = {
       cost: totalFinalPrice + shippingFee,
       discount: totalDiscount,
       details,
@@ -88,7 +153,9 @@ export default function Page() {
       shippingMethod: deliveryMethod,
       ETD: addDays(3),
       customer: "6776bd0974de08ccc866a4ab",
-      staff: "6776bdee74de08ccc866a4be"
+      staff: "6776bdee74de08ccc866a4be",
+      phoneNumber: phoneNumber,
+      note: note,
     };
 
     console.log(orderData, "check before API");
@@ -98,15 +165,15 @@ export default function Page() {
       const response = await fetch("/api/order/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify(orderData),
       });
 
       if (!response.ok) {
         alert("Order can't create. Please try again.");
+        throw new Error(`Server error: ${response.statusText}`);
       }
-
       const data = await response.json();
       console.log("Order created:", data);
       alert("Order created!");
@@ -175,26 +242,28 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-10">
             ORDER INFOMATION
           </h2>
-          {cartState.items.map((item: any) => (
+          {/* {cartState.items.map((item: any) => ( */}
+          {cart.map((item, index) => (
             <div
-              key={item._id}
+              key={item?._id + index}
               className="flex items-center justify-between mb-4 border-b pb-4"
             >
               <Image
-                src={item.files[0].url}
-                alt={item.name}
+                src={item?.images}
+                alt={item?.name}
                 width={100}
                 height={120}
                 className="object-cover h-40 rounded"
               />
               <div className="ml-4">
-                <h3 className="text-[18px] font-medium">{item.name}</h3>
+                <h3 className="text-[18px] font-medium">{item?.name}</h3>
                 <span className="text-[16px] text-gray-500">
-                  Quantity: {item.quantity}
+                  Quantity: {item?.quantity}
                 </span>
               </div>
               <span className="text-[18px] font-semibold text-primary-100">
                 {formatCurrency(item.cost * item.quantity)}
+                {/* {item?.cost * item?.quantity} */}
               </span>
             </div>
           ))}

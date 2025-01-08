@@ -18,17 +18,14 @@ const Collections = () => {
 
       <div className="flex flex-wrap gap-[22px] justify-center w-full mx-auto">
         <div className="w-full flex justify-center">
-          {/* SPRING */}
           <div className="flex justify-center items-center w-[522px] h-[200px] bg-white dark:bg-dark-400">
             <div
               onClick={() => handleNavigate("spring")}
               className="w-[502px] cursor-pointer h-[180px] relative bg-[#EDF1F3] dark:bg-dark-200 flex justify-center items-center group"
             >
-              {/* Text */}
               <span className="text-dark100_light500 jost text-4xl group-hover:opacity-0 transition-opacity duration-300">
                 Spring<span className="text-primary-100 text-3xl">.</span>
               </span>
-              {/* Image */}
               <img
                 src="https://i.pinimg.com/736x/aa/28/a4/aa28a40a8548353ab3c8f1013bfcddfd.jpg"
                 alt="Spring"
@@ -36,18 +33,14 @@ const Collections = () => {
               />
             </div>
           </div>
-
-          {/* SUMMER */}
           <div className="flex justify-center items-center w-[522px] ml-[22px] h-[200px] bg-white dark:bg-dark-400">
             <div
               onClick={() => handleNavigate("summer")}
               className="w-[502px] cursor-pointer h-[180px] relative bg-[#EDF1F3] dark:bg-dark-200 flex justify-center items-center group"
             >
-              {/* Text */}
               <span className="text-dark100_light500 jost text-4xl group-hover:opacity-0 transition-opacity duration-300">
                 Summer<span className="text-primary-100 text-3xl">.</span>
               </span>
-              {/* Image */}
               <img
                 src="https://i.pinimg.com/736x/b9/d5/68/b9d5685caf6af544eadbdbad1fa438fa.jpg"
                 alt="Summer"
@@ -58,17 +51,14 @@ const Collections = () => {
         </div>
 
         <div className="w-full flex justify-center">
-          {/* AUTUMN */}
           <div className="flex justify-center items-center w-[522px] h-[200px] bg-white dark:bg-dark-400">
             <div
               onClick={() => handleNavigate("autumn")}
               className="w-[502px] cursor-pointer h-[180px] relative bg-[#EDF1F3] dark:bg-dark-200 flex justify-center items-center group"
             >
-              {/* Text */}
               <span className="text-dark100_light500 jost text-4xl group-hover:opacity-0 transition-opacity duration-300">
                 Autumn<span className="text-primary-100 text-3xl">.</span>
               </span>
-              {/* Image */}
               <img
                 src="https://i.pinimg.com/736x/bb/8d/53/bb8d53497b7bc15cc4b6d32dc72545a7.jpg"
                 alt="Autumn"
@@ -77,17 +67,14 @@ const Collections = () => {
             </div>
           </div>
 
-          {/* WINTER */}
           <div className="flex justify-center items-center w-[522px] ml-[22px] h-[200px] bg-white dark:bg-dark-400">
             <div
               onClick={() => handleNavigate("winter")}
               className="w-[502px] cursor-pointer h-[180px] relative bg-[#EDF1F3] dark:bg-dark-200 flex justify-center items-center group"
             >
-              {/* Text */}
               <span className="text-dark100_light500 jost text-4xl group-hover:opacity-0 transition-opacity duration-300">
                 Winter<span className="text-primary-100 text-3xl">.</span>
               </span>
-              {/* Image */}
               <img
                 src="https://i.pinimg.com/736x/39/ff/69/39ff69c18e7a2d059dc355794001c466.jpg"
                 alt="Winter"
