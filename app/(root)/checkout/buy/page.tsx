@@ -55,7 +55,7 @@ export default function Page() {
           originalPrice: totals.originalPrice + basePrice + addOnPrice,
           discount: totals.discount + voucherDiscount,
           finalPrice:
-            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount)
+            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount),
         };
       },
       { originalPrice: 0, discount: 0, finalPrice: 0 }
@@ -73,18 +73,18 @@ export default function Page() {
       size: item.selectedSize,
       unitPrice: item.cost,
       quantity: item.quantity,
-      discount: item.vouchers?.[0]?.discount || "0"
+      discount: item.vouchers?.[0]?.discount || "0",
     }));
 
     const orderData: CreateOrder = {
       cost: totalFinalPrice + shippingFee,
-      discount: stateBuyNow.items[0].vouchers[0].discount,
+      discount: stateBuyNow.items[0]?.vouchers[0]?.discount || 0,
       details,
       status: "pending",
       shippingMethod: deliveryMethod,
       ETD: addDays(3),
       customer: "6776bd0974de08ccc866a4ab",
-      staff: "6776bdee74de08ccc866a4be"
+      staff: "6776bdee74de08ccc866a4be",
     };
 
     try {
@@ -92,9 +92,9 @@ export default function Page() {
       const response = await fetch("/api/order/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify(orderData),
       });
 
       if (!response.ok) {
@@ -149,7 +149,7 @@ export default function Page() {
           <h2 className="text-[30px] font-normal jost mb-5">
             SHIPPING INFOMATION
           </h2>
-          <form className="flex flex-col space-y-4">
+          <div className="flex flex-col space-y-4">
             <ShippingInfomation
               city={city}
               setCity={setCity}
@@ -158,13 +158,12 @@ export default function Page() {
               setNote={setNote}
             />
             <button
-              type="submit"
               onClick={handleOrder}
               className="bg-primary-100 text-white p-3  hover:bg-primary-200"
             >
               Confirm & Proceed to Payment
             </button>
-          </form>
+          </div>
         </div>
         <div className="lg:w-[50%] w-full p-5 rounded-lg">
           <h2 className="text-[30px] font-normal jost mb-10">

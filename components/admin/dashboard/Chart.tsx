@@ -20,7 +20,7 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 const chartConfig = {
   views: {
-    label: "Page Views",
+    label: "Total",
   },
   income: {
     label: "income",

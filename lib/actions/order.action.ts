@@ -16,10 +16,6 @@ export const getOrders = async () => {
     await connectToDatabase();
     const orders = await Order.find().populate("customer").populate("staff");
 
-    if (orders.length === 0) {
-      return [];
-    }
-
     const orderResponse = [];
     for (const order of orders) {
       const products = [];
@@ -55,6 +51,7 @@ export const getOrders = async () => {
     }
     return orderResponse;
   } catch (error) {
+    return [];
     console.log("Error fetching Orders: ", error);
     throw new Error("Failed to fetch orders");
   }
