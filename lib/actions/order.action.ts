@@ -51,6 +51,7 @@ export const getOrders = async () => {
     }
     return orderResponse;
   } catch (error) {
+    return [];
     console.log("Error fetching Orders: ", error);
     return [];
     throw new Error("Failed to fetch orders");

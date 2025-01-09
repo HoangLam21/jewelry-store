@@ -248,6 +248,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
             provider: item.provider,
             category: item.category,
             variants: groupVariants(combinedData),
+            categoryId: item.categoryId,
           },
         ]);
 
@@ -388,7 +389,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
                       onChange={(value) => {
                         setItem((prev) => ({
                           ...prev!,
-                          collection: value
+                          collection: value,
                         }));
                       }}
                     />

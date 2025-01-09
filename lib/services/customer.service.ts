@@ -17,7 +17,7 @@ export async function getCustomerById(id: string): Promise<any> {
 
 export async function uploadAvatar(formData: any, id: string | null) {
   try {
-    const response = await fetch(`/api/customer/upload-avatar>id=${id}`, {
+    const response = await fetch(`/api/customer/upload-avatar?id=${id}`, {
       method: "POST",
       body: formData,
     });

@@ -3,13 +3,13 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent
+  CardContent,
 } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent
+  ChartTooltipContent,
 } from "@/components/ui/chart";
 import { CretaeFinance } from "@/dto/FinaceDTO";
 import { fetchFinance } from "@/lib/service/finance.service";
@@ -20,16 +20,16 @@ import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 const chartConfig = {
   views: {
-    label: "Total"
+    label: "Total",
   },
   income: {
     label: "income",
-    color: "#72AEC8" // Đổi màu thành #72AEC8
+    color: "#72AEC8", // Đổi màu thành #72AEC8
   },
   outcome: {
     label: "outcome",
-    color: "hsl(var(--chart-2))"
-  }
+    color: "hsl(var(--chart-2))",
+  },
 } satisfies ChartConfig;
 
 export function Chart() {
@@ -88,7 +88,7 @@ export function Chart() {
   const total = React.useMemo(
     () => ({
       income: formattedData.reduce((acc, curr) => acc + curr.income, 0),
-      outcome: formattedData.reduce((acc, curr) => acc + curr.outcome, 0)
+      outcome: formattedData.reduce((acc, curr) => acc + curr.outcome, 0),
     }),
     [formattedData]
   );
@@ -133,7 +133,7 @@ export function Chart() {
             data={formattedData}
             margin={{
               left: 12,
-              right: 12
+              right: 12,
             }}
           >
             <CartesianGrid vertical={false} />
@@ -147,7 +147,7 @@ export function Chart() {
                 const date = new Date(value);
                 return date.toLocaleDateString("en-US", {
                   month: "short",
-                  day: "numeric"
+                  day: "numeric",
                 });
               }}
             />
@@ -160,7 +160,7 @@ export function Chart() {
                     return new Date(value).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
-                      year: "numeric"
+                      year: "numeric",
                     });
                   }}
                 />

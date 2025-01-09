@@ -30,11 +30,6 @@ const NavContent = () => {
                   : "text-dark100_light500"
               } text-[13px] w-[120px] font-medium flex h-[40px] items-center justify-center gap-4 bg-transparent p-4`}
             >
-              {/* <Icon
-                className=" text-2xl text-light-500"
-                icon={item.icon}
-              ></Icon> */}
-
               <p className={`${isActive ? "font-medium" : "font-medium"}`}>
                 {item.label}
               </p>
@@ -57,48 +52,16 @@ const MobileNav = () => {
           height={30}
           className="invert-colors ml-3 sm:hidden"
         />
-        {/* <FontAwesomeIcon
-          icon={faBars}
-          className="text-dark100_light500 ml-3 hidden text-2xl  sm:flex"
-        /> */}
       </SheetTrigger>
       <SheetContent
         side="left"
         className="background-light700_dark300 border-none"
       >
-        <Link href="/" className="flex items-center gap-1">
-          <p className="text-dark100_light500 text-2xl">
-            Min<span className="text-2xl text-primary-100 ">gle</span>
-          </p>
+        <Link href="/" className="flex items-center gap-1 pl-5">
+          <p className="text-dark100_light500 text-3xl logo">JewelryStore</p>
+          <p className="text-primary-100 text-3xl">.</p>
         </Link>
-        {/* <div className="ml-5 mt-14 flex flex-col items-start">
-          <div className="mb-14 flex items-center">
-            <Link href="/" className="text-2xl text-light-500">
-              <FontAwesomeIcon icon={faHouse} />
-            </Link>
-            <span className="text-dark100_light500 ml-5 text-2xl">Home</span>
-          </div>
-          <div className="mb-14 flex items-center">
-            <Link href="/" className="text-2xl text-light-500">
-              <FontAwesomeIcon icon={faMagnifyingGlass} />
-            </Link>
-            <span className="text-dark100_light500 ml-5 text-2xl">Search</span>
-          </div>
-          <div className="mb-14 flex items-center">
-            <Link href="/" className="text-2xl text-light-500">
-              <FontAwesomeIcon icon={faBell} />
-            </Link>
-            <span className="text-dark100_light500 ml-5 text-2xl">
-              Notification
-            </span>
-          </div>
-          <div className="flex items-center">
-            <Link href="/" className="text-2xl text-light-500">
-              <FontAwesomeIcon icon={faMessage} />
-            </Link>
-            <span className="text-dark100_light500 ml-5 text-2xl">Message</span>
-          </div>
-        </div> */}
+
         <div>
           <SheetClose asChild>
             <NavContent />

@@ -37,7 +37,7 @@ const defaultBuyNowItem: BuyNowItem = {
   vouchers: [],
   variants: [],
   selectedMaterial: "",
-  selectedSize: ""
+  selectedSize: "",
 };
 
 export default function Page() {
@@ -117,7 +117,7 @@ export default function Page() {
       if (!response.ok) {
         alert("Order can't create. Please try again.");
       }
-      if (paymentMethod === "vnpay") { 
+      if (paymentMethod === "vnpay") {
         const data = await payVNPay(createdOrder._id, totalFinalPrice);
         router.push(data.url);
       }

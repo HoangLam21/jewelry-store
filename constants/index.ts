@@ -85,11 +85,6 @@ export const sidebarLinks: SidebarLink[] = [
     route: "/admin/work-schedule",
     label: "Work schedule",
   },
-  {
-    icon: "mdi:chat",
-    route: "/admin/chat",
-    label: "Chat",
-  },
 ];
 
 export const BADGE_CRITERIA = {
