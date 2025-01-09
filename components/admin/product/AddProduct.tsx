@@ -19,6 +19,8 @@ import { fetchProvider } from "@/lib/service/provider.service";
 import { fetchVoucher } from "@/lib/service/voucher.service";
 import { CreateProduct, FileContent } from "@/dto/ProductDTO";
 import { createProduct } from "@/lib/service/product.service";
+import { useProductManageContext } from "@/contexts/ProductManageContext";
+import InputSelectionProduct from "@/components/shared/input/InputSelectionProduct";
 
 export const convertFilesToFileContent = (files: File[]): FileContent[] => {
   return files.map((file) => ({
@@ -41,46 +43,12 @@ interface Props {
 
 const AddProduct = ({ onBack, setList }: Props) => {
   const [onAdd, setOnAdd] = useState(false);
+  const { providerList, voucherList, collectionList } =
+    useProductManageContext();
   const [randomValue, setRandomValue] = useState<string>(generateRandomID(8));
   const [selectedFiles, setSelectedFiles] = useState<FileContent[]>([]);
-  const [providerList, setProviderList] = useState<string[]>([]);
-  const [voucherList, setVoucherList] = useState<string[]>([]);
   const [combinedData, setCombinedData] = useState<CombinedVariant[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    const fetchDataProvider = async () => {
-      try {
-        const result = await fetchProvider();
-
-        if (result) {
-          const providerId: string[] = result.map((item: any) => item._id);
-          setProviderList(providerId);
-        }
-      } catch (err: any) {
-        console.error("Error fetching data:", err);
-        const errorMessage = err?.message || "An unexpected error occurred.";
-        alert(`Error fetching data: ${errorMessage}`);
-      }
-    };
-
-    const fetchDataVoucher = async () => {
-      try {
-        const result = await fetchVoucher();
-
-        if (result) {
-          const voucherId: string[] = result.map((item: any) => item._id);
-          setVoucherList(voucherId);
-        }
-      } catch (err: any) {
-        console.error("Error fetching data:", err);
-        const errorMessage = err?.message || "An unexpected error occurred.";
-        alert(`Error fetching data: ${errorMessage}`);
-      }
-    };
-    fetchDataProvider();
-    fetchDataVoucher();
-  }, []);
 
   //RENDER IMAGE
   const handleRemoveFile = (url: string) => {
@@ -88,6 +56,18 @@ const AddProduct = ({ onBack, setList }: Props) => {
     setSelectedFiles(newFiles);
   };
   const [item, setItem] = useState<ProductData>(defaultDetailProduct);
+  const nameProvider = item?.provider
+    ? providerList.find((provider) => provider.id === item.provider)?.name ||
+      "Unknown"
+    : "None";
+  const nameVoucher = item?.vouchers
+    ? voucherList.find((voucher) => voucher.id === item.vouchers)?.name ||
+      "Unknown"
+    : "None";
+  const nameCollection = item?.collection
+    ? collectionList.find((coll) => coll.id === item.collection)?.name ||
+      "Unknown"
+    : "None";
   const handleAdd = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -268,6 +248,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
             provider: item.provider,
             category: item.category,
             variants: groupVariants(combinedData),
+            categoryId: item.categoryId,
           },
         ]);
 
@@ -344,11 +325,11 @@ const AddProduct = ({ onBack, setList }: Props) => {
                       value={randomValue}
                       width="w-full"
                     />
-                    <InputSelection
+                    <InputSelectionProduct
                       width="w-full"
                       titleInput="Provider"
                       options={providerList}
-                      value={item?.provider ?? "None"}
+                      value={nameProvider}
                       onChange={(value) => {
                         setItem((prev) => ({
                           ...prev!,
@@ -369,11 +350,11 @@ const AddProduct = ({ onBack, setList }: Props) => {
                     />
                   </div>
                   <div className="w-1/2 h-fit gap-4 flex flex-col">
-                    <InputSelection
+                    <InputSelectionProduct
                       width="w-full"
                       titleInput="Voucher"
                       options={voucherList}
-                      value={item?.vouchers ?? "None"}
+                      value={nameVoucher}
                       onChange={(value) => {
                         setItem((prev) => ({
                           ...prev!,
@@ -389,7 +370,7 @@ const AddProduct = ({ onBack, setList }: Props) => {
                       width="w-full"
                       placeholder="Enter price of product..."
                     />
-                    <InputEdit
+                    {/* <InputEdit
                       titleInput="Collection"
                       onChange={(e) =>
                         handleChangeProductInputFields(
@@ -399,6 +380,18 @@ const AddProduct = ({ onBack, setList }: Props) => {
                       }
                       width="w-full"
                       placeholder="Enter collection"
+                    /> */}
+                    <InputSelectionProduct
+                      width="w-full"
+                      titleInput="Collection"
+                      options={collectionList}
+                      value={nameCollection}
+                      onChange={(value) => {
+                        setItem((prev) => ({
+                          ...prev!,
+                          collection: value,
+                        }));
+                      }}
                     />
                   </div>
                 </div>

@@ -1,5 +1,5 @@
-import { Document, Schema, model, models} from "mongoose";
-import { IUser, UserSchema } from "./user.model"; 
+import { Document, Schema, model, models } from "mongoose";
+import { IUser, UserSchema } from "./user.model";
 import { AuditSchema, IAudit } from "./audit.model";
 
 export interface ICustomer extends IUser {

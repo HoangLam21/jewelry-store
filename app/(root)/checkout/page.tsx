@@ -18,13 +18,13 @@ function addDays(days: number) {
 }
 import {
   getCartByUserId,
-  removeProductFromCart
+  removeProductFromCart,
 } from "@/lib/services/cart.service";
+import { payVNPay } from "@/lib/service/vnpay.service";
 
 export default function Page() {
   const { state } = useCart();
   const { dispatch } = useCart();
-  const { stateBuyNow } = useBuyNow();
   const [totalOriginalPrice, setTotalOriginalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [totalFinalPrice, setTotalFinalPrice] = useState(0);
@@ -37,10 +37,6 @@ export default function Page() {
   const [note, setNote] = useState("");
   const [cart, setCart] = useState<any[]>([]);
   const router = useRouter();
-  // const cartState =
-  //   stateBuyNow && stateBuyNow.items.length > 0 ? stateBuyNow : state;
-
-  // console.log(cartState, "check state");
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -66,7 +62,7 @@ export default function Page() {
         vouchers: detail.productVouchers || [],
         variants: detail.productVariants || [],
         selectedMaterial: detail.selectedMaterial,
-        selectedSize: detail.selectedSize
+        selectedSize: detail.selectedSize,
       }));
     };
 
@@ -90,7 +86,7 @@ export default function Page() {
             vouchers: detail.vouchers || [],
             variants: detail.variants || [],
             selectedMaterial: detail.selectedMaterial || "",
-            selectedSize: detail.selectedSize || ""
+            selectedSize: detail.selectedSize || "",
           }));
           setCart(formattedState);
         }
@@ -124,11 +120,23 @@ export default function Page() {
           ? (basePrice + addOnPrice) * (voucher.discount / 100)
           : 0;
 
+        // const bestVoucher = item.vouchers?.reduce(
+        //   (maxVoucher: any, currentVoucher: any) =>
+        //     currentVoucher?.discount > (maxVoucher?.discount || 0)
+        //       ? currentVoucher
+        //       : maxVoucher,
+        //   null
+        // );
+
+        // const voucherDiscount = bestVoucher
+        //   ? (basePrice + addOnPrice) * (bestVoucher.discount / 100)
+        //   : 0;
+
         return {
           originalPrice: totals.originalPrice + basePrice + addOnPrice,
           discount: totals.discount + voucherDiscount,
           finalPrice:
-            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount)
+            totals.finalPrice + (basePrice + addOnPrice - voucherDiscount),
         };
       },
       { originalPrice: 0, discount: 0, finalPrice: 0 }
@@ -139,14 +147,15 @@ export default function Page() {
     setTotalFinalPrice(finalPrice);
   }, [cart]);
 
-  const handleOrder = async () => {
+  const handleOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
     const details = cart.map((item: any) => ({
       id: item._id,
       material: item.selectedMaterial,
       size: item.selectedSize,
       unitPrice: item.cost,
       quantity: item.quantity,
-      discount: item.vouchers?.[0]?.discount || "0"
+      discount: item.vouchers?.[0]?.discount || "0",
     }));
 
     const orderData = {
@@ -160,7 +169,7 @@ export default function Page() {
       staff: "6776bdee74de08ccc866a4be",
       phoneNumber: phoneNumber,
       note: note,
-      address: address
+      address: address,
     };
 
     console.log(orderData, "check before API");
@@ -169,9 +178,9 @@ export default function Page() {
       const response = await fetch("/api/order/create", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify(orderData),
       });
 
       if (!response.ok) {
@@ -179,14 +188,17 @@ export default function Page() {
         throw new Error(`Server error: ${response.statusText}`);
       }
       const data = await response.json();
-      console.log("Order created:", data);
+
       cart.forEach((item: any) => handleRemoveFromCart(item));
-      router.push("/");
-      alert("Order created!");
+      if (paymentMethod === "vnpay") {
+        const payment = await payVNPay(data._id, totalFinalPrice);
+        router.push(payment.url);
+      }
     } catch (error: any) {
       console.error("Error creating order:", error.message);
     }
   };
+
   const handleRemoveFromCart = async (item: any) => {
     if (user?._id) {
       try {
@@ -214,6 +226,7 @@ export default function Page() {
       dispatch({ type: "REMOVE_FROM_CART", payload: item._id });
     }
   };
+
   useEffect(() => {
     const calculateShippingFee = () => {
       if (deliveryMethod === "fast") return 35000;

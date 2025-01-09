@@ -12,11 +12,25 @@ import UserModal from "@/components/form/user/UserModal";
 import { fetchProducts } from "@/lib/services/product.service";
 import SearchModal from "@/components/form/search/SearchModal";
 
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+
 const Navbar = () => {
   const pathname = usePathname();
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [productsData, setProductsData] = useState<any[]>([]);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  useEffect(() => {
+    const userData = localStorage.getItem("userData");
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        setUser(parsedData);
+      } catch (error) {
+        console.error("Failed to parse user data from localStorage:", error);
+      }
+    }
+  }, []);
   useEffect(() => {
     let isMounted = true;
     const getAllProducts = async () => {
@@ -81,6 +95,17 @@ const Navbar = () => {
           />
         )}
 
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+        <SignedOut>
+          <SignInButton>
+            <div className="text-dark100_light500 mr-5 text-[16px] font-medium cursor-pointer">
+              Login
+            </div>
+          </SignInButton>
+        </SignedOut>
+
         <Icon
           icon="solar:user-bold"
           className="text-dark100_light500 mr-5 text-[20px]"
@@ -90,6 +115,7 @@ const Navbar = () => {
           isOpen={isUserModalOpen}
           onClose={() => setIsUserModalOpen(false)} // Đóng modal
         />
+
         <Link href="/cart">
           <Icon icon="mdi:cart" className="text-dark100_light500 text-[20px]" />
         </Link>

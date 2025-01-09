@@ -234,6 +234,9 @@ const OrderList = ({
             <option value="ordered" className="bg-white text-black">
               Ordered
             </option>
+            <option value="paid" className="bg-white text-black">
+              Paid
+            </option>
             <option value="confirmed" className="bg-white text-black">
               Confirmed
             </option>

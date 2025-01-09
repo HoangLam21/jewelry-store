@@ -9,7 +9,7 @@ import Customer from "@/database/customer.model";
 export const uploadCustomerAvatar = async (userId: string, file: formidable.File) => {
   try {
     const uploadedAvatar = await createFile(file);
-    await Customer.findByIdAndUpdate(userId, {avatar:uploadedAvatar.url});
+    await Customer.findByIdAndUpdate(userId, { avatar: uploadedAvatar.url });
     return { message: "Upload avatar successfully!" };
   } catch (error) {
     console.log(error);
@@ -18,13 +18,12 @@ export const uploadCustomerAvatar = async (userId: string, file: formidable.File
 };
 
 export const uploadStaffAvatar = async (userId: string, file: formidable.File) => {
-    try {
-      const uploadedAvatar = await createFile(file);
-      await Staff.findByIdAndUpdate(userId,{avatar:uploadedAvatar.url});
-      return { message: "Upload avatar successfully!" };
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  };
-  
+  try {
+    const uploadedAvatar = await createFile(file);
+    await Staff.findByIdAndUpdate(userId, { avatar: uploadedAvatar.url });
+    return { message: "Upload avatar successfully!" };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

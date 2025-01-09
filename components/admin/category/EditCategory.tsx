@@ -16,7 +16,7 @@ import { categoryData, Providers } from "@/constants/data";
 import {
   CategoryResponse,
   CreateCategory,
-  ProductAdditionToCategory
+  ProductAdditionToCategory,
 } from "@/dto/CategoryDTO";
 import MyButton from "@/components/shared/button/MyButton";
 import InputEdit from "@/components/shared/input/InputEdit";
@@ -27,7 +27,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   addProductToCategory,
   getDetailCategory,
-  updateInfoCategory
+  updateInfoCategory,
 } from "@/lib/service/category.service";
 import { ProductData } from "../product/ProductList";
 import { ProductResponse } from "@/dto/ProductDTO";
@@ -42,7 +42,7 @@ interface productProp {
 const defaultItem = {
   _id: "",
   fullName: "",
-  cost: 0
+  cost: 0,
 };
 
 const columns = [
@@ -50,18 +50,18 @@ const columns = [
   {
     header: "Name",
     accessor: "name",
-    className: "hidden lg:table-cell"
+    className: "hidden lg:table-cell",
   },
   {
     header: "Price",
     accessor: "cost",
-    className: "hidden md:table-cell"
+    className: "hidden md:table-cell",
   },
   {
     header: "Action",
     accessor: "action",
-    className: "hidden md:table-cell"
-  }
+    className: "hidden md:table-cell",
+  },
 ];
 
 const EditCategoryInformation = () => {
@@ -79,7 +79,7 @@ const EditCategoryInformation = () => {
     direction: "ascending" | "descending";
   }>({
     key: "id",
-    direction: "ascending"
+    direction: "ascending",
   });
   type SortableKeys = "id" | "name" | "createAt";
 
@@ -96,9 +96,9 @@ const EditCategoryInformation = () => {
             products: result.products.map((item: any, index: number) => ({
               _id: item._id,
               fullName: item.name ? item.name : "Unknown name",
-              cost: item.cost ? item.cost : 0
+              cost: item.cost ? item.cost : 0,
             })),
-            createAt: result.createdAt
+            createAt: result.createdAt,
           };
           console.log(result);
           setCategory(data);
@@ -129,7 +129,8 @@ const EditCategoryInformation = () => {
             vouchers: item.vouchers?.[item.vouchers.length - 1]?._id || "",
             provider: item.provider ? item.provider._id : "",
             category: item.category,
-            variants: item.variants
+            variants: item.variants,
+            categoryId: "",
           }));
 
           setProductList(data);
@@ -147,7 +148,7 @@ const EditCategoryInformation = () => {
     if (updateCategory) {
       setUpdateCategory({
         ...updateCategory,
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
     }
   };
@@ -201,7 +202,7 @@ const EditCategoryInformation = () => {
     indexOfLastItem,
     indexOfFirstItem,
     totalPages,
-    dataLength
+    dataLength,
   };
 
   const handleSort = () => {
@@ -211,7 +212,7 @@ const EditCategoryInformation = () => {
   const renderRow = (item: ProductData) => (
     <tr key={item.id} className="my-4 border-t border-gray-300 text-sm">
       <td className="px-4 py-2">
-        <h3 className="text-base">{item.price}</h3>
+        <h3 className="text-base">{item.id}</h3>
       </td>
       <td className="hidden px-4 py-2 lg:table-cell">
         <p className="text-base">{item.productName}</p>
@@ -234,13 +235,13 @@ const EditCategoryInformation = () => {
     try {
       const params: CreateCategory = {
         name: updateCategory.name,
-        hot: updateCategory.hot
+        hot: updateCategory.hot,
       };
       const result = await updateInfoCategory(id, params);
       if (result) {
         const param: ProductAdditionToCategory = {
           categoryId: result._id,
-          productId: selectedIds
+          productId: selectedIds,
         };
         const addedProduct = await addProductToCategory(param);
         console.log("Added product:", addedProduct.product);
@@ -260,7 +261,7 @@ const EditCategoryInformation = () => {
     setConfirm: () => {},
     handleAction: () => {},
     name: "",
-    action: ""
+    action: "",
   });
   const handleConfirmUpdate = () => {
     setIsConfirm(true);
@@ -268,7 +269,7 @@ const EditCategoryInformation = () => {
       setConfirm: setIsConfirm,
       handleAction: () => handleUpdate(),
       name: " this category",
-      action: "update"
+      action: "update",
     });
   };
   return (
@@ -298,7 +299,7 @@ const EditCategoryInformation = () => {
                   onChange={(value) => {
                     setCategory((prev) => ({
                       ...prev!,
-                      hot: value === "Best Category" ? true : false
+                      hot: value === "Best Category" ? true : false,
                     }));
                   }}
                 />

@@ -1,7 +1,7 @@
 "use client";
 import AddProduct from "@/components/admin/product/AddProduct";
 import ProductList, {
-  ProductData,
+  ProductData
 } from "@/components/admin/product/ProductList";
 import Headers from "@/components/shared/header/Headers";
 import React, { useState } from "react";

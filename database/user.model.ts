@@ -10,6 +10,7 @@ export interface IUser extends Document, IAudit {
   avatar: string;
   birthday: string;
   gender: string;
+  clerkId: string;
 }
 
 export const UserSchema = new Schema<IUser>({
@@ -20,6 +21,7 @@ export const UserSchema = new Schema<IUser>({
   avatar: { type: String, default: "" },
   birthday: { type: String },
   gender: { type: String },
+  clerkId: { type: String, required: false }
 });
 
 UserSchema.add(AuditSchema);

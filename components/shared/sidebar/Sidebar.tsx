@@ -7,9 +7,24 @@ import { sidebarLinks } from "@/constants";
 import { usePathname } from "next/navigation";
 import Theme from "../navbar/Theme";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 
 const Sidebar = () => {
   const pathname = usePathname();
+
+  const { user, isLoaded } = useUser();
+
+  useEffect(() => {
+    async function getRole() {
+      console.log("hello");
+    }
+    return () => {
+      if (user && isLoaded) {
+        getRole();
+      }
+    };
+  }, [user, isLoaded]);
 
   return (
     <nav className=" h-screen z-50 w-64 p-6 fixed">

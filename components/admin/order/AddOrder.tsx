@@ -18,7 +18,7 @@ import Image from "next/image";
 import { FileContent, ProductResponse } from "@/dto/ProductDTO";
 import { fetchProduct } from "@/lib/service/product.service";
 import Product from "@/database/product.model";
-import { Variant } from "../product/ProductList";
+import { ProductData, Variant } from "../product/ProductList";
 import { CreateOrder } from "@/dto/OrderDTO";
 import InputDate from "@/components/shared/input/InputDate";
 import AddDetailProduct from "./AddDetailProduct";
@@ -27,24 +27,10 @@ import { createOrder } from "@/lib/service/order.service";
 import { fetchVoucher } from "@/lib/service/voucher.service";
 import InputNumberSelection from "@/components/shared/input/InputNumberSelection";
 
-export interface Product {
-  id: string;
-  image: string;
-  imageInfo: FileContent[];
-  productName: string;
-  price: string;
-  collection: string;
-  description: string;
-  vouchers: string;
-  provider: string;
-  category: string;
-  variants: Variant[];
-}
-
 const AddOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [list, setList] = useState<Product[]>([]);
-  const [selectedItem, setSelectedItem] = useState<Product | null>(null);
+  const [list, setList] = useState<ProductData[]>([]);
+  const [selectedItem, setSelectedItem] = useState<ProductData | null>(null);
   const [isProductOverlayOpen, setIsProductOverlayOpen] = useState(false);
   const [voucherList, setVoucherList] = useState<
     { name: string; discount: number }[]
@@ -81,9 +67,9 @@ const AddOrder = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result: ProductResponse[] = await fetchProduct();
+        const result = await fetchProduct();
         if (result) {
-          const data: Product[] = result.map((item) => ({
+          const data: ProductData[] = result.map((item: any) => ({
             id: item._id,
             image: item.files[0].url,
             imageInfo: item.files,
@@ -93,8 +79,9 @@ const AddOrder = () => {
             description: item.description,
             vouchers: item.vouchers?.[item.vouchers.length - 1]?._id || "",
             provider: item.provider ? item.provider._id : "",
-            category: item.category,
+            category: item.category ? item.category.name : "No category",
             variants: item.variants,
+            categoryId: item.category ? item.category._id : "",
           }));
 
           setList(data);
@@ -159,7 +146,7 @@ const AddOrder = () => {
     return matchesSearch;
   });
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductData) => {
     console.log("Product added to cart:", product); // Debug log
     setSelectedItem(product);
     setProductDetail({
@@ -308,7 +295,7 @@ const AddOrder = () => {
 
         <div className="w-full h-4/6 flex overflow-hidden">
           <div className="container grid md:grid-cols-3 lg:grid-cols-5 grid-cols-1 w-full gap-8 max-h-[400px] md:w-2/3 lg:w-3/4 overflow-y-auto ">
-            {filterData.map((product: Product) => (
+            {filterData.map((product: ProductData) => (
               <ImportCard
                 key={product.id}
                 item={product}

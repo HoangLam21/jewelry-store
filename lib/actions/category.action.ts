@@ -15,7 +15,7 @@ export const createCategory = async (data: {
     await connectToDatabase();
     const newCategory = await Category.create({
       name: data.name,
-      description: data.description,
+      description: data.description
     });
     return newCategory;
   } catch (error) {
@@ -37,7 +37,7 @@ export const getProductsOfCategory = async (categoryId: string) => {
     }
     // Populate necessary fields
     const products = await Product.find({
-      _id: { $in: category.products },
+      _id: { $in: category.products }
     })
       .populate("files")
       .populate("vouchers")
@@ -84,7 +84,7 @@ export const updateCategory = async (
     const updatedCategory = await Category.findByIdAndUpdate(
       id,
       {
-        ...data,
+        ...data
       },
       { new: true }
     );
@@ -130,16 +130,25 @@ export const addProductToCategory = async (
     if (!category) {
       throw new Error("Category not found");
     }
-    const product = await Product.findById(productId);
-    if (!product) {
-      throw new Error("Product not found");
+    const products = await Product.find({
+      _id: { $in: productId } // Dùng $in để tìm tất cả ID trong mảng
+    });
+
+    if (products.length !== productId.length) {
+      throw new Error("One or more products not found");
     }
+    await Promise.all(
+      products.map((product) => {
+        product.category = categoryId;
+        return product.save();
+      })
+    );
+
     category.products = productId;
-    product.category = categoryId;
     await category.save();
-    await product.save();
-    await mongoose.connection.close();
-    return { category, product };
+
+    //await mongoose.connection.close();
+    return { category, products };
   } catch (error) {
     console.log("Error adding product to category: ", error);
     //await mongoose.connection.close();
@@ -312,7 +321,7 @@ export const getCategoryById = async (
     }
 
     const rawProducts = (await Product.find({
-      _id: { $in: category.products },
+      _id: { $in: category.products }
     }).lean()) as unknown as RawProduct[];
 
     const fileIds: mongoose.Types.ObjectId[] = [];
@@ -335,7 +344,7 @@ export const getCategoryById = async (
       ProductProvider.find({ _id: { $in: providerIds } })
         .select("_id fullname phoneNumber address")
         .lean()
-        .then((providers) => providers as unknown as ProviderDocument[]),
+        .then((providers) => providers as unknown as ProviderDocument[])
     ]);
 
     const fileMap = new Map(
@@ -367,14 +376,14 @@ export const getCategoryById = async (
           _id: new mongoose.Types.ObjectId(),
           fullname: "",
           phoneNumber: "",
-          address: "",
+          address: ""
         },
         category: product.category,
         collections: product.collections,
         variants: product.variants,
         sales: product.sales,
         createdAt: product.createdAt,
-        updatedAt: product.updatedAt,
+        updatedAt: product.updatedAt
       };
     });
 
@@ -385,7 +394,7 @@ export const getCategoryById = async (
       hot: category.hot,
       products: populatedProducts,
       createdAt: category.createAt,
-      updatedAt: category.updatedAt,
+      updatedAt: category.updatedAt
     };
 
     return populatedCategory;
